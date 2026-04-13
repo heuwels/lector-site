@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentation | Lector</title>
+  <meta name="description" content="Installation guide, configuration, and self-hosting documentation for Lector.">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/logo.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+<body>
+
+<header class="docs-header">
+  <div class="container">
+    <p class="breadcrumb"><a href="/">lector</a> / docs</p>
+    <h1>Documentation</h1>
+  </div>
+</header>
+
+<div class="container">
+  <div class="docs-layout">
+    <main class="docs-body">
+
+      <!-- Installation -->
+      <h2 id="installation">Installation</h2>
+      <p>Lector is distributed as a Docker image. The recommended way to run it is with Docker Compose.</p>
+
+      <h3 id="docker-compose">Docker Compose</h3>
+      <p>Create a <code>docker-compose.yml</code> file:</p>
+      <pre><code>services:
+  lector:
+    image: ghcr.io/3stacks/lector:latest
+    container_name: lector
+    restart: unless-stopped
+    ports:
+      - "3400:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production</code></pre>
+
+      <p>Then start it:</p>
+      <pre><code>docker compose up -d</code></pre>
+
+      <p>Lector will be available at <code>http://your-server:3400</code>. All data is stored in a SQLite database inside the <code>data</code> directory.</p>
+
+      <h3 id="updating">Updating</h3>
+      <pre><code><span class="comment"># Pull the latest image</span>
+docker compose pull
+
+<span class="comment"># Restart with the new version</span>
+docker compose up -d</code></pre>
+      <p>Your data is stored in a bind mount and will persist across updates.</p>
+
+      <!-- Self-Hosting -->
+      <h2 id="self-hosting">Self-hosting</h2>
+
+      <div class="callout">
+        <p>Lector is designed to run on your home network. Your reading history, vocabulary, and learning progress stay on hardware you control. There are no cloud accounts, no telemetry, and no external dependencies beyond optional AI translation.</p>
+      </div>
+
+      <h3 id="network-access">Network access</h3>
+      <p>Lector is designed to be accessed via a WireGuard VPN. We use <a href="https://tailscale.com">Tailscale</a>, which takes about five minutes to set up and gives every device on your tailnet a stable IP. This means your data never leaves your network.</p>
+      <p>With Tailscale, you can access Lector from your phone, from work, or from anywhere, without exposing any ports to the public internet.</p>
+
+      <h3 id="reverse-proxy">Reverse proxy (HTTPS)</h3>
+      <p>If you want HTTPS within your network (recommended), put Lector behind a reverse proxy. <a href="https://caddyserver.com">Caddy</a> handles automatic TLS with minimal configuration:</p>
+      <pre><code>lector.home.yourdomain.com {
+    reverse_proxy lector:3000
+}</code></pre>
+      <p>Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
+
+      <h3 id="backups">Backups</h3>
+      <p>Lector stores everything in a SQLite database and your imported books inside the data directory. To back it up:</p>
+      <pre><code><span class="comment"># Copy the data directory</span>
+cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
+      <p>Or include the bind mount path in your regular backup routine (rsync, borg, restic, etc.).</p>
+
+      <!-- Reading -->
+      <h2 id="reading">Reading</h2>
+      <p>Lector supports two content formats:</p>
+      <ul>
+        <li><strong>EPUB files</strong>: upload directly through the library interface</li>
+        <li><strong>Web articles</strong>: paste a URL and Lector extracts the content via Readability</li>
+      </ul>
+      <p>You can also paste raw text directly for quick reading practice.</p>
+
+      <h3 id="click-to-translate">Click-to-translate</h3>
+      <p>Click any word while reading to see its translation. If you have an <code>ANTHROPIC_API_KEY</code> configured, Lector uses Claude for context-aware translation of uncommon words and phrases. Without an API key, it falls back to a built-in dictionary of the top 2000 words.</p>
+
+      <div class="callout">
+        <p><strong>Coming soon:</strong> Local LLM support for translations, so you can run fully offline without any API keys.</p>
+      </div>
+
+      <h3 id="word-states">Word states</h3>
+      <p>Every word you encounter is tracked with a state:</p>
+      <ul>
+        <li><strong>New</strong>: you haven't interacted with this word yet</li>
+        <li><strong>Learning</strong>: you've looked it up or saved it</li>
+        <li><strong>Known</strong>: you've marked it as known</li>
+      </ul>
+      <p>Words are highlighted in your text based on their state, so you can see at a glance how much of a passage you already know.</p>
+
+      <!-- Cloze Practice -->
+      <h2 id="cloze-practice">Cloze Practice</h2>
+      <p>The cloze practice system ships with ~2900 Afrikaans-English sentence pairs from <a href="https://tatoeba.org">Tatoeba</a>, ordered by word frequency so you learn common words first.</p>
+
+      <h3 id="practice-modes">Practice modes</h3>
+      <ul>
+        <li><strong>Multiple choice</strong>: pick the correct word from four options</li>
+        <li><strong>Typing</strong>: type the missing word (with optional hard mode that disables hints)</li>
+      </ul>
+
+      <h3 id="srs-scheduling">SRS scheduling</h3>
+      <p>Sentences are scheduled using spaced repetition with five mastery levels:</p>
+      <table class="env-table">
+        <thead>
+          <tr>
+            <th>Mastery</th>
+            <th>Interval</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0%</td><td>Immediate</td></tr>
+          <tr><td>25%</td><td>1 day</td></tr>
+          <tr><td>50%</td><td>3 days</td></tr>
+          <tr><td>75%</td><td>7 days</td></tr>
+          <tr><td>100%</td><td>14 days</td></tr>
+        </tbody>
+      </table>
+
+      <!-- AnkiConnect -->
+      <h2 id="ankiconnect">AnkiConnect</h2>
+      <p>Lector connects directly to <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a> running on your local machine. This lets you push vocabulary cards from Lector straight into Anki Desktop. No proxy server, no cloud sync.</p>
+
+      <h3 id="anki-setup">Setup</h3>
+      <ol>
+        <li>Install the <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect add-on</a> in Anki Desktop</li>
+        <li>In AnkiConnect's config, add your Lector origin to the CORS allowlist:</li>
+      </ol>
+      <pre><code>{
+  "webCorsOriginList": ["http://localhost:3000"]
+}</code></pre>
+      <p>If you're accessing Lector via a reverse proxy, add that origin too (e.g. <code>https://lector.home.yourdomain.com</code>).</p>
+
+      <div class="callout">
+        <p><strong>Note:</strong> AnkiConnect runs on <code>localhost:8765</code> by default. The connection is browser-to-localhost, so Anki Desktop must be running on the same machine as your browser.</p>
+      </div>
+
+      <!-- Configuration -->
+      <h2 id="configuration">Configuration</h2>
+
+      <h3 id="environment-variables">Environment variables</h3>
+      <table class="env-table">
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>NODE_ENV</code></td>
+            <td><code>production</code></td>
+            <td>Set to <code>production</code> for deployed instances</td>
+          </tr>
+          <tr>
+            <td><code>ANTHROPIC_API_KEY</code></td>
+            <td>&mdash;</td>
+            <td>Optional. Claude API key for AI-powered word and phrase translation. Without it, Lector falls back to a local dictionary of the top 2000 words.</td>
+          </tr>
+          <tr>
+            <td><code>GOOGLE_CLOUD_API_KEY</code></td>
+            <td>&mdash;</td>
+            <td>Optional. Google Cloud API key for text-to-speech pronunciation.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="full-compose">Full Docker Compose example</h3>
+      <p>Here's a complete example with all optional environment variables:</p>
+      <pre><code>services:
+  lector:
+    image: ghcr.io/3stacks/lector:${LECTOR_VERSION:-latest}
+    container_name: lector
+    restart: unless-stopped
+    ports:
+      - "3400:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_CLOUD_API_KEY=${GOOGLE_CLOUD_API_KEY}</code></pre>
+
+      <!-- Supported Languages -->
+      <h2 id="supported-languages">Supported languages</h2>
+      <p>Lector's reader works with any language, but language packs provide sentence banks and dictionaries for cloze practice.</p>
+      <table class="env-table">
+        <thead>
+          <tr>
+            <th>Language pair</th>
+            <th>Status</th>
+            <th>Sentences</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Afrikaans &rarr; English</td>
+            <td>Available</td>
+            <td>~2900</td>
+          </tr>
+          <tr>
+            <td>Spanish &rarr; English</td>
+            <td>Coming soon</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>German &rarr; English</td>
+            <td>Coming soon</td>
+            <td>&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>All sentence data is sourced from <a href="https://tatoeba.org">Tatoeba</a>. Adding a new language pair is straightforward. If you'd like to see your language supported, <a href="https://github.com/3stacks/lector">open a PR on GitHub</a>. We'd love contributions.</p>
+
+      <!-- Sentence Bank -->
+      <h2 id="sentence-bank">Sentence bank</h2>
+      <p>The cloze practice system ships with ~2900 Afrikaans-English sentence pairs sourced from <a href="https://tatoeba.org">Tatoeba</a>. Each sentence is tagged with word frequency data so you learn the most common words first.</p>
+      <p>To regenerate from Tatoeba's latest data dumps:</p>
+      <pre><code>npm run fetch-sentences</code></pre>
+      <p>This downloads Tatoeba's per-language TSV exports, joins Afrikaans sentences with English translations, and tags each with word frequency data.</p>
+
+      <div class="callout">
+        <p><strong>Data attribution:</strong> Sentence bank sourced from <a href="https://tatoeba.org">Tatoeba</a>, licensed under <a href="https://creativecommons.org/licenses/by/2.0/fr/">CC-BY 2.0 FR</a>. Word frequency dictionary compiled from publicly available frequency lists.</p>
+      </div>
+
+      <!-- Tech Stack -->
+      <h2 id="tech-stack">Tech stack</h2>
+      <ul>
+        <li><strong>Framework:</strong> Next.js 16 with React 19</li>
+        <li><strong>Database:</strong> SQLite (better-sqlite3) server-side, Dexie (IndexedDB) client-side</li>
+        <li><strong>Styling:</strong> Tailwind CSS v4</li>
+        <li><strong>AI:</strong> Anthropic Claude API (optional)</li>
+        <li><strong>TTS:</strong> Google Cloud Text-to-Speech (optional)</li>
+        <li><strong>Container:</strong> Docker (single image, bind mount for data)</li>
+      </ul>
+
+    </main>
+
+    <nav class="docs-toc">
+      <h4>On this page</h4>
+      <a href="#installation">Installation</a>
+      <a href="#docker-compose">Docker Compose</a>
+      <a href="#updating">Updating</a>
+      <a href="#self-hosting">Self-hosting</a>
+      <a href="#network-access">Network access</a>
+      <a href="#reverse-proxy">Reverse proxy</a>
+      <a href="#backups">Backups</a>
+      <a href="#reading">Reading</a>
+      <a href="#click-to-translate">Click-to-translate</a>
+      <a href="#word-states">Word states</a>
+      <a href="#cloze-practice">Cloze practice</a>
+      <a href="#practice-modes">Practice modes</a>
+      <a href="#srs-scheduling">SRS scheduling</a>
+      <a href="#ankiconnect">AnkiConnect</a>
+      <a href="#configuration">Configuration</a>
+      <a href="#environment-variables">Environment variables</a>
+      <a href="#full-compose">Full compose example</a>
+      <a href="#supported-languages">Supported languages</a>
+      <a href="#sentence-bank">Sentence bank</a>
+      <a href="#tech-stack">Tech stack</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <nav class="footer-nav">
+      <a href="/">Home</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="https://github.com/3stacks/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
+  </div>
+</footer>
+
+<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+  <span class="icon-sun">&#x2600;</span>
+  <span class="icon-moon">&#x1F319;</span>
+</button>
+
+<script>
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+</script>
+
+</body>
+</html>

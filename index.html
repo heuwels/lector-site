@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lector | self-hosted language learning reader</title>
+  <meta name="description" content="A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data.">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/logo.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="container">
+    <img src="/logo.svg" alt="Lector logo" class="hero-logo">
+    <h1>lector</h1>
+    <p class="pronunciation">Latin for "reader"</p>
+    <p class="tagline">A self-hosted language learning reader. Read, practice, remember. All on your own terms.</p>
+    <nav class="hero-nav">
+      <a href="/docs/" class="hero-nav__primary">Get Started</a>
+      <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
+      <a href="#features">Features</a>
+      <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
+      <a href="#languages">Languages</a>
+      <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
+      <a href="#screenshots">Screenshots</a>
+      <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
+      <a href="https://github.com/3stacks/lector" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
+    </nav>
+    <div class="hero-mockup">
+      <div class="mockup-browser">
+        <div class="mockup-browser__bar">
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+        </div>
+        <div class="placeholder">Screenshots coming soon</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Pitch -->
+<section class="pitch">
+  <div class="container">
+    <p class="pitch-intro">
+      <strong>Lector</strong> is a self-hosted language learning reader that combines LingQ-style reading with Clozemaster-style cloze practice and direct AnkiConnect integration. Import EPUBs or web articles, click words to translate, mine vocabulary, and drill sentences. All from a single app running on your own hardware.
+    </p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- Features -->
+<section id="features" class="pitch">
+  <div class="container">
+    <h2>What it <span class="accent">does</span></h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">&#x1F4D6;</div>
+        <h3>EPUB &amp; Markdown Reader</h3>
+        <p>Beautiful Literata serif typography with click-to-translate powered by Claude. Track word states as you read: new, learning, known.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F9E9;</div>
+        <h3>Cloze Practice</h3>
+        <p>2900+ pre-loaded sentence pairs from Tatoeba, ordered by word frequency. Multiple choice and typing modes with SRS scheduling.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4DD;</div>
+        <h3>Vocabulary Mining</h3>
+        <p>Save words while reading, track known and learning states. Build your personal vocabulary database as you go.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4E6;</div>
+        <h3>AnkiConnect</h3>
+        <p>Push cards directly to Anki Desktop from your browser. No proxy, no middleman. Just browser-to-localhost over AnkiConnect.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F310;</div>
+        <h3>Web &amp; Paste Import</h3>
+        <p>Extract articles from any URL via Readability, or paste text directly. Turn anything into reading practice.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F525;</div>
+        <h3>Streaks &amp; Hard Mode</h3>
+        <p>Stay motivated with streak tracking, sound effects, and a hard mode for cloze practice that keeps you honest.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F50A;</div>
+        <h3>Text-to-Speech</h3>
+        <p>Optional Google Cloud TTS integration for hearing words and sentences pronounced correctly.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F916;</div>
+        <h3>AI Translation</h3>
+        <p>Claude API for translating uncommon words and phrases on demand. Falls back to a local 2000-word dictionary when offline. Local LLM support coming soon.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4BE;</div>
+        <h3>Offline-First Storage</h3>
+        <p>SQLite server-side, IndexedDB client-side. All your data stays local. No cloud accounts, no sync services, no data harvesting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- Languages -->
+<section id="languages" class="pitch">
+  <div class="container">
+    <h2>Supported <span class="accent">languages</span></h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">&#x1F1FF;&#x1F1E6;</div>
+        <h3>Afrikaans &rarr; English</h3>
+        <p>2900+ sentence pairs, full dictionary, and word frequency data. The most complete language pack.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F1EA;&#x1F1F8;</div>
+        <h3>Spanish &rarr; English</h3>
+        <p>Coming soon.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F1E9;&#x1F1EA;</div>
+        <h3>German &rarr; English</h3>
+        <p>Coming soon.</p>
+      </div>
+    </div>
+    <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;">The reader itself works with any language. Language packs add sentence banks and dictionaries for cloze practice. Want your language? <a href="https://github.com/3stacks/lector">Open a PR</a> &ndash; adding a new language pair is straightforward.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- Principles -->
+<section class="principles">
+  <div class="container">
+    <h2>Why <span class="accent">self-host</span></h2>
+    <div class="principles-grid">
+      <div class="principle">
+        <h3>Your data, your server</h3>
+        <p>Your reading history, vocabulary, and progress live in a SQLite file on your hardware. No third-party databases, no analytics, no telemetry.</p>
+      </div>
+      <div class="principle">
+        <h3>No subscriptions</h3>
+        <p>Deploy once, learn forever. No monthly fees, no premium tiers, no feature gates. LingQ charges $12.99/mo, Clozemaster Pro is ~$13/mo. Lector is free.</p>
+      </div>
+      <div class="principle">
+        <h3>Works offline</h3>
+        <p>The reader, cloze practice, and vocabulary tracking all work without internet. AI translation is the only feature that needs a connection.</p>
+      </div>
+      <div class="principle">
+        <h3>Simple backup</h3>
+        <p>One SQLite file, one Docker volume. Back it up however you like: rsync, borg, or just copy it to a USB drive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- Screenshots -->
+<section id="screenshots" class="screenshots">
+  <div class="container container--wide">
+    <h2>See it in <span class="accent">action</span></h2>
+    <div class="screenshot-grid">
+      <figure class="screenshot-card">
+        <div class="placeholder">Reader screenshot coming soon</div>
+        <figcaption>Reader: EPUB with click-to-translate and word state tracking</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <div class="placeholder">Cloze practice screenshot coming soon</div>
+        <figcaption>Cloze practice: sentence drilling with SRS scheduling</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <div class="placeholder">Vocabulary screenshot coming soon</div>
+        <figcaption>Vocabulary: mined words with known/learning states</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <div class="placeholder">Library screenshot coming soon</div>
+        <figcaption>Library: imported books and web articles</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- Quick Install -->
+<section class="install" id="install">
+  <div class="container">
+    <h2>Get <span class="accent">started</span></h2>
+    <pre><code><span class="comment"># Create a directory for Lector</span>
+mkdir lector && cd lector
+
+<span class="comment"># Create a docker-compose.yml</span>
+cat &lt;&lt;EOF &gt; docker-compose.yml
+services:
+  lector:
+    image: ghcr.io/3stacks/lector:latest
+    container_name: lector
+    restart: unless-stopped
+    ports:
+      - "3400:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./data:/app/data
+EOF
+
+<span class="comment"># Start it up</span>
+docker compose up -d</code></pre>
+    <p>Then open <code>http://your-server:3400</code> in your browser. That's it.</p>
+    <p>See the <a href="/docs/">full documentation</a> for environment variables, AnkiConnect setup, and reverse proxy configuration.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <nav class="footer-nav">
+      <a href="/docs/">Docs</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="https://github.com/3stacks/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
+  </div>
+</footer>
+
+<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+  <span class="icon-sun">&#x2600;</span>
+  <span class="icon-moon">&#x1F319;</span>
+</button>
+
+<script>
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+
+  function zoomImage(figure) {
+    var img = figure.querySelector('img');
+    if (!img) return;
+    var overlay = document.createElement('div');
+    overlay.className = 'zoom-overlay';
+    var clone = document.createElement('img');
+    clone.src = img.src;
+    clone.alt = img.alt;
+    overlay.appendChild(clone);
+    document.body.appendChild(overlay);
+    requestAnimationFrame(function () { overlay.classList.add('zoom-overlay--active'); });
+    overlay.addEventListener('click', function () {
+      overlay.classList.remove('zoom-overlay--active');
+      overlay.addEventListener('transitionend', function () { overlay.remove(); });
+    });
+  }
+</script>
+
+</body>
+</html>

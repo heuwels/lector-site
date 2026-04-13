@@ -1,0 +1,11 @@
+{
+  "name": "lector-site",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler pages deploy . --project-name=lector-site",
+    "preview": "wrangler pages dev ."
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
