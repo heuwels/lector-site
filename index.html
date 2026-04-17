@@ -35,7 +35,7 @@
       <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
       <a href="#screenshots">Screenshots</a>
       <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/3stacks/lector" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/heuwels/lector" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       </a>
     </nav>
@@ -46,7 +46,7 @@
           <span class="mockup-dot"></span>
           <span class="mockup-dot"></span>
         </div>
-        <div class="placeholder">Screenshots coming soon</div>
+        <img src="https://docs.lukeboyle.com/proof/2026-04-17/site-reader-21955b3c.png" alt="Lector reader view" style="width:100%;border-radius:0 0 8px 8px;display:block;">
       </div>
     </div>
   </div>
@@ -140,7 +140,7 @@
         <p>Coming soon.</p>
       </div>
     </div>
-    <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;">The reader itself works with any language. Language packs add sentence banks and dictionaries for cloze practice. Want your language? <a href="https://github.com/3stacks/lector">Open a PR</a> &ndash; adding a new language pair is straightforward.</p>
+    <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;">The reader itself works with any language. Language packs add sentence banks and dictionaries for cloze practice. Want your language? <a href="https://github.com/heuwels/lector">Open a PR</a> &ndash; adding a new language pair is straightforward.</p>
   </div>
 </section>
 
@@ -178,20 +178,20 @@
   <div class="container container--wide">
     <h2>See it in <span class="accent">action</span></h2>
     <div class="screenshot-grid">
-      <figure class="screenshot-card">
-        <div class="placeholder">Reader screenshot coming soon</div>
+      <figure class="screenshot-card" onclick="zoomImage(this)">
+        <img src="https://docs.lukeboyle.com/proof/2026-04-17/site-reader-21955b3c.png" alt="Lector reader view showing Harry Potter in Afrikaans with word state colors" loading="lazy">
         <figcaption>Reader: EPUB with click-to-translate and word state tracking</figcaption>
       </figure>
-      <figure class="screenshot-card">
-        <div class="placeholder">Cloze practice screenshot coming soon</div>
+      <figure class="screenshot-card" onclick="zoomImage(this)">
+        <img src="https://docs.lukeboyle.com/proof/2026-04-17/site-cloze-9a902e49.png" alt="Cloze practice with multiple choice options and mastery tracking" loading="lazy">
         <figcaption>Cloze practice: sentence drilling with SRS scheduling</figcaption>
       </figure>
-      <figure class="screenshot-card">
-        <div class="placeholder">Vocabulary screenshot coming soon</div>
+      <figure class="screenshot-card" onclick="zoomImage(this)">
+        <img src="https://docs.lukeboyle.com/proof/2026-04-17/site-vocab-422ad118.png" alt="Vocabulary table with word states, translations, and Anki sync" loading="lazy">
         <figcaption>Vocabulary: mined words with known/learning states</figcaption>
       </figure>
-      <figure class="screenshot-card">
-        <div class="placeholder">Library screenshot coming soon</div>
+      <figure class="screenshot-card" onclick="zoomImage(this)">
+        <img src="https://docs.lukeboyle.com/proof/2026-04-17/site-library-c97a5c33.png" alt="Library showing imported Afrikaans books and articles" loading="lazy">
         <figcaption>Library: imported books and web articles</figcaption>
       </figure>
     </div>
@@ -211,7 +211,7 @@ mkdir lector && cd lector
 cat &lt;&lt;EOF &gt; docker-compose.yml
 services:
   lector:
-    image: ghcr.io/3stacks/lector:latest
+    image: ghcr.io/heuwels/lector:latest
     container_name: lector
     restart: unless-stopped
     ports:
@@ -235,7 +235,7 @@ docker compose up -d</code></pre>
     <nav class="footer-nav">
       <a href="/docs/">Docs</a>
       <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/3stacks/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
       <span class="footer-sep" aria-hidden="true">&middot;</span>
       <a href="https://github.com/sponsors/heuwels" target="_blank" rel="noopener noreferrer">Sponsor</a>
     </nav>
