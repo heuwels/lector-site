@@ -97,9 +97,7 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       <h3 id="click-to-translate">Click-to-translate</h3>
       <p>Click any word while reading to see its translation. If you have an <code>ANTHROPIC_API_KEY</code> configured, Lector uses Claude for context-aware translation of uncommon words and phrases. Without an API key, it falls back to a built-in dictionary of the top 2000 words.</p>
 
-      <div class="callout">
-        <p><strong>Coming soon:</strong> Local LLM support for translations, so you can run fully offline without any API keys.</p>
-      </div>
+      <p>Translation quality depends on which <a href="#llm-providers">AI provider</a> you have configured. See the LLM Providers section below for setup instructions.</p>
 
       <h3 id="word-states">Word states</h3>
       <p>Every word you encounter is tracked with a state:</p>
@@ -138,6 +136,69 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
         </tbody>
       </table>
 
+      <!-- LLM Providers -->
+      <h2 id="llm-providers">LLM Providers</h2>
+      <p>Lector uses a large language model for context-aware translations when you click words and phrases. You can choose between three providers in <strong>Settings &rarr; AI Provider</strong>.</p>
+
+      <div class="callout">
+        <p><strong>A note on smaller models:</strong> 8B-parameter models (like Llama 3.1 8B via Ollama) work reasonably well for major languages but struggle with more obscure languages like Afrikaans. If translation quality is important to you, use Anthropic or Apfel.</p>
+      </div>
+
+      <h3 id="provider-anthropic">Anthropic (cloud)</h3>
+      <p>The highest-quality option. Uses Claude for context-aware translation of words, phrases, and grammar explanations.</p>
+      <p>Lector supports two authentication methods:</p>
+      <ul>
+        <li><strong>API key:</strong> Get one from <a href="https://console.anthropic.com">console.anthropic.com</a>. Set <code>ANTHROPIC_API_KEY</code> in your environment, or enter it in Settings. Pay-as-you-go billing.</li>
+        <li><strong>OAuth token (Pro/Team plan):</strong> Uses your existing Claude Pro or Team subscription credits. Set <code>CLAUDE_CODE_OAUTH_TOKEN</code> in your environment. Note: OAuth connections have slower initial startup times compared to API keys.</li>
+      </ul>
+      <ul>
+        <li>Best translation quality, especially for less common languages</li>
+        <li>Requires internet access and an Anthropic account</li>
+      </ul>
+
+      <h3 id="provider-apfel">Apfel (Apple Intelligence)</h3>
+      <p>Runs Apple's on-device Foundation Model through an OpenAI-compatible API. No API keys, no cloud, no cost. Requires a Mac with Apple Silicon.</p>
+
+      <h4>Requirements</h4>
+      <ul>
+        <li>macOS 26 (Tahoe) or newer</li>
+        <li>Apple Silicon (M1 or later)</li>
+        <li>Apple Intelligence enabled: <strong>System Settings &rarr; Apple Intelligence &amp; Siri &rarr; enable</strong></li>
+      </ul>
+
+      <h4>Setup</h4>
+      <pre><code><span class="comment"># Install</span>
+brew install Arthur-Ficial/tap/apfel
+
+<span class="comment"># Verify the model is available</span>
+apfel --model-info
+
+<span class="comment"># Start as a background service</span>
+brew services start arthur-ficial/tap/apfel</code></pre>
+
+      <p>Then in Lector, go to <strong>Settings &rarr; AI Provider</strong>, select <strong>Apfel (self-hosted)</strong>, and set:</p>
+      <ul>
+        <li><strong>Server URL:</strong> <code>http://localhost:11434</code></li>
+        <li><strong>Model:</strong> <code>apple-foundationmodel</code></li>
+      </ul>
+      <p>Click <strong>Test Connection</strong> to verify. You should see a green "Connected" status.</p>
+
+      <div class="callout">
+        <p>Apfel is significantly stronger than local 8B Ollama models for translation quality, and runs entirely on-device with no API keys or internet required. If you don't have an Anthropic API key, Apfel is the best local option for Mac users.</p>
+      </div>
+
+      <h3 id="provider-ollama">Ollama (local)</h3>
+      <p>Runs open-source models locally via <a href="https://ollama.com">Ollama</a>. No API keys or cloud required, but translation quality depends heavily on model size.</p>
+      <ul>
+        <li>Install Ollama and pull a model: <code>ollama pull llama3.1:8b</code></li>
+        <li>Select a model in Lector's settings</li>
+        <li>Works on any platform (macOS, Linux, Windows)</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>Quality warning:</strong> 8B models produce noticeably weaker translations for less common languages. For Afrikaans and similar languages, prefer Anthropic or Apfel if available.</p>
+      </div>
+
       <!-- AnkiConnect -->
       <h2 id="ankiconnect">AnkiConnect</h2>
       <p>Lector connects directly to <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a> running on your local machine. This lets you push vocabulary cards from Lector straight into Anki Desktop. No proxy server, no cloud sync.</p>
@@ -175,9 +236,34 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
             <td>Set to <code>production</code> for deployed instances</td>
           </tr>
           <tr>
+            <td><code>LLM_PROVIDER</code></td>
+            <td><code>anthropic</code></td>
+            <td>AI provider for translations: <code>anthropic</code>, <code>apfel</code>, or <code>ollama</code></td>
+          </tr>
+          <tr>
             <td><code>ANTHROPIC_API_KEY</code></td>
             <td>&mdash;</td>
-            <td>Optional. Claude API key for AI-powered word and phrase translation. Without it, Lector falls back to a local dictionary of the top 2000 words.</td>
+            <td>Claude API key (only needed when <code>LLM_PROVIDER=anthropic</code>)</td>
+          </tr>
+          <tr>
+            <td><code>CLAUDE_CODE_OAUTH_TOKEN</code></td>
+            <td>&mdash;</td>
+            <td>OAuth token for Pro/Team plan credits (alternative to API key, slower startup)</td>
+          </tr>
+          <tr>
+            <td><code>APFEL_URL</code></td>
+            <td><code>http://localhost:11434</code></td>
+            <td>Apfel server URL (only needed when <code>LLM_PROVIDER=apfel</code>)</td>
+          </tr>
+          <tr>
+            <td><code>OLLAMA_URL</code></td>
+            <td><code>http://localhost:11434</code></td>
+            <td>Ollama server URL (only needed when <code>LLM_PROVIDER=ollama</code>)</td>
+          </tr>
+          <tr>
+            <td><code>OLLAMA_MODEL</code></td>
+            <td><code>llama3.1:8b</code></td>
+            <td>Ollama model name</td>
           </tr>
           <tr>
             <td><code>GOOGLE_CLOUD_API_KEY</code></td>
@@ -200,7 +286,12 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       - ./data:/app/data
     environment:
       - NODE_ENV=production
+      - LLM_PROVIDER=${LLM_PROVIDER:-anthropic}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN}
+      - APFEL_URL=${APFEL_URL}
+      - OLLAMA_URL=${OLLAMA_URL}
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
       - GOOGLE_CLOUD_API_KEY=${GOOGLE_CLOUD_API_KEY}</code></pre>
 
       <!-- Supported Languages -->
@@ -251,7 +342,7 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
         <li><strong>Framework:</strong> Next.js 16 with React 19</li>
         <li><strong>Database:</strong> SQLite (better-sqlite3) server-side, Dexie (IndexedDB) client-side</li>
         <li><strong>Styling:</strong> Tailwind CSS v4</li>
-        <li><strong>AI:</strong> Anthropic Claude API (optional)</li>
+        <li><strong>AI:</strong> Anthropic Claude, Apple Intelligence (Apfel), or Ollama (all optional)</li>
         <li><strong>TTS:</strong> Google Cloud Text-to-Speech (optional)</li>
         <li><strong>Container:</strong> Docker (single image, bind mount for data)</li>
       </ul>
@@ -273,6 +364,10 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       <a href="#cloze-practice">Cloze practice</a>
       <a href="#practice-modes">Practice modes</a>
       <a href="#srs-scheduling">SRS scheduling</a>
+      <a href="#llm-providers">LLM Providers</a>
+      <a href="#provider-anthropic">Anthropic</a>
+      <a href="#provider-apfel">Apfel (Apple Intelligence)</a>
+      <a href="#provider-ollama">Ollama</a>
       <a href="#ankiconnect">AnkiConnect</a>
       <a href="#configuration">Configuration</a>
       <a href="#environment-variables">Environment variables</a>
