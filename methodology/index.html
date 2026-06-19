@@ -1,190 +1,490 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Methodology | Lector</title>
-  <meta name="description" content="The language learning methodology behind Lector: frequency-based vocabulary, extensive reading with sentence mining, and comprehensible input immersion.">
-  <link rel="icon" href="/logo.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/logo.svg">
-  <link rel="stylesheet" href="/style.css">
-  <script>
-    (function () {
-      var t = localStorage.getItem('theme');
-      if (t) document.documentElement.setAttribute('data-theme', t);
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
-      else document.documentElement.setAttribute('data-theme', 'light');
-    })();
-  </script>
-</head>
-<body>
-
-<header class="docs-header">
-  <div class="container">
-    <p class="breadcrumb"><a href="/">lector</a> / methodology</p>
-    <h1>Methodology</h1>
-  </div>
-</header>
-
-<div class="container">
-  <div class="docs-layout">
-    <main class="docs-body">
-
-      <!-- Overview -->
-      <h2 id="overview">Overview</h2>
-      <p>Lector is built around a three-phase approach to language acquisition. Each phase builds on the last, gradually shifting from structured study to natural immersion. The method draws heavily from Stephen Krashen's comprehensible input hypothesis and Steve Kaufmann's approach to learning through massive reading.</p>
-
-      <p>The three phases are:</p>
-      <ol>
-        <li><strong>Vocabulary foundation</strong> &mdash; build a baseline with high-frequency flashcards</li>
-        <li><strong>Extensive reading &amp; sentence mining</strong> &mdash; immerse in real texts, mine vocabulary from context</li>
-        <li><strong>Comprehensible input &amp; conversation</strong> &mdash; full immersion with listening, speaking, and living in the language</li>
-      </ol>
-
-      <p>You don't finish one phase before starting the next. They overlap. But the emphasis shifts over time from structured drilling toward unstructured immersion.</p>
-
-      <!-- Phase 1 -->
-      <h2 id="phase-1">Phase 1: Vocabulary foundation</h2>
-      <p>Before you can read anything meaningful, you need a critical mass of vocabulary. The fastest way to build that base is with high-frequency word lists &mdash; the most common 500&ndash;1000 words in your target language cover a surprisingly large percentage of everyday text.</p>
-
-      <p>This phase is deliberate and structured. The goal isn't deep understanding &mdash; it's pattern recognition. You're training your brain to stop seeing every word as foreign noise and start recognising familiar shapes.</p>
-
-      <h3 id="frequency-ordered-cloze">Frequency-ordered cloze practice</h3>
-      <p>Lector's cloze practice system ships with sentence pairs ordered by word frequency. Rather than drilling isolated words on flashcards, you practice words in the context of real sentences. This has two advantages:</p>
-      <ul>
-        <li>You learn how words are actually used, not just what they mean in isolation</li>
-        <li>You absorb grammar and sentence structure passively while focusing on vocabulary</li>
-      </ul>
-      <p>The spaced repetition scheduler resurfaces sentences at increasing intervals as you master them, so you spend your time on words you're still learning rather than words you already know.</p>
-
-      <h3 id="anki-integration">Anki integration</h3>
-      <p>If you already use Anki for flashcard study, Lector connects directly to Anki Desktop via AnkiConnect. You can push vocabulary cards from Lector into your existing Anki workflow, keeping everything in one review pipeline.</p>
-
-      <h3 id="when-to-move-on">When to move on</h3>
-      <p>You don't need to finish the sentence bank before moving to Phase 2. Once you recognise enough words to follow the general shape of simple texts &mdash; even if you're still looking up every other sentence &mdash; you're ready to start reading. The cloze practice continues alongside reading; the two reinforce each other.</p>
-
-      <!-- Phase 2 -->
-      <h2 id="phase-2">Phase 2: Extensive reading &amp; sentence mining</h2>
-      <p>This is the core of the method, and the reason Lector exists. The idea, popularised by Steve Kaufmann and his platform LingQ, is simple: <strong>you learn a language by reading a lot of it</strong>.</p>
-
-      <p>Not textbook exercises. Not grammar drills. Real texts &mdash; books, articles, stories &mdash; that you actually want to read. The volume of input matters more than perfect comprehension. You're building an intuitive feel for the language through repeated exposure to natural patterns.</p>
-
-      <h3 id="how-reading-works">How reading works in Lector</h3>
-      <p>Lector is designed to make extensive reading as frictionless as possible:</p>
-      <ul>
-        <li><strong>Click any word</strong> to see a context-aware translation. No switching between apps, no copy-pasting into Google Translate.</li>
-        <li><strong>Word states</strong> track your progress visually. New words are highlighted, learning words are marked, and known words fade into the background. You can see at a glance how much of a page you already know.</li>
-        <li><strong>Import anything</strong>: EPUBs, web articles, or pasted text. If it's written in your target language, you can read it in Lector.</li>
-      </ul>
-
-      <div class="callout">
-        <p><strong>The Kaufmann principle:</strong> don't wait until you're "ready" to read. Start with simple texts, accept that you'll understand only a fraction at first, and trust that comprehension improves with volume. The discomfort of not understanding everything is the learning.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Methodology | Lector</title>
+    <meta
+      name="description"
+      content="The language learning methodology behind Lector: frequency-based vocabulary, extensive reading with sentence mining, and comprehensible input immersion."
+    />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (t) document.documentElement.setAttribute("data-theme", t);
+        else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+          document.documentElement.setAttribute("data-theme", "dark");
+        else document.documentElement.setAttribute("data-theme", "light");
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="docs-header">
+      <div class="container">
+        <p class="breadcrumb"><a href="/">lector</a> / methodology</p>
+        <h1>Methodology</h1>
       </div>
+    </header>
 
-      <h3 id="sentence-mining">Sentence mining</h3>
-      <p>As you read, you'll encounter words and phrases in context that are worth remembering. This is sentence mining &mdash; collecting real sentences from your reading to use as study material.</p>
-      <p>In Lector, this happens naturally:</p>
-      <ol>
-        <li>You click a word while reading and save it to your vocabulary</li>
-        <li>The word is stored alongside the sentence you found it in</li>
-        <li>That sentence becomes a cloze card you can drill later</li>
-      </ol>
-      <p>This creates a virtuous cycle: reading generates study material, and studying those sentences reinforces what you've read. Unlike pre-made flashcards, mined sentences carry personal context &mdash; you remember <em>where</em> you saw the word, what was happening in the story, how it felt to figure out the meaning. That context makes retention significantly stronger.</p>
+    <div class="container">
+      <div class="docs-layout">
+        <main class="docs-body">
+          <!-- Overview -->
+          <h2 id="overview">Overview</h2>
+          <p>
+            Lector is built around a three-phase approach to language
+            acquisition. Each phase builds on the last, gradually shifting from
+            structured study to natural immersion. The method draws heavily from
+            Stephen Krashen's comprehensible input hypothesis and Steve
+            Kaufmann's approach to learning through massive reading.
+          </p>
 
-      <h3 id="what-to-read">What to read</h3>
-      <p>Anything you find interesting. The best reading material is whatever keeps you turning pages. That said, some practical starting points:</p>
-      <ul>
-        <li><strong>Public domain literature</strong> &mdash; Project Gutenberg has free EPUBs in many languages. Classic poetry and short stories work well because the units are short enough to finish in one sitting.</li>
-        <li><strong>News articles</strong> &mdash; paste a URL into Lector and it extracts the content. Current events give you culturally relevant vocabulary.</li>
-        <li><strong>Children's and young adult books</strong> &mdash; simpler vocabulary and sentence structure, but still real language rather than textbook language.</li>
-        <li><strong>Graded readers</strong> &mdash; texts written specifically for language learners, available for most major languages.</li>
-      </ul>
+          <p>The three phases are:</p>
+          <ol>
+            <li>
+              <strong>Vocabulary foundation</strong> &mdash; build a baseline
+              with high-frequency flashcards
+            </li>
+            <li>
+              <strong>Extensive reading &amp; sentence mining</strong> &mdash;
+              immerse in real texts, mine vocabulary from context
+            </li>
+            <li>
+              <strong>Comprehensible input &amp; conversation</strong> &mdash;
+              full immersion with listening, speaking, and living in the
+              language
+            </li>
+          </ol>
 
-      <!-- Phase 3 -->
-      <h2 id="phase-3">Phase 3: Comprehensible input &amp; conversation</h2>
-      <p>Reading builds a deep passive vocabulary and an intuitive sense of grammar, but language is more than text on a page. This phase extends immersion beyond reading into listening and speaking.</p>
+          <p>
+            You don't finish one phase before starting the next. They overlap.
+            But the emphasis shifts over time from structured drilling toward
+            unstructured immersion.
+          </p>
 
-      <h3 id="comprehensible-input">Comprehensible input</h3>
-      <p>Stephen Krashen's core insight is that we acquire language when we understand messages &mdash; when input is just slightly above our current level. This is the <em>i+1</em> hypothesis: if your current level is <em>i</em>, you improve by processing input at <em>i+1</em>.</p>
-      <p>In practice, this means seeking out audio and video content where you understand most of what's being said, with enough unknown material to stretch you:</p>
-      <ul>
-        <li>Podcasts aimed at intermediate learners</li>
-        <li>YouTube channels in your target language (with subtitles as a scaffold)</li>
-        <li>TV shows and films you've already seen, re-watched in the target language</li>
-        <li>Audiobook versions of texts you've already read in Lector</li>
-      </ul>
+          <!-- Phase 1 -->
+          <h2 id="phase-1">Phase 1: Vocabulary foundation</h2>
+          <p>
+            Before you can read anything meaningful, you need a critical mass of
+            vocabulary. The fastest way to build that base is with
+            high-frequency word lists. People will often say that the most
+            common 500 words by frequency will cover 80% of texts. This is true,
+            but it deceives people into thinking that they'll be able to
+            comprehend 80% of texts. These 500 words are things like "the",
+            "it", "a", "with", "who", "why" which represent the skeletal
+            structure of all texts, but the connective tissue in the 20% is
+            where the true meaning of the text lies, and this is
+            <em>highly</em> variable based on the subject matter. For example,
+            Webb & Macalister found in their 2013 paper
+            <a href="#sources" id="sources_1">[1]</a> that native children's
+            books may require a vocabulary of 10,000 words to achieve 98%
+            coverage. It's worth noting that the conspicuous 98% figure
+            comes from Hu and Nation's 2000 study<a href="#sources" id="sources_2"
+              >[2]</a
+            >
+            which set 98% as a benchmark
+            for "unguided comprehension", which is to say reading without
+            looking words up. Kremmel et al<a href="#sources" id="sources_3"
+              >[3]</a
+            >
+            failed to replicate the findings of that study, but we can
+            generalise and say that 85%+ of known words would be required to
+            deeply understand a text without leaning on a dictionary.
+            "Getting the gist" is a lower bar and is sufficient for most general
+            reading, and an app like Lector reduces the cost of lookups by
+            bundling the functionality into the text.
+          </p>
 
-      <h3 id="conversation">Conversation</h3>
-      <p>Eventually, you need to produce language, not just consume it. Conversation is where passive knowledge becomes active skill. The extensive reading and listening from earlier phases gives you a large reservoir of vocabulary and grammatical patterns to draw on &mdash; conversation is where you learn to access that reservoir in real time.</p>
-      <p>The key is not to rush this. Premature speaking practice (before you have enough input) leads to frustration and fossilised errors. When you have a solid base from Phases 1 and 2, conversation feels less like translation-in-your-head and more like reaching for words you already know.</p>
+          <p>
+            This is not meant to discourage you, but simply to temper your
+            expectation. Don't be deceived by videos that say "I learned x
+            language in 30 days". Nobody has ever learned a language in 30 days,
+            but they may have learned some useful phrases for navigating
+            everyday interactions. Native-level comprehension is probably a
+            lifelong pursuit for most people, but with a year of dedicated study
+            you can definitely become proficient. This depends on your
+            motivation, the similarity to your native language, and whether you
+            enjoy the process of learning it. In any case, your first 1,000
+            words will be a great jumping off point.
+          </p>
 
-      <!-- How the phases connect -->
-      <h2 id="how-it-fits">How it all fits together</h2>
-      <p>The three phases aren't strictly sequential. A typical learning day might look like:</p>
-      <ul>
-        <li>Review due cloze cards from the sentence bank and mined sentences (Phase 1 &amp; 2)</li>
-        <li>Read a chapter of a book in Lector, saving new words as you go (Phase 2)</li>
-        <li>Listen to a podcast episode on the train (Phase 3)</li>
-        <li>Have a short conversation with a language partner (Phase 3)</li>
-      </ul>
-      <p>The balance shifts over time. Early on, you spend more time on cloze drills and looking up words. As your vocabulary grows, reading becomes faster and more enjoyable, and you naturally spend more time reading and less time drilling. Eventually, most of your time is spent in genuine immersion &mdash; reading, listening, and speaking &mdash; with Lector serving as a reading companion and the place where you look up and track the words you're still learning.</p>
+          <p>
+            This phase is deliberate and structured. The goal isn't deep
+            understanding, you're just training your brain to stop seeing every
+            word as foreign noise and start recognising familiar shapes.
+          </p>
 
-      <div class="callout">
-        <p><strong>The goal is not to study a language forever.</strong> It's to reach the point where you can learn from the language itself &mdash; where reading a book, watching a film, or having a conversation is both practice and pleasure.</p>
+          <h3 id="frequency-ordered-cloze">Frequency-ordered cloze practice</h3>
+          <p>
+            Lector's cloze practice system ships with sentence pairs ordered by
+            word frequency. Rather than drilling isolated words on flashcards,
+            you practice words in the context of real sentences. This has two
+            advantages:
+          </p>
+          <ul>
+            <li>
+              You learn how words are actually used, not just what they mean in
+              isolation
+            </li>
+            <li>
+              You absorb grammar and sentence structure passively while focusing
+              on vocabulary. Without driving yourself insane learning the German
+              case system by rote, you'll start to get a "feeling" for how words
+              are used.
+            </li>
+          </ul>
+          <p>
+            The spaced repetition scheduler resurfaces sentences at increasing
+            intervals as you master them, so you spend your time on words you're
+            still learning rather than words you already know.
+          </p>
+
+          <p>
+            The Cloze sentences have easy and hard modes built into it. You can
+            start off with multiple choice, and then on your reviews - and in
+            time for new sentences - you can try typing mode.
+          </p>
+
+          <h3 id="anki-integration">Anki integration</h3>
+          <p>
+            If you already use Anki for flashcard study, Lector connects
+            directly to Anki Desktop via
+            <a
+              href="https://ankiweb.net/shared/info/2055492159"
+              target="_blank"
+              rel="noreferrer noopener"
+              >AnkiConnect</a
+            >. You can push vocabulary cards from Lector into your existing Anki
+            workflow, keeping everything in one review pipeline. Back-syncing
+            your progress from Anki into the Lector known-words DB is on the
+            roadmap.
+          </p>
+
+          <h3 id="when-to-move-on">When to move on</h3>
+          <p>
+            You don't need to finish the sentence bank before moving to Phase 2.
+            Once you recognise enough words to follow the general shape of
+            simple texts you're ready to start reading. The cloze practice
+            continues alongside reading; the two reinforce each other.
+          </p>
+
+          <!-- Phase 2 -->
+          <h2 id="phase-2">Phase 2: Extensive reading &amp; sentence mining</h2>
+          <p>
+            This is the core of the method, and the reason Lector exists. The
+            idea, popularised by Steve Kaufmann and his platform LingQ, is
+            simple:
+            <strong>you learn a language by reading a lot of it</strong>.
+          </p>
+
+          <p>
+            Native speakers didn't learn their language by drilling grammar
+            rules, so why should you? And no, I won't implore you to "learn like
+            a baby", because you are presumably an adult who is already capable
+            of reading and interpreting texts. Read real-world texts that you
+            actually want to read, in areas that interest you. The volume of
+            input matters more than perfect comprehension. You're building an
+            intuitive feel for the language through repeated exposure to natural
+            patterns.
+          </p>
+
+          <h3 id="how-reading-works">How reading works in Lector</h3>
+          <p>
+            Lector is designed to make extensive reading as frictionless as
+            possible:
+          </p>
+          <ul>
+            <li>
+              <strong>Click any word</strong> to see a dictionary translation,
+              or enhance it with an LLM-driven context-aware translation. No
+              need to switch apps or copy-paste into Google Translate.
+            </li>
+            <li>
+              <strong>Word states</strong> track your progress visually. New
+              words are highlighted, learning words are marked, and known words
+              fade into the background. You can see at a glance how much of a
+              page you already know.
+            </li>
+            <li>
+              <strong>Import (almost) anything</strong>: EPUBs, web articles, or
+              pasted text. If it's written in your target language, you can read
+              it in Lector. I'll be working on adding support for YouTube videos
+              and podcasts in the future.
+            </li>
+          </ul>
+
+          <div class="callout">
+            <p>
+              <strong>The Kaufmann principle:</strong> don't wait until you're
+              "ready" to read. Start with simple texts, accept that you'll
+              understand only a fraction at first, and trust that comprehension
+              improves with volume. The discomfort of not understanding
+              everything is the learning.
+            </p>
+          </div>
+
+          <h3 id="sentence-mining">Sentence mining</h3>
+          <p>
+            As you read, you'll encounter words and phrases in context that are
+            worth remembering. Collecting real sentences from your readings for
+            later review is called "sentence mining"
+          </p>
+          <p>In Lector, this happens naturally:</p>
+          <ol>
+            <li>
+              You click a word while reading and save it to your vocabulary
+            </li>
+            <li>The word is stored alongside the sentence you found it in</li>
+            <li>That sentence becomes a cloze card you can drill later</li>
+          </ol>
+          <p>
+            This creates a virtuous cycle: reading generates study material, and
+            studying those sentences reinforces what you've read. Unlike
+            pre-made flashcards, mined sentences carry personal context. You
+            remember <em>where</em> you saw the word, what was happening in the
+            story, how it felt to figure out the meaning. That context makes
+            retention significantly stronger.
+          </p>
+
+          <h3 id="what-to-read">What to read</h3>
+          <p>
+            Anything you find interesting. The best reading material is whatever
+            keeps you turning pages. That said, some practical starting points:
+          </p>
+          <ul>
+            <li>
+              <strong>Public domain literature</strong> &mdash; Project
+              Gutenberg has free EPUBs in many languages. Classic poetry and
+              short stories work well because the units are short enough to
+              finish in one sitting.
+            </li>
+            <li>
+              <strong>News articles</strong> &mdash; paste a URL into Lector and
+              it extracts the content. Current events give you culturally
+              relevant vocabulary.
+            </li>
+            <li>
+              <strong>Children's and young adult books</strong> &mdash; simpler
+              vocabulary and sentence structure, but still real language rather
+              than textbook language.
+            </li>
+            <li>
+              <strong>Graded readers</strong> &mdash; texts written specifically
+              for language learners, available for most major languages.
+            </li>
+          </ul>
+
+          <!-- Phase 3 -->
+          <h2 id="phase-3">Phase 3: Comprehensible input &amp; conversation</h2>
+          <p>
+            Reading builds a deep passive vocabulary and an intuitive sense of
+            grammar, but language is more than text on a page. This phase
+            extends immersion beyond reading into listening and speaking.
+          </p>
+
+          <h3 id="comprehensible-input">Comprehensible input</h3>
+          <p>
+            Stephen Krashen's core insight is that we acquire language when we
+            understand messages &mdash; when input is just slightly above our
+            current level. This is the <em>i+1</em> hypothesis: if your current
+            level is <em>i</em>, you improve by processing input at
+            <em>i+1</em><a href="#sources" id="sources_4">[4]</a>.
+          </p>
+          <p>
+            In practice, this means seeking out audio and video content where
+            you understand most of what's being said, with enough unknown
+            material to stretch you:
+          </p>
+          <ul>
+            <li>Podcasts aimed at intermediate learners</li>
+            <li>
+              YouTube channels in your target language (with subtitles as a
+              scaffold)
+            </li>
+            <li>
+              TV shows and films you've already seen, re-watched in the target
+              language
+            </li>
+            <li>Audiobook versions of texts you've already read in Lector</li>
+          </ul>
+
+          <h3 id="conversation">Conversation</h3>
+          <p>
+            Eventually, you need to produce language, not just consume it.
+            Conversation is where passive knowledge becomes active skill. The
+            extensive reading and listening from earlier phases gives you a
+            large reservoir of vocabulary and grammatical patterns to draw on
+            &mdash; conversation is where you learn to access that reservoir in
+            real time.
+          </p>
+          <p>
+            The key is not to rush this. Premature speaking practice (before you
+            have enough input) leads to frustration and fossilised errors. When
+            you have a solid base from Phases 1 and 2, conversation feels less
+            like translation-in-your-head and more like reaching for words you
+            already know.
+          </p>
+
+          <!-- How the phases connect -->
+          <h2 id="how-it-fits">How it all fits together</h2>
+          <p>
+            The three phases aren't strictly sequential. A typical learning day
+            might look like:
+          </p>
+          <ul>
+            <li>
+              Review due cloze cards from the sentence bank and mined sentences
+              (Phase 1 &amp; 2)
+            </li>
+            <li>
+              Read a chapter of a book in Lector, saving new words as you go
+              (Phase 2)
+            </li>
+            <li>Listen to a podcast episode on the train (Phase 3)</li>
+            <li>Have a short conversation with a language partner (Phase 3)</li>
+          </ul>
+          <p>
+            The balance shifts over time. Early on, you spend more time on cloze
+            drills and looking up words. As your vocabulary grows, reading
+            becomes faster and more enjoyable, and you naturally spend more time
+            reading and less time drilling. Eventually, most of your time is
+            spent in genuine immersion &mdash; reading, listening, and speaking
+            &mdash; with Lector serving as a reading companion and the place
+            where you look up and track the words you're still learning.
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>The goal is not to study a language forever.</strong> It's
+              to reach the point where you can learn from the language itself
+              &mdash; where reading a book, watching a film, or having a
+              conversation is both practice and pleasure.
+            </p>
+          </div>
+
+          <ol id="sources">
+            <li>
+              Webb, S., &amp; Macalister, J. (2013). Is text written for children
+              useful for L2 extensive reading?
+              <em>TESOL Quarterly, 47</em>(2), 300&ndash;322.
+              <a
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://doi.org/10.1002/tesq.70"
+                >https://doi.org/10.1002/tesq.70</a
+              >
+              - <a href="#sources_1" style="font-size: 80%">[return]</a>
+            </li>
+            <li>
+              Hu, M., &amp; Nation, P. (2000). Unknown vocabulary density and
+              reading comprehension.
+              <em>Reading in a Foreign Language, 13</em>(1), 403&ndash;430.
+              <a
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://nflrc.hawaii.edu/rfl/item/43"
+                >https://nflrc.hawaii.edu/rfl/item/43</a
+              >
+              - <a href="#sources_2" style="font-size: 80%">[return]</a>
+            </li>
+            <li>
+              Kremmel, B., Indrarathne, B., Kormos, J., &amp; Suzuki, S. (2023).
+              Unknown vocabulary density and reading comprehension: Replicating
+              Hu and Nation (2000).
+              <em>Language Learning, 73</em>(4), 1127&ndash;1163.
+              <a
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://doi.org/10.1111/lang.12622"
+                >https://doi.org/10.1111/lang.12622</a
+              >
+              - <a href="#sources_3" style="font-size: 80%">[return]</a>
+            </li>
+            <li>
+              Krashen, S. D. (1982).
+              <em>Principles and practice in second language acquisition</em>.
+              Pergamon Press.
+              <a
+                target="_blank"
+                rel="noreferrer noopener"
+                href="https://www.sdkrashen.com/content/books/principles_and_practice.pdf"
+                >sdkrashen.com (free PDF)</a
+              >
+              - <a href="#sources_4" style="font-size: 80%">[return]</a>
+            </li>
+          </ol>
+        </main>
+
+        <nav class="docs-toc">
+          <h4>On this page</h4>
+          <a href="#overview">Overview</a>
+          <a href="#phase-1">Phase 1: Vocabulary</a>
+          <a href="#frequency-ordered-cloze">Cloze practice</a>
+          <a href="#anki-integration">Anki integration</a>
+          <a href="#when-to-move-on">When to move on</a>
+          <a href="#phase-2">Phase 2: Reading</a>
+          <a href="#how-reading-works">Reading in Lector</a>
+          <a href="#sentence-mining">Sentence mining</a>
+          <a href="#what-to-read">What to read</a>
+          <a href="#phase-3">Phase 3: Immersion</a>
+          <a href="#comprehensible-input">Comprehensible input</a>
+          <a href="#conversation">Conversation</a>
+          <a href="#how-it-fits">How it fits together</a>
+        </nav>
       </div>
+    </div>
 
-    </main>
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <nav class="footer-nav">
+          <a href="/">Home</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/docs/">Docs</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/blog/">Blog</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a
+            href="https://github.com/heuwels/lector"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a
+            href="https://github.com/sponsors/heuwels"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Sponsor</a
+          >
+        </nav>
+        <p class="footer-copy">
+          <em>Lector</em> &middot; Latin for "reader" &middot; Built by
+          <a href="https://lukeboyle.com">Luke Boyle</a>
+        </p>
+      </div>
+    </footer>
 
-    <nav class="docs-toc">
-      <h4>On this page</h4>
-      <a href="#overview">Overview</a>
-      <a href="#phase-1">Phase 1: Vocabulary</a>
-      <a href="#frequency-ordered-cloze">Cloze practice</a>
-      <a href="#anki-integration">Anki integration</a>
-      <a href="#when-to-move-on">When to move on</a>
-      <a href="#phase-2">Phase 2: Reading</a>
-      <a href="#how-reading-works">Reading in Lector</a>
-      <a href="#sentence-mining">Sentence mining</a>
-      <a href="#what-to-read">What to read</a>
-      <a href="#phase-3">Phase 3: Immersion</a>
-      <a href="#comprehensible-input">Comprehensible input</a>
-      <a href="#conversation">Conversation</a>
-      <a href="#how-it-fits">How it fits together</a>
-    </nav>
-  </div>
-</div>
+    <button
+      type="button"
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle dark mode"
+    >
+      <span class="icon-sun">&#x2600;</span>
+      <span class="icon-moon">&#x1F319;</span>
+    </button>
 
-<!-- Footer -->
-<footer>
-  <div class="container">
-    <nav class="footer-nav">
-      <a href="/">Home</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/docs/">Docs</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/blog/">Blog</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/sponsors/heuwels" target="_blank" rel="noopener noreferrer">Sponsor</a>
-    </nav>
-    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
-  </div>
-</footer>
-
-<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-  <span class="icon-sun">&#x2600;</span>
-  <span class="icon-moon">&#x1F319;</span>
-</button>
-
-<script>
-  function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  }
-</script>
-
-</body>
+    <script>
+      function toggleTheme() {
+        var current = document.documentElement.getAttribute("data-theme");
+        var next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      }
+    </script>
+  </body>
 </html>

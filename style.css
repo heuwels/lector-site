@@ -10,42 +10,42 @@
 }
 
 :root {
-  /* Light mode */
-  --bg: #fafafa;
-  --bg-alt: #f1f1f1;
-  --text: #1a1a1a;
-  --text-muted: #636363;
-  --accent: #b45309;
-  --accent-hover: #92400e;
-  --border: #e2e2e2;
-  --code-bg: #1e1e2e;
-  --code-text: #cdd6f4;
-  --code-comment: #6c7086;
-  --card-bg: #ffffff;
+  /* Light mode — matched to the app's "warm sand / sage" theme */
+  --bg: #f3eee3;
+  --bg-alt: #efe9dc;
+  --text: #2c2a23;
+  --text-muted: #6b6356;
+  --accent: #2f8a76;
+  --accent-hover: #226a5a;
+  --border: #e9e1d0;
+  --code-bg: #211d16;
+  --code-text: #ece5d6;
+  --code-comment: #a99e8a;
+  --card-bg: #fffdf7;
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --hero-bg: #f5f5f5;
-  --tag-bg: #e8e8e8;
-  --tag-text: #555555;
-  --link: #b45309;
+  --hero-bg: #ece4d3;
+  --tag-bg: #f1ebda;
+  --tag-text: #6b6356;
+  --link: #226a5a;
 }
 
 [data-theme="dark"] {
-  --bg: #111111;
-  --bg-alt: #1a1a1a;
-  --text: #e4e4e4;
-  --text-muted: #999999;
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --border: #2a2a2a;
-  --code-bg: #0a0a0a;
-  --code-text: #cdd6f4;
-  --code-comment: #6c7086;
-  --card-bg: #1a1a1a;
+  --bg: #17140f;
+  --bg-alt: #2a251c;
+  --text: #ece5d6;
+  --text-muted: #a99e8a;
+  --accent: #54ab92;
+  --accent-hover: #7fc9b3;
+  --border: #352f24;
+  --code-bg: #0e0c08;
+  --code-text: #ece5d6;
+  --code-comment: #a99e8a;
+  --card-bg: #211d16;
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --hero-bg: #141414;
-  --tag-bg: #2a2a2a;
-  --tag-text: #aaaaaa;
-  --link: #f59e0b;
+  --hero-bg: #1f1b14;
+  --tag-bg: #2a251c;
+  --tag-text: #a99e8a;
+  --link: #7fc9b3;
 }
 
 html {
