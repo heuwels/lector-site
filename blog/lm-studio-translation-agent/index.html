@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Run translations locally with LM Studio | Lector</title>
-  <meta name="description" content="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider — no API keys, no cloud.">
+  <meta name="description" content="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud.">
   <link rel="icon" href="/logo.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/logo.svg">
   <link rel="stylesheet" href="/style.css">
@@ -31,17 +31,21 @@
   <div class="docs-layout">
     <main class="docs-body">
 
-      <p>Lector's click-to-translate, phrase translation, journal correction, and LLM tutor all run through a single
-        <strong>translation agent</strong> &mdash; a pluggable LLM provider you choose in settings. One of those providers is
-        <strong>LM Studio</strong>, a desktop app that downloads open models and serves them over an OpenAI-compatible HTTP API.</p>
+      <p>Most words you click in Lector never touch the network. They resolve straight from an on-device dictionary. But that
+        dictionary is small, so plenty of lookups still fall through to a cloud LLM, and in a thinly-resourced language like
+        Afrikaans, plenty is an understatement. Each one sends a slice of what you're reading to someone else's server, and adds to
+        a per-token bill.</p>
 
-      <p>This guide wires Lector up to a model running on your own machine through LM Studio. By the end, clicking a word in the
-        reader sends the lookup to a local model &mdash; no API key, no cloud round-trip, no per-token cost.</p>
+      <p>Lector's click-to-translate, phrase translation, journal correction, and LLM tutor all run through one pluggable
+        <strong>translation agent</strong>, and <strong>LM Studio</strong> is one of the providers you can point it at: a desktop
+        app that downloads open models and serves them over an OpenAI-compatible API. This guide wires that agent up to a model on
+        your own hardware, so the lookups that would have gone to the cloud are answered locally instead &mdash; no API key, no
+        cloud round-trip, no per-token bill.</p>
 
       <div class="callout">
         <p>This post documents the <strong>LM Studio provider in the current Lector release</strong>. Under the hood Lector talks to
           LM Studio over the standard OpenAI chat-completions API (<code>/v1/chat/completions</code> and <code>/v1/models</code>), so
-          everything here applies to <em>any</em> server that speaks that protocol &mdash; LM Studio is just the easiest one to get
+          everything here applies to <em>any</em> server that speaks that protocol. LM Studio is just the easiest one to get
           running on a laptop.</p>
       </div>
 
@@ -59,20 +63,23 @@
         never leave your hardware, and you can swap the underlying model whenever you like without touching Lector.</p>
 
       <div class="callout">
-        <p><strong>A note on quality:</strong> small local models (8B parameters and under) translate major languages reasonably well
-          but get shaky on less common ones like Afrikaans. If translation quality matters more than locality, Anthropic (Claude) or
-          Apfel (Apple Intelligence) remain the stronger options &mdash; see the <a href="/docs/#llm-providers">LLM Providers</a>
-          section of the docs. Pick a capable instruction-tuned model and you'll be fine for most languages.</p>
+        <p><strong>A note on quality.</strong> You might expect a local model to fall behind a frontier one on a low-resource
+          language. I benchmarked it, and for Afrikaans that mostly isn't true. Translating Afrikaans into English (Tatoeba,
+          chrF++), <code>Gemma 4 12B (QAT)</code> running in LM Studio scores 82.7, ahead of Claude Opus and GPT-4o and within half
+          a point of GPT-5 and Gemini 2.5 Pro, the only two that beat it. Even the tiny <code>Gemma 4 E4B</code> clears 80. Pick a
+          capable instruction-tuned model, a general one rather than a 4B coder model, and local quality lands closer to the cloud
+          than the cost gap suggests. Treat these as relative gaps on a Tatoeba set, not absolute scores. The one model that
+          struggled was, of all things, Apple Intelligence's on-device model, which errored on about a quarter of the Afrikaans
+          sentences. The docs' <a href="/docs/#llm-providers">LLM Providers</a> section has the trade-offs.</p>
       </div>
 
       <!-- Prereqs -->
       <h2 id="prerequisites">What you'll need</h2>
       <ul>
-        <li>A running Lector instance &mdash; see the <a href="/docs/#installation">installation guide</a> if you don't have one yet.</li>
+        <li>A running Lector instance. See the <a href="/docs/#installation">installation guide</a> if you don't have one yet.</li>
         <li>A machine to run LM Studio on (macOS on Apple Silicon, Windows, or Linux). This can be the same machine as Lector or a
           different one on your network.</li>
-        <li>Enough memory for your chosen model &mdash; a 7&ndash;8B model quantised to 4-bit needs roughly 5&ndash;6&nbsp;GB of RAM
-          or VRAM.</li>
+        <li>Enough memory for your chosen model. A 7-8B model quantised to 4-bit needs roughly 5-6&nbsp;GB of RAM or VRAM.</li>
       </ul>
 
       <!-- Step 1 -->
@@ -81,7 +88,7 @@
         <li>Download LM Studio from <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer">lmstudio.ai</a> and install it.</li>
         <li>Open the <strong>Discover</strong> (search) tab and download an instruction-tuned model. Good starting points are a
           compact model like Google's <code>Gemma</code> (the efficient E4B variant runs comfortably on a laptop),
-          <code>Llama 3.1 8B Instruct</code>, or <code>Qwen2.5 7B Instruct</code> &mdash; pick a 4-bit (Q4) quant to keep memory use
+          <code>Llama 3.1 8B Instruct</code>, or <code>Qwen2.5 7B Instruct</code>. Pick a 4-bit (Q4) quant to keep memory use
           modest.</li>
         <li>Wait for the download to finish. You don't need to chat with it in the LM Studio UI; we only need the server.</li>
       </ol>
@@ -105,20 +112,21 @@ lms load &lt;model-name&gt;</code></pre>
       <h3 id="server-verify">Verify it's up</h3>
       <p>From the same machine, confirm the API answers and reports your models:</p>
       <pre><code>curl http://localhost:1234/v1/models</code></pre>
-      <p>You should get back a JSON list with at least one model <code>id</code>. Note that <code>id</code> &mdash; it's what you'll
-        select in Lector.</p>
+      <p>You should get back a JSON list with at least one model <code>id</code>. That's what you'll select in Lector.</p>
 
       <div class="callout">
         <p><strong>Serving to another machine?</strong> By default LM Studio binds to <code>localhost</code> only, so nothing outside
-          that machine can reach it &mdash; <em>including a Docker container.</em> If Lector runs anywhere other than the same OS as
+          that machine can reach it, <em>including a Docker container.</em> If Lector runs anywhere other than the same OS as
           LM Studio, enable <strong>"Serve on Local Network"</strong> in LM Studio's server settings (this binds it to
-          <code>0.0.0.0</code>). This is the single most common reason the connection fails &mdash; see
+          <code>0.0.0.0</code>). That's the most common reason the connection fails. See
           <a href="#docker">Running Lector in Docker</a> below.</p>
       </div>
 
       <!-- Step 3 -->
       <h2 id="step-3-connect">Step 3 &middot; Point Lector at LM Studio</h2>
-      <p>In Lector, open <strong>Settings &rarr; AI Provider</strong> and select <strong>LM Studio</strong>. Four fields appear:</p>
+      <p>In Lector, open <strong>Settings &rarr; AI Provider</strong>, set the provider to <strong>Local / self-hosted
+        (OpenAI-compatible)</strong>, and choose the <strong>LM Studio</strong> preset (it autofills the endpoint to
+        <code>localhost:1234</code>). Then:</p>
 
       <figure>
         <img src="/images/lmstudio-settings.png" alt="Lector's AI Provider settings configured for LM Studio: provider set to LM Studio, endpoint pointing at a Tailscale address, the google/gemma-4-e4b model selected, and a green Connected status.">
@@ -126,16 +134,16 @@ lms load &lt;model-name&gt;</code></pre>
       </figure>
 
       <h3 id="field-endpoint">Endpoint</h3>
-      <p>The base URL of your LM Studio server &mdash; <strong>without</strong> the <code>/v1</code> suffix. Lector adds that itself.</p>
+      <p>The base URL of your LM Studio server, <strong>without</strong> the <code>/v1</code> suffix. Lector adds that itself.</p>
       <ul>
         <li>LM Studio on the <em>same OS</em> as Lector: <code>http://localhost:1234</code></li>
         <li>LM Studio on a <em>different machine</em>: use that machine's address, e.g. <code>http://192.168.1.50:1234</code></li>
-        <li>Lector in Docker: see <a href="#docker">the Docker section</a> &mdash; <code>localhost</code> will <em>not</em> work.</li>
+        <li>Lector in Docker: see <a href="#docker">the Docker section</a>. <code>localhost</code> will <em>not</em> work here.</li>
       </ul>
 
       <h3 id="field-apikey">API Key (optional)</h3>
       <p>Leave this empty for a normal local setup. You only need it if your LM Studio is behind a reverse proxy or you're using
-        LM Studio Cloud. When set, Lector sends it as a Bearer token <em>from the server side</em> &mdash; it's never exposed to the
+        LM Studio Cloud. When set, Lector sends it as a Bearer token <em>from the server side</em>, never exposed to the
         browser after you save it.</p>
 
       <h3 id="field-model">Model</h3>
@@ -143,20 +151,16 @@ lms load &lt;model-name&gt;</code></pre>
         has available; pick the one you downloaded. If the fetch fails (e.g. the server isn't reachable yet), you can type the model
         <code>id</code> in manually.</p>
 
-      <h3 id="field-load">Load model</h3>
-      <p>Click <strong>Load</strong> to load the selected model into memory on the LM Studio server up front. The status chip moves
-        from <em>Idle</em> &rarr; <em>Loading</em> &rarr; <em>Loaded</em>. This step is optional &mdash; if you've enabled
-        just-in-time / auto-load in LM Studio, the model loads automatically on the first translation request instead (the first
-        lookup will just be slower while it loads).</p>
-
-      <p>That's it. Open a book or article, click a word, and the lookup is answered by your local model. If LM Studio is ever
-        unreachable, Lector quietly falls back to its built-in dictionary of the most common words, so reading never breaks.</p>
+      <p>That's it. Open a book or article, click a word, and the lookup is answered by your local model. The first request after
+        the server starts can be slow while LM Studio loads the model into memory; enable just-in-time / auto-load, or run
+        <code>lms load</code> (from step 2) to pre-load it. If LM Studio is ever unreachable, Lector quietly falls back to its
+        built-in dictionary of the most common words, so reading never breaks.</p>
 
       <!-- Docker -->
       <h2 id="docker">Running Lector in Docker</h2>
       <p>This is the part that trips people up, so it gets its own section. Lector's translation call happens
         <strong>server-side</strong>, inside the container. So when you type <code>http://localhost:1234</code>, "localhost" means
-        <em>the container itself</em> &mdash; not your host machine where LM Studio is running. The container has no LM Studio, so the
+        <em>the container itself</em>, not your host machine where LM Studio is running. The container has no LM Studio, so the
         connection is refused.</p>
 
       <p>There are two things to get right:</p>
@@ -180,7 +184,7 @@ lms load &lt;model-name&gt;</code></pre>
           </tr>
           <tr>
             <td>Docker on Linux</td>
-            <td><code>http://host.docker.internal:1234</code> &mdash; but you must add the host-gateway mapping (below), or just use the host's LAN IP, e.g. <code>http://192.168.1.50:1234</code></td>
+            <td><code>http://host.docker.internal:1234</code>, but you must add the host-gateway mapping (below), or just use the host's LAN IP, e.g. <code>http://192.168.1.50:1234</code></td>
           </tr>
           <tr>
             <td>LM Studio on a separate machine</td>
@@ -208,7 +212,7 @@ lms load &lt;model-name&gt;</code></pre>
 
       <!-- Headless / env -->
       <h2 id="env-config">Configuring it without the UI</h2>
-      <p>If you'd rather not click through settings &mdash; for reproducible deployments &mdash; you can configure the provider
+      <p>If you'd rather not click through settings (handy for reproducible deployments), you can configure the provider
         entirely with environment variables. The settings you save in the UI take precedence; these env vars are the fallback when a
         setting isn't set.</p>
 
@@ -233,12 +237,12 @@ lms load &lt;model-name&gt;</code></pre>
           </tr>
           <tr>
             <td><code>LMSTUDIO_MODEL</code></td>
-            <td>&mdash;</td>
+            <td>(none)</td>
             <td>The model <code>id</code> to use (as it appears in <code>/v1/models</code>)</td>
           </tr>
           <tr>
             <td><code>LMSTUDIO_API_KEY</code></td>
-            <td>&mdash;</td>
+            <td>(none)</td>
             <td>Optional. Bearer token, only for auth-protected servers</td>
           </tr>
         </tbody>
@@ -293,11 +297,11 @@ lms load &lt;model-name&gt;</code></pre>
 
       <!-- Wrap up -->
       <h2 id="wrap-up">You're not locked in</h2>
-      <p>Because Lector speaks the OpenAI-compatible API, LM Studio is one option among several. The same Endpoint / model / optional
-        key flow works for other local servers, and Lector also ships first-class <a href="/docs/#provider-anthropic">Anthropic</a>,
-        <a href="/docs/#provider-apfel">Apfel (Apple Intelligence)</a>, and <a href="/docs/#provider-ollama">Ollama</a> providers.
-        Start local with LM Studio, switch to Claude for a tricky language, switch back &mdash; your books and progress don't care
-        which agent is doing the translating.</p>
+      <p>Because Lector speaks the OpenAI-compatible API, LM Studio is one option among several behind the same provider: Ollama,
+        vLLM, or a remote OpenAI-compatible endpoint all use the same endpoint / model / optional-key flow (Ollama and LM Studio
+        even get presets that autofill the endpoint). The other provider is <a href="/docs/#provider-anthropic">Anthropic</a>
+        (Claude), for when you want cloud quality. Start local with LM Studio, switch to Claude for a tricky language, switch back
+        &mdash; your books and progress don't care which agent is doing the translating.</p>
 
       <p style="margin-top:2rem;"><a href="/blog/">&larr; Back to the blog</a></p>
 

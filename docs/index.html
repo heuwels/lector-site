@@ -138,10 +138,10 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
 
       <!-- LLM Providers -->
       <h2 id="llm-providers">LLM Providers</h2>
-      <p>Lector uses a large language model for context-aware translations when you click words and phrases. You can choose between three providers in <strong>Settings &rarr; AI Provider</strong>.</p>
+      <p>Lector uses a large language model for context-aware translations when you click words and phrases. You choose between two providers in <strong>Settings &rarr; AI Provider</strong>: <strong>Anthropic</strong> (cloud) or <strong>Local / self-hosted</strong> (any OpenAI-compatible server).</p>
 
       <div class="callout">
-        <p><strong>A note on smaller models:</strong> 8B-parameter models (like Llama 3.1 8B via Ollama) work reasonably well for major languages but struggle with more obscure languages like Afrikaans. If translation quality is important to you, use Anthropic or Apfel.</p>
+        <p><strong>A note on local quality:</strong> a capable local model holds up well even on a low-resource language like Afrikaans. In our own testing (Afrikaans &rarr; English, chrF++ on Tatoeba), a good ~12B model run through LM Studio matched the cloud models. What matters is picking a general instruction-tuned model (roughly 8B or larger, not a tiny or coder-only model), more than choosing cloud over local.</p>
       </div>
 
       <h3 id="provider-anthropic">Anthropic (cloud)</h3>
@@ -156,48 +156,16 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
         <li>Requires internet access and an Anthropic account</li>
       </ul>
 
-      <h3 id="provider-apfel">Apfel (Apple Intelligence)</h3>
-      <p>Runs Apple's on-device Foundation Model through an OpenAI-compatible API. No API keys, no cloud, no cost. Requires a Mac with Apple Silicon.</p>
-
-      <h4>Requirements</h4>
+      <h3 id="provider-openai">Local / self-hosted (OpenAI-compatible)</h3>
+      <p>Points Lector at any server that speaks the OpenAI chat API: <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, vLLM, or a remote OpenAI-compatible endpoint. One config covers them all: an endpoint, an optional API key, and a model name. The text you're translating stays on your hardware (unless you point it at a remote endpoint).</p>
+      <p>In <strong>Settings &rarr; AI Provider</strong>, choose <strong>Local / self-hosted (OpenAI-compatible)</strong>, then set:</p>
       <ul>
-        <li>macOS 26 (Tahoe) or newer</li>
-        <li>Apple Silicon (M1 or later)</li>
-        <li>Apple Intelligence enabled: <strong>System Settings &rarr; Apple Intelligence &amp; Siri &rarr; enable</strong></li>
+        <li><strong>Preset</strong> (optional) &mdash; pick <strong>Ollama</strong> or <strong>LM Studio</strong> to autofill the endpoint, or <strong>Custom</strong> for anything else. It only fills the endpoint; edit it afterwards if you like.</li>
+        <li><strong>Endpoint</strong> &mdash; the base URL of your server (<code>http://localhost:1234</code> for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends <code>/v1</code> itself. The call is made server-side, so <code>localhost</code> works even when Lector is hosted elsewhere, except from inside Docker, where you need a host-reachable address.</li>
+        <li><strong>API Key</strong> (optional) &mdash; leave empty for a local server. Only needed for reverse-proxied or cloud endpoints. Sent as a Bearer token from the server, never exposed to the browser.</li>
+        <li><strong>Model</strong> &mdash; click <strong>Fetch models</strong> to list what the server reports via <code>/v1/models</code>, or type a model id directly.</li>
       </ul>
-
-      <h4>Setup</h4>
-      <pre><code><span class="comment"># Install</span>
-brew install Arthur-Ficial/tap/apfel
-
-<span class="comment"># Verify the model is available</span>
-apfel --model-info
-
-<span class="comment"># Start as a background service</span>
-brew services start arthur-ficial/tap/apfel</code></pre>
-
-      <p>Then in Lector, go to <strong>Settings &rarr; AI Provider</strong>, select <strong>Apfel (self-hosted)</strong>, and set:</p>
-      <ul>
-        <li><strong>Server URL:</strong> <code>http://localhost:11434</code></li>
-        <li><strong>Model:</strong> <code>apple-foundationmodel</code></li>
-      </ul>
-      <p>Click <strong>Test Connection</strong> to verify. You should see a green "Connected" status.</p>
-
-      <div class="callout">
-        <p>Apfel is significantly stronger than local 8B Ollama models for translation quality, and runs entirely on-device with no API keys or internet required. If you don't have an Anthropic API key, Apfel is the best local option for Mac users.</p>
-      </div>
-
-      <h3 id="provider-ollama">Ollama (local)</h3>
-      <p>Runs open-source models locally via <a href="https://ollama.com">Ollama</a>. No API keys or cloud required, but translation quality depends heavily on model size.</p>
-      <ul>
-        <li>Install Ollama and pull a model: <code>ollama pull llama3.1:8b</code></li>
-        <li>Select a model in Lector's settings</li>
-        <li>Works on any platform (macOS, Linux, Windows)</li>
-      </ul>
-
-      <div class="callout">
-        <p><strong>Quality warning:</strong> 8B models produce noticeably weaker translations for less common languages. For Afrikaans and similar languages, prefer Anthropic or Apfel if available.</p>
-      </div>
+      <p>Use <strong>Refresh</strong> to confirm a green "Connected" status. For a full walkthrough with LM Studio, including the Docker networking gotcha, see <a href="/blog/lm-studio-translation-agent/">Run translations locally with LM Studio</a>.</p>
 
       <!-- AnkiConnect -->
       <h2 id="ankiconnect">AnkiConnect</h2>
@@ -238,7 +206,7 @@ brew services start arthur-ficial/tap/apfel</code></pre>
           <tr>
             <td><code>LLM_PROVIDER</code></td>
             <td><code>anthropic</code></td>
-            <td>AI provider for translations: <code>anthropic</code>, <code>apfel</code>, or <code>ollama</code></td>
+            <td>AI provider for translations: <code>anthropic</code> or <code>openai</code> (any OpenAI-compatible server)</td>
           </tr>
           <tr>
             <td><code>ANTHROPIC_API_KEY</code></td>
@@ -251,19 +219,24 @@ brew services start arthur-ficial/tap/apfel</code></pre>
             <td>OAuth token for Pro/Team plan credits (alternative to API key, slower startup)</td>
           </tr>
           <tr>
-            <td><code>APFEL_URL</code></td>
-            <td><code>http://localhost:11434</code></td>
-            <td>Apfel server URL (only needed when <code>LLM_PROVIDER=apfel</code>)</td>
+            <td><code>OPENAI_COMPAT_URL</code></td>
+            <td>&mdash;</td>
+            <td>Base URL of your OpenAI-compatible server, e.g. <code>http://localhost:1234</code> (LM Studio) or <code>http://localhost:11434</code> (Ollama). Used when <code>LLM_PROVIDER=openai</code>.</td>
           </tr>
           <tr>
-            <td><code>OLLAMA_URL</code></td>
-            <td><code>http://localhost:11434</code></td>
-            <td>Ollama server URL (only needed when <code>LLM_PROVIDER=ollama</code>)</td>
+            <td><code>OPENAI_COMPAT_MODEL</code></td>
+            <td>&mdash;</td>
+            <td>Model id to request from that server</td>
           </tr>
           <tr>
-            <td><code>OLLAMA_MODEL</code></td>
-            <td><code>llama3.1:8b</code></td>
-            <td>Ollama model name</td>
+            <td><code>OPENAI_COMPAT_API_KEY</code></td>
+            <td>&mdash;</td>
+            <td>Optional. Bearer token, only for authenticated endpoints</td>
+          </tr>
+          <tr>
+            <td><code>OLLAMA_URL</code> / <code>LMSTUDIO_URL</code> / <code>APFEL_URL</code></td>
+            <td>&mdash;</td>
+            <td>Legacy. Still read as fallbacks for the OpenAI-compatible endpoint so existing deployments keep working.</td>
           </tr>
           <tr>
             <td><code>GOOGLE_CLOUD_API_KEY</code></td>
@@ -342,7 +315,7 @@ brew services start arthur-ficial/tap/apfel</code></pre>
         <li><strong>Framework:</strong> Next.js 16 with React 19</li>
         <li><strong>Database:</strong> SQLite (better-sqlite3) server-side, Dexie (IndexedDB) client-side</li>
         <li><strong>Styling:</strong> Tailwind CSS v4</li>
-        <li><strong>AI:</strong> Anthropic Claude, Apple Intelligence (Apfel), or Ollama (all optional)</li>
+        <li><strong>AI:</strong> Anthropic Claude, or any OpenAI-compatible server &mdash; Ollama, LM Studio, vLLM (all optional)</li>
         <li><strong>TTS:</strong> Google Cloud Text-to-Speech (optional)</li>
         <li><strong>Container:</strong> Docker (single image, bind mount for data)</li>
       </ul>
@@ -366,8 +339,7 @@ brew services start arthur-ficial/tap/apfel</code></pre>
       <a href="#srs-scheduling">SRS scheduling</a>
       <a href="#llm-providers">LLM Providers</a>
       <a href="#provider-anthropic">Anthropic</a>
-      <a href="#provider-apfel">Apfel (Apple Intelligence)</a>
-      <a href="#provider-ollama">Ollama</a>
+      <a href="#provider-openai">Local / self-hosted</a>
       <a href="#ankiconnect">AnkiConnect</a>
       <a href="#configuration">Configuration</a>
       <a href="#environment-variables">Environment variables</a>
