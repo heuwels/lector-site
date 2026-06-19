@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog | Lector</title>
+  <meta name="description" content="Guides and notes on getting the most out of Lector — the self-hosted language learning reader.">
+  <link rel="icon" href="/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/logo.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+<body>
+
+<header class="docs-header">
+  <div class="container">
+    <p class="breadcrumb"><a href="/">lector</a> / blog</p>
+    <h1>Blog</h1>
+  </div>
+</header>
+
+<div class="container">
+  <section class="blog-body">
+    <div class="blog-list">
+
+      <a class="blog-post-card" href="/blog/ocr-afrikaans-dictionary/">
+        <p class="blog-post-card__meta">19 June 2026 &middot; Notes</p>
+        <h3>What I learned by OCRing an Afrikaans dictionary</h3>
+        <p>Digitising a 346-page print dictionary to widen Lector's offline vocabulary — why a smaller book beat a bigger wordlist, what OCR does to a language built on diacritics, and what the data says about Afrikaans.</p>
+      </a>
+
+      <a class="blog-post-card" href="/blog/lm-studio-translation-agent/">
+        <p class="blog-post-card__meta">19 June 2026 &middot; Guide</p>
+        <h3>Run translations locally with LM Studio</h3>
+        <p>Point Lector's translation agent at a local LLM through LM Studio's OpenAI-compatible API — no API keys, no cloud. Setup, the Docker networking gotcha, and headless config.</p>
+      </a>
+
+    </div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <nav class="footer-nav">
+      <a href="/">Home</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="/docs/">Docs</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="/methodology/">Methodology</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="footer-sep" aria-hidden="true">&middot;</span>
+      <a href="https://github.com/sponsors/heuwels" target="_blank" rel="noopener noreferrer">Sponsor</a>
+    </nav>
+    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
+  </div>
+</footer>
+
+<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+  <span class="icon-sun">&#x2600;</span>
+  <span class="icon-moon">&#x1F319;</span>
+</button>
+
+<script>
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  }
+</script>
+
+</body>
+</html>

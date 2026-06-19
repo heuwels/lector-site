@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>What I learned by OCRing an Afrikaans dictionary | Lector</title>
+    <meta
+      name="description"
+      content="Digitising a 346-page print Afrikaans-English dictionary to widen Lector's offline vocabulary — what it did to coverage, what OCR does to a language built on diacritics, and what the book reveals about Afrikaans itself."
+    />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      .chart {
+        margin: 1.5rem 0;
+      }
+      .chart .row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 0.28rem 0;
+      }
+      .chart .lab {
+        width: 3rem;
+        text-align: right;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-variant-numeric: tabular-nums;
+        flex: none;
+      }
+      .chart .track {
+        flex: 1;
+        background: var(--bg-alt);
+        border-radius: 4px;
+        height: 14px;
+        overflow: hidden;
+      }
+      .chart .bar {
+        display: block;
+        height: 100%;
+        background: var(--accent);
+        border-radius: 4px;
+      }
+      .chart .val {
+        width: 3.4rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+        flex: none;
+      }
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1.25rem 0 0.5rem;
+      }
+      .facts .chip {
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.85rem;
+      }
+      .facts .chip b {
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .chart-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin: 1.5rem 0 0.5rem;
+      }
+    </style>
+    <script>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (t) document.documentElement.setAttribute("data-theme", t);
+        else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+          document.documentElement.setAttribute("data-theme", "dark");
+        else document.documentElement.setAttribute("data-theme", "light");
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="docs-header">
+      <div class="container">
+        <p class="breadcrumb">
+          <a href="/">lector</a> / <a href="/blog/">blog</a> / ocr a dictionary
+        </p>
+        <h1>What I learned by OCRing an Afrikaans dictionary</h1>
+        <p class="post-meta">19 June 2026 &middot; 9 min read &middot; Notes</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="docs-layout">
+        <main class="docs-body">
+          <p>
+            At this point, I am confident in saying that Lector is the single
+            most comprehensive language learning tool for Afrikaans on the
+            market. I believe Steve Kaufmann (Founder of Lingq) is correct when
+            he says that extensive reading from broad sources is the most
+            important way to learn a language. Lingq would be my pick for the
+            best paid resource for Afrikaans (not that there's a lot of
+            competition in the area), but frankly, it is far too expensive for
+            what I could uncharitably say is merely a text reader with a
+            dictionary attached to it.
+          </p>
+          <p>
+            It didn't take long to prototype this app with Claude at my side
+            (I've probably only written 10% of the LoCs in this app). It ships
+            with an on-device dictionary based off the EN-AFR Wiktionary (~9,000
+            entries) which I thought would capture at least 80% of word lookups.
+            But now that it's fairly stable and I've shifted a lot of effort
+            from building the app to using the app, I have found it highly
+            frustrating to use. Even on relatively simple texts (news articles,
+            young adult books) it was falling back to the LLM fallback for
+            translations on perhaps the majority of the words. Once I'd hit
+            about a 500 word vocab in-app (i.e. words I encountered and marked
+            as known), the gaps were mostly missing from the on-board
+            dictionary.
+          </p>
+          <p>
+            So I did what a normal human does in this situation and
+            <span style="text-decoration: line-through"
+              >went back to paying $13 a month for Lingq</span
+            >
+            took a 346-page bilignual dictionary I had, scanned every page in
+            vFlat and built a pipeline to convert it into ~10,000 structured
+            entries. This is what I learned about coverage, what OCR does to a
+            language with lots of diacritics, and about Afrikaans itself.
+          </p>
+
+          <div class="callout">
+            <p>
+              This is a build note, not a how-to. Much to my chagrin, dictionary
+              glosses are copyrighted... One day I will find a public domain
+              dictionary and use it to ship a comprehensive open-source
+              dictionary sidecar for this app. We'll just have to learn to live
+              without a first-party translation of the word "selfie" into
+              Afrikaans.
+            </p>
+          </div>
+
+          <!-- Resource gap -->
+          <h2 id="gap">Why a niche language needs this</h2>
+          <p>
+            There are about 7 million people who speak Afrikaans as a first
+            language globally. More than Norwegian or Finnish. But the digital
+            resources a learner's app leans on are far thinner than that
+            suggests.
+          </p>
+
+          <table class="env-table">
+            <thead>
+              <tr>
+                <th>Resource</th>
+                <th>Afrikaans</th>
+                <th>German</th>
+                <th>Spanish</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Native speakers</td>
+                <td>~7 M</td>
+                <td>~90 M</td>
+                <td>~490 M</td>
+              </tr>
+              <tr>
+                <td>Tatoeba sentence pairs</td>
+                <td><strong>4,930</strong></td>
+                <td>772,823</td>
+                <td>443,429</td>
+              </tr>
+              <tr>
+                <td>English-Wiktionary lemmas</td>
+                <td>6,247</td>
+                <td>103,717</td>
+                <td>115,681</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>
+            The sentence banks tell the starkest story. Tatoeba is a repository
+            for crowdsourced translations of sentences into an ever-expanding
+            set of languages. This is where I sourced the sentences for Cloze
+            practice. Tatoeba holds just
+            <strong>4,930</strong> Afrikaans sentences against 443,000 Spanish
+            and 773,000 German. That ~150&times; gap to German dwarfs the
+            ~13&times; difference in speakers: Afrikaans is thin even for its
+            size. Perhaps this has something to do with the fact that
+            progenitors of the language are called "farmers". Germans being
+            German seems to account for the overrepresentation of sentence
+            translations in their language.
+          </p>
+
+          <p class="chart-label">Tatoeba sentence pairs</p>
+          <div class="chart">
+            <div class="row">
+              <span class="lab" style="width: 5rem; text-align: left"
+                >German</span
+              ><span class="track"
+                ><span class="bar" style="width: 100%"></span></span
+              ><span class="val">772,823</span>
+            </div>
+            <div class="row">
+              <span class="lab" style="width: 5rem; text-align: left"
+                >Spanish</span
+              ><span class="track"
+                ><span class="bar" style="width: 57%"></span></span
+              ><span class="val">443,429</span>
+            </div>
+            <div class="row">
+              <span class="lab" style="width: 5rem; text-align: left"
+                >Afrikaans</span
+              ><span class="track"
+                ><span class="bar" style="width: 0.7%"></span></span
+              ><span class="val">4,930</span>
+            </div>
+          </div>
+
+          <p>
+            A learner needs a certain absolute number of words and example
+            sentences to read with. German and Spanish cleared it by one to two
+            orders of magnitude; Afrikaans hasn't. The dictionary side is the
+            same shape: ~6,000 Afrikaans lemmas in English Wiktionary against
+            ~104,000 (German) and ~116,000 (Spanish).
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong
+                >One caveat: free-dictionary size is a lottery, not a scarcity
+                gauge.</strong
+              >
+              A language doesn't have fewer words because fewer people speak it.
+              FreeDict's German&ndash;English dictionary has 517,534 headwords,
+              but its Spanish&ndash;English one has only 4,502 &mdash;
+              <em>smaller</em> than its Afrikaans&ndash;English (5,129). Size
+              there reflects whether a volunteer ingested a good source, not the
+              language itself. So FreeDict's Afrikaans dictionary is actually a
+              decent one; the real scarcity is in the sentence banks above, and
+              in the curated, example-rich vocabulary that crowd-sourced sources
+              simply don't carry &mdash; which is exactly what a published book
+              has.
+            </p>
+          </div>
+
+          <p>
+            Published output is no rescue either. Germany puts out ~66,000 new
+            book titles a year and Spain ~90,000; for Afrikaans there isn't even
+            a clean annual figure &mdash; it's a minority slice of South
+            Africa's output (~11% of trade-book revenue). The data scarcity is
+            itself the point.
+          </p>
+
+          <p>
+            Add it up: one published learner's dictionary holds about as many
+            headwords (~6,000) as the <em>entire</em> Afrikaans side of English
+            Wiktionary &mdash; and ~2,600 of its words appear in no free source
+            at all. That's why a weekend with a phone app meaningfully moves the
+            needle (the coverage numbers are next).
+          </p>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted)">
+            Figures as of June 2026 &mdash; sources:
+            <a
+              href="https://tatoeba.org/en/stats/sentences_by_language"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Tatoeba</a
+            >, English Wiktionary
+            <a
+              href="https://en.wiktionary.org/wiki/Category:Afrikaans_lemmas"
+              target="_blank"
+              rel="noopener noreferrer"
+              >lemma categories</a
+            >,
+            <a
+              href="https://freedict.org/downloads/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >FreeDict</a
+            >, speaker counts via
+            <a
+              href="https://en.wikipedia.org/wiki/Afrikaans"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Wikipedia</a
+            >/Ethnologue, book output via
+            <a
+              href="https://en.wikipedia.org/wiki/Books_published_per_country_per_year"
+              target="_blank"
+              rel="noopener noreferrer"
+              >national publishers' bodies</a
+            >.
+          </p>
+
+          <!-- Coverage -->
+          <h2 id="coverage">A small book beat a big wordlist</h2>
+          <p>
+            Here's the counter-intuitive part. The book has fewer headwords
+            (~5,500) than the dictionary it was meant to improve (~10,000). By
+            raw count it looks like a downgrade. But headcount is the wrong
+            measure. What matters is how much the two overlap, and how many
+            real-reading words each actually covers.
+          </p>
+
+          <p>
+            On a frequency-weighted benchmark of common words, merging the book
+            should lift the share of distinct words the dictionary can resolve
+            from about 67% to about 81%: nearly double the gain a free digital
+            Afrikaans&ndash;English dictionary gave. Both are projections from a
+            merge simulation, so 81% is just a rough ceiling.
+          </p>
+
+          <p>
+            The reason is the lack of overlap: about 59% of the book was new to
+            the existing data. Wiktionary's Afrikaans is a scattershot of rare
+            and inflected forms; the book is the curated everyday core. The
+            words it recovered were exactly the ones a reader actually clicks -
+            e.g.
+            <em>gebore</em> (born), <em>huiswerk</em> (homework),
+            <em>terugkeer</em> (return), <em>omgee</em> (to care), and the
+            pronominal adverbs <em>daaroor</em> / <em>daaraan</em> that a
+            scraped wordlist never has. A curated book, even a small one, is
+            dense with the right words.
+          </p>
+
+          <!-- Diacritics -->
+          <h2 id="diacritics">OCR is more-or-less blind to diacritics</h2>
+          <p>
+            This was the biggest surprise, and the most important lesson.
+            Afrikaans uses diacritics fairly heavily. The circumflex (the little
+            hat) (<em>&ocirc;</em>, <em>&ecirc;</em>) and the
+            <em>deelteken</em> or diaeresis (<em>&euml;</em>, <em>&iuml;</em>,
+            <em>&ouml;</em>). I expected OCR to miss a few, but it did in almost
+            all cases.
+          </p>
+
+          <div class="callout">
+            <p>
+              Across
+              <strong
+                >6,436 headwords, the circumflex-o (&ocirc;) appeared exactly
+                zero times.</strong
+              >
+              Every <em>m&ocirc;re</em> (tomorrow), every
+              <em>oorm&ocirc;re</em> (day after tomorrow) had quietly become an
+              <em>&eacute;</em> or <em>&ecirc;</em>, or lost its hat entirely.
+              The whole "exotic" accent set (&ocirc;, &ouml;, &iuml;, &uuml;)
+              had collapsed toward plain &ecirc;/&euml; or vanished.
+            </p>
+          </div>
+
+          <p>
+            The tempting fix is a rule: find a vowel that should carry a
+            diaeresis and add it back, but I couldn't find a non-conflicting
+            general rule. The rule that turned
+            <em>assosieer</em> into <em>assosi&euml;er</em> also "corrects"
+            <em>baie</em> (one of the most common words in the language) into
+            the non-word <em>bai&euml;</em>. Thankfully while chasing this, I
+            only had to manually verify 120 or so entries.
+          </p>
+
+          <p>
+            So the real fix isn't in the data at all &mdash; it's in the
+            <strong>lookup</strong>. Make dictionary lookup
+            diacritic-insensitive as a last resort: if an exact match fails,
+            strip the accents off both the query and the stored keys and try
+            once more. Then <em>m&ocirc;re</em>, <em>m&eacute;re</em> and
+            <em>m&ecirc;re</em> all find the same entry no matter how mangled
+            the stored spelling &mdash; and you never risk a wrong "correction."
+            The damaged data becomes a non-issue without touching a single
+            headword.
+          </p>
+
+          <div class="callout">
+            <p>
+              <strong>The one trick that did work</strong> for placing a
+              diaeresis: the book prints syllabification, and in Afrikaans the
+              deelteken always sits on a vowel that starts a new syllable after
+              another vowel. So the hyphens in
+              <em>ge-&iuml;n-te-res-seerd</em> tell you exactly where the dots
+              belong. This worked for the entries where the book bothered to
+              print syllabification, which turned out to be only about 64% of
+              them.
+            </p>
+          </div>
+
+          <!-- Validation -->
+          <h2 id="validation">Trust nothing; triangulate everything</h2>
+          <p>
+            OCR can't hallucinate a word, but it can mangle one into a different
+            real word, and the LLM that restructures the raw text can
+            hallucinate. For a reference work, neither is acceptable. So no
+            entry was trusted on the model's say-so. Each added entry had to
+            satisfy the following criteria:
+          </p>
+          <ul>
+            <li>
+              Is the headword a real Afrikaans word? Check it against the
+              LibreOffice
+              <strong>Hunspell <code>af_ZA</code></strong> spellcheck wordlist
+              (~100k words).
+            </li>
+            <li>
+              If it's not in the wordlist, is it
+              <strong>attested in an independent text corpus</strong> (Tatoeba
+              sentences)?
+            </li>
+            <li>
+              Does it cleanly split into two known words? Afrikaans compounds
+              endlessly (e.g. <em>huis&nbsp;+&nbsp;werk</em>).
+            </li>
+            <li>
+              Is it a separable verb (a known particle plus a known stem), like
+              <em>af&nbsp;+&nbsp;betaal</em>?
+            </li>
+          </ul>
+          <p>
+            Anything that passed none of these went to a human review pile. Out
+            of ~1,000 questionable entries, exactly
+            <strong>one</strong> was true garbage. The book OCR'd far cleaner
+            than I expected. The errors that did survive were almost all the
+            invisible diacritics from the last section, which by their nature
+            don't match a wordlist and so self-select into the review pile
+            anyway.
+          </p>
+
+          <!-- Structure -->
+          <h2 id="structure">A dictionary is mostly not headwords</h2>
+          <p>
+            Splitting the entries by type was clarifying. Of ~6,400 distinct
+            entries, only <strong>5,446 were "main" headwords</strong>. Another
+            660 were <em>derived</em> forms - words like
+            <em>aandeelhouer</em> (shareholder) or <em>aanklag</em> (charge) -
+            that the book prints as run-ons under a root verb, but which are
+            real standalone words. And
+            <strong>333 were idioms</strong> (<em>uitdrukkings</em>):
+            <em>vo&euml;ls van eenderse vere</em> (birds of a feather),
+            <em>'n bydrae lewer</em> (to make a contribution).
+          </p>
+          <p>
+            The idioms are lovely, but they taught me a product lesson: in
+            Lector you can click a word to see a definition, or highlight a
+            phrase. A user will probably never have the accuracy to highlight
+            just the idiom, but they might highlight a phrase or sentence which
+            includes idiomatic phrasing. In these cases, it will always fall
+            back to the LLM for translation. As lookup entries they'd be dead
+            weight. So they become example sentences attached to their parent
+            word instead.
+          </p>
+
+          <!-- Stats -->
+          <h2 id="stats">What the book says about Afrikaans</h2>
+          <p>
+            Once it was clean, it produced an interesting dataset that I thought
+            warranted some statistical exploration.
+          </p>
+
+          <p class="chart-label">First letter: share of headwords</p>
+          <div class="chart">
+            <div class="row">
+              <span class="lab">s</span
+              ><span class="track"
+                ><span class="bar" style="width: 100%"></span></span
+              ><span class="val">11.8%</span>
+            </div>
+            <div class="row">
+              <span class="lab">v</span
+              ><span class="track"
+                ><span class="bar" style="width: 88%"></span></span
+              ><span class="val">10.4%</span>
+            </div>
+            <div class="row">
+              <span class="lab">b</span
+              ><span class="track"
+                ><span class="bar" style="width: 70%"></span></span
+              ><span class="val">8.3%</span>
+            </div>
+            <div class="row">
+              <span class="lab">k</span
+              ><span class="track"
+                ><span class="bar" style="width: 63%"></span></span
+              ><span class="val">7.4%</span>
+            </div>
+            <div class="row">
+              <span class="lab">o</span
+              ><span class="track"
+                ><span class="bar" style="width: 54%"></span></span
+              ><span class="val">6.4%</span>
+            </div>
+            <div class="row">
+              <span class="lab">a</span
+              ><span class="track"
+                ><span class="bar" style="width: 50%"></span></span
+              ><span class="val">5.9%</span>
+            </div>
+            <div class="row">
+              <span class="lab">t</span
+              ><span class="track"
+                ><span class="bar" style="width: 44%"></span></span
+              ><span class="val">5.2%</span>
+            </div>
+            <div class="row">
+              <span class="lab">g</span
+              ><span class="track"
+                ><span class="bar" style="width: 43%"></span></span
+              ><span class="val">5.1%</span>
+            </div>
+            <div class="row">
+              <span class="lab">d</span
+              ><span class="track"
+                ><span class="bar" style="width: 41%"></span></span
+              ><span class="val">4.8%</span>
+            </div>
+            <div class="row">
+              <span class="lab">h</span
+              ><span class="track"
+                ><span class="bar" style="width: 38%"></span></span
+              ><span class="val">4.5%</span>
+            </div>
+            <div class="row">
+              <span class="lab">m</span
+              ><span class="track"
+                ><span class="bar" style="width: 37%"></span></span
+              ><span class="val">4.4%</span>
+            </div>
+            <div class="row">
+              <span class="lab">w</span
+              ><span class="track"
+                ><span class="bar" style="width: 33%"></span></span
+              ><span class="val">3.9%</span>
+            </div>
+          </div>
+          <p>
+            <strong><em>s</em> and <em>v</em> run away with it.</strong> The
+            <em>v-</em> prefixes alone carry a big share &mdash; <em>ver-</em>,
+            <em>voor-</em>, <em>vir-</em> &mdash; and <em>s-</em> words are
+            everywhere. The tail end, <em>x&nbsp;/&nbsp;y&nbsp;/&nbsp;c</em>, is
+            purely reserved for loanwords from other languages.
+          </p>
+
+          <p class="chart-label">
+            Dipthongs (vowel pairs): % of words containing each
+          </p>
+          <div class="chart">
+            <div class="row">
+              <span class="lab">aa</span
+              ><span class="track"
+                ><span class="bar" style="width: 100%"></span></span
+              ><span class="val">12.4%</span>
+            </div>
+            <div class="row">
+              <span class="lab">ie</span
+              ><span class="track"
+                ><span class="bar" style="width: 98%"></span></span
+              ><span class="val">12.1%</span>
+            </div>
+            <div class="row">
+              <span class="lab">ee</span
+              ><span class="track"
+                ><span class="bar" style="width: 85%"></span></span
+              ><span class="val">10.6%</span>
+            </div>
+            <div class="row">
+              <span class="lab">oo</span
+              ><span class="track"
+                ><span class="bar" style="width: 65%"></span></span
+              ><span class="val">8.1%</span>
+            </div>
+            <div class="row">
+              <span class="lab">oe</span
+              ><span class="track"
+                ><span class="bar" style="width: 51%"></span></span
+              ><span class="val">6.3%</span>
+            </div>
+            <div class="row">
+              <span class="lab">ui</span
+              ><span class="track"
+                ><span class="bar" style="width: 37%"></span></span
+              ><span class="val">4.6%</span>
+            </div>
+            <div class="row">
+              <span class="lab">ei</span
+              ><span class="track"
+                ><span class="bar" style="width: 37%"></span></span
+              ><span class="val">4.6%</span>
+            </div>
+            <div class="row">
+              <span class="lab">ou</span
+              ><span class="track"
+                ><span class="bar" style="width: 18%"></span></span
+              ><span class="val">2.2%</span>
+            </div>
+            <div class="row">
+              <span class="lab">eu</span
+              ><span class="track"
+                ><span class="bar" style="width: 15%"></span></span
+              ><span class="val">1.9%</span>
+            </div>
+          </div>
+          <p>
+            The doubled vowels (<em>aa</em>, <em>ee</em>, <em>oo</em>) and
+            <em>ie</em> dominate &mdash; long vowels are everywhere, and you can
+            hear why spoken Afrikaans sounds so open.
+          </p>
+
+          <p>
+            <strong>Compounding stretches the long tail.</strong> The average
+            headword is 7.3 letters, but Afrikaans (and other Germanic languages
+            fwiw) glues nouns together without limit. These seem unassailable at
+            first, but it's a real turning point in your learning journey when
+            you realise you can decode most compound nouns fairly easily:
+          </p>
+          <div class="facts">
+            <div class="chip">liefdadigheidsorganisasie <b>25</b></div>
+            <div class="chip">kommunikasievaardigheid <b>23</b></div>
+            <div class="chip">uitbreidingsaktiwiteit <b>22</b></div>
+            <div class="chip">spysverteringstelsel <b>20</b></div>
+            <div class="chip">omgewingsvriendelik <b>19</b></div>
+            <div class="chip">verantwoordelikheid <b>19</b></div>
+          </div>
+
+          <p>
+            And from the book's own syllabification, the typical word is
+            <strong>about 2&frac12; syllables</strong> &mdash; overwhelmingly
+            two. By part of speech it's noun-heavy: <strong>~42% nouns</strong>,
+            ~17% verbs, the rest adjectives, adverbs and the small closed
+            classes. Exactly the shape of a learner's dictionary.
+          </p>
+
+          <!-- Next -->
+          <h2 id="next">Where this goes</h2>
+          <p>
+            The book is now the best Afrikaans coverage source I have, and it'll
+            fold into Lector's dictionary build the same way the free sources
+            do. More than that, the processing pipeline is generic. It'll
+            digitise the next book on my shelf with far less hand-holding, and
+            the diacritic-insensitive lookup quietly absorbs whatever accents
+            the camera couldn't see.
+          </p>
+          <p>
+            The longer-term idea is to ship the pipeline itself &mdash; so
+            anyone can point Lector at a dictionary they own and grow their own
+            offline vocabulary, one shelf at a time.
+          </p>
+
+          <p style="margin-top: 2rem">
+            <a href="/blog/">&larr; Back to the blog</a>
+          </p>
+        </main>
+
+        <nav class="docs-toc">
+          <h4>On this page</h4>
+          <a href="#gap">Why a niche language needs this</a>
+          <a href="#coverage">A small book beat a big wordlist</a>
+          <a href="#diacritics">OCR is colour-blind to diacritics</a>
+          <a href="#validation">Trust nothing; triangulate</a>
+          <a href="#structure">Mostly not headwords</a>
+          <a href="#stats">What the book says about Afrikaans</a>
+          <a href="#next">Where this goes</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <nav class="footer-nav">
+          <a href="/">Home</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/blog/">Blog</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/docs/">Docs</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/methodology/">Methodology</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a
+            href="https://github.com/heuwels/lector"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >
+        </nav>
+        <p class="footer-copy">
+          <em>Lector</em> &middot; Latin for "reader" &middot; Built by
+          <a href="https://lukeboyle.com">Luke Boyle</a> &middot; A
+          <a href="http://heuwels.dev/">Heuwels</a> project
+        </p>
+      </div>
+    </footer>
+
+    <button
+      type="button"
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle dark mode"
+    >
+      <span class="icon-sun">&#x2600;</span>
+      <span class="icon-moon">&#x1F319;</span>
+    </button>
+
+    <script>
+      function toggleTheme() {
+        var current = document.documentElement.getAttribute("data-theme");
+        var next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      }
+    </script>
+  </body>
+</html>
