@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <script is:inline>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (t) document.documentElement.setAttribute("data-theme", t);
+        else if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+          document.documentElement.setAttribute("data-theme", "dark");
+        else document.documentElement.setAttribute("data-theme", "light");
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+
+    <footer>
+      <div class="container">
+        <nav class="footer-nav">
+          <a href="/">Home</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/docs/">Docs</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/blog/">Blog</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/methodology/">Methodology</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a href="/reference-data/">Reference Data</a>
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a
+            href="https://github.com/heuwels/lector"
+            target="_blank"
+            rel="noopener noreferrer">GitHub</a
+          >
+          <span class="footer-sep" aria-hidden="true">&middot;</span>
+          <a
+            href="https://github.com/sponsors/heuwels"
+            target="_blank"
+            rel="noopener noreferrer">Sponsor</a
+          >
+        </nav>
+        <p class="footer-copy">
+          <em>Lector</em> &middot; Latin for "reader" &middot; Built by
+          <a href="https://lukeboyle.com">Luke Boyle</a>
+        </p>
+      </div>
+    </footer>
+
+    <button
+      type="button"
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      aria-label="Toggle dark mode"
+    >
+      <span class="icon-sun">&#x2600;</span>
+      <span class="icon-moon">&#x1F319;</span>
+    </button>
+
+    <script is:inline>
+      function toggleTheme() {
+        var current = document.documentElement.getAttribute("data-theme");
+        var next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      }
+    </script>
+  </body>
+</html>
