@@ -1,0 +1,57 @@
+---
+import Base from "../../layouts/Base.astro";
+import { languages } from "../../data/languages";
+---
+
+<Base
+  title="Reference Data | Lector"
+  description="Downloadable language reference data for Lector: frequency-banded Anki decks and word frequency lists, per supported language."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / reference data</p>
+      <h1>Reference data</h1>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>
+        Open, downloadable reference data behind Lector's language packs &mdash;
+        frequency-banded Anki decks and word frequency lists, built from public
+        corpora. Free to use under the licenses noted on each page. Linked from
+        the <a href="/methodology/">methodology</a>, where the frequency-first
+        approach is explained.
+      </p>
+
+      <div class="features-grid" style="margin-top: 2rem;">
+        {
+          languages.map((lang) =>
+            lang.status === "complete" ? (
+              <a class="feature" href={`/reference-data/${lang.slug}/`}>
+                <div class="feature-icon">{lang.flag}</div>
+                <h3>{lang.name}</h3>
+                <p>
+                  {lang.blurb} <strong>View &rarr;</strong>
+                </p>
+              </a>
+            ) : (
+              <div class="feature">
+                <div class="feature-icon">{lang.flag}</div>
+                <h3>{lang.name}</h3>
+                <p>{lang.blurb}</p>
+              </div>
+            ),
+          )
+        }
+      </div>
+
+      <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.95rem;">
+        Want your language? The reader works with any language &mdash; packs add
+        the sentence banks and dictionaries. <a
+          href="https://github.com/heuwels/lector">Open a PR</a
+        >.
+      </p>
+    </div>
+  </div>
+</Base>

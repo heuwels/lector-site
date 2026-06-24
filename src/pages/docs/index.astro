@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Documentation | Lector</title>
-  <meta name="description" content="Installation guide, configuration, and self-hosting documentation for Lector.">
-  <link rel="icon" href="/logo.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/logo.svg">
-  <link rel="stylesheet" href="/style.css">
-  <script>
-    (function () {
-      var t = localStorage.getItem('theme');
-      if (t) document.documentElement.setAttribute('data-theme', t);
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
-      else document.documentElement.setAttribute('data-theme', 'light');
-    })();
-  </script>
-</head>
-<body>
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="Documentation | Lector" description="Installation guide, configuration, and self-hosting documentation for Lector.">
 
 <header class="docs-header">
   <div class="container">
@@ -74,9 +58,9 @@ docker compose up -d</code></pre>
 
       <h3 id="reverse-proxy">Reverse proxy (HTTPS)</h3>
       <p>If you want HTTPS within your network (recommended), put Lector behind a reverse proxy. <a href="https://caddyserver.com">Caddy</a> handles automatic TLS with minimal configuration:</p>
-      <pre><code>lector.home.yourdomain.com {
+      <pre><code>lector.home.yourdomain.com &#123;
     reverse_proxy lector:3000
-}</code></pre>
+&#125;</code></pre>
       <p>Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
 
       <h3 id="backups">Backups</h3>
@@ -176,9 +160,9 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
         <li>Install the <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect add-on</a> in Anki Desktop</li>
         <li>In AnkiConnect's config, add your Lector origin to the CORS allowlist:</li>
       </ol>
-      <pre><code>{
+      <pre><code>&#123;
   "webCorsOriginList": ["http://localhost:3000"]
-}</code></pre>
+&#125;</code></pre>
       <p>If you're accessing Lector via a reverse proxy, add that origin too (e.g. <code>https://lector.home.yourdomain.com</code>).</p>
 
       <div class="callout">
@@ -250,7 +234,7 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       <p>Here's a complete example with all optional environment variables:</p>
       <pre><code>services:
   lector:
-    image: ghcr.io/3stacks/lector:${LECTOR_VERSION:-latest}
+    image: ghcr.io/3stacks/lector:$&#123;LECTOR_VERSION:-latest&#125;
     container_name: lector
     restart: unless-stopped
     ports:
@@ -259,13 +243,13 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       - ./data:/app/data
     environment:
       - NODE_ENV=production
-      - LLM_PROVIDER=${LLM_PROVIDER:-anthropic}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - CLAUDE_CODE_OAUTH_TOKEN=${CLAUDE_CODE_OAUTH_TOKEN}
-      - APFEL_URL=${APFEL_URL}
-      - OLLAMA_URL=${OLLAMA_URL}
-      - OLLAMA_MODEL=${OLLAMA_MODEL}
-      - GOOGLE_CLOUD_API_KEY=${GOOGLE_CLOUD_API_KEY}</code></pre>
+      - LLM_PROVIDER=$&#123;LLM_PROVIDER:-anthropic&#125;
+      - ANTHROPIC_API_KEY=$&#123;ANTHROPIC_API_KEY&#125;
+      - CLAUDE_CODE_OAUTH_TOKEN=$&#123;CLAUDE_CODE_OAUTH_TOKEN&#125;
+      - APFEL_URL=$&#123;APFEL_URL&#125;
+      - OLLAMA_URL=$&#123;OLLAMA_URL&#125;
+      - OLLAMA_MODEL=$&#123;OLLAMA_MODEL&#125;
+      - GOOGLE_CLOUD_API_KEY=$&#123;GOOGLE_CLOUD_API_KEY&#125;</code></pre>
 
       <!-- Supported Languages -->
       <h2 id="supported-languages">Supported languages</h2>
@@ -351,37 +335,4 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
   </div>
 </div>
 
-<!-- Footer -->
-<footer>
-  <div class="container">
-    <nav class="footer-nav">
-      <a href="/">Home</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/methodology/">Methodology</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/blog/">Blog</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/sponsors/heuwels" target="_blank" rel="noopener noreferrer">Sponsor</a>
-    </nav>
-    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
-  </div>
-</footer>
-
-<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-  <span class="icon-sun">&#x2600;</span>
-  <span class="icon-moon">&#x1F319;</span>
-</button>
-
-<script>
-  function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  }
-</script>
-
-</body>
-</html>
+</Base>

@@ -1,0 +1,238 @@
+---
+import Base from "../../layouts/Base.astro";
+import { languages } from "../../data/languages";
+
+export function getStaticPaths() {
+  return languages
+    .filter((l) => l.status === "complete")
+    .map((l) => ({ params: { language: l.slug }, props: { lang: l } }));
+}
+
+const { lang } = Astro.props;
+const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
+---
+
+<Base
+  title={`${lang.endonym} reference data | Lector`}
+  description={`Downloadable Afrikaans reference data for Lector: ${lang.downloads
+    .map((d) => d.label.toLowerCase())
+    .join(", ")}.`}
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb">
+        <a href="/">lector</a> / <a href="/reference-data/">reference data</a> / {
+          lang.endonym
+        }
+      </p>
+      <h1>{lang.flag} {lang.endonym} reference data</h1>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>{lang.blurb}</p>
+
+      <h2>Downloads</h2>
+      <div class="rd-downloads">
+        {
+          lang.downloads.map((d) => (
+            <div class="rd-card">
+              <div class="rd-card__head">
+                <span class="tag">{d.format}</span>
+                <span class="rd-meta">
+                  {d.size} &middot; {d.license}
+                </span>
+              </div>
+              <h3>{d.label}</h3>
+              {d.note && <p class="rd-note">{d.note}</p>}
+              <a class="rd-btn" href={d.file} download>
+                Download
+              </a>
+            </div>
+          ))
+        }
+      </div>
+
+      <h2>What's inside</h2>
+      <div class="rd-stats">
+        {
+          lang.stats.map((s) => (
+            <div class="rd-stat">
+              <span class="rd-stat__value">{s.value}</span>
+              <span class="rd-stat__label">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      {
+        lang.bands && (
+          <>
+            <h3>Anki deck — cards per frequency band</h3>
+            <p>
+              The deck is split into six sub-decks by blended frequency. Study
+              the most common words first (Core), then work down.
+            </p>
+            <div class="rd-bands">
+              {lang.bands.map((b) => (
+                <div class="rd-band">
+                  <span class="rd-band__name">{b.name}</span>
+                  <span class="rd-band__track">
+                    <span
+                      class="rd-band__bar"
+                      style={`width: ${Math.round((b.count / maxBand) * 100)}%`}
+                    />
+                  </span>
+                  <span class="rd-band__count">{b.count.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      }
+
+      <h2>Provenance &amp; licensing</h2>
+      <p>
+        Built entirely from open data &mdash; nothing here is derived from
+        copyrighted dictionaries. See the <a href="/methodology/#phase-1"
+          >methodology</a
+        > for how frequency drives vocabulary learning in Lector.
+      </p>
+      <ul class="rd-sources">
+        {
+          lang.sources.map((s) => (
+            <li>
+              <strong>{s.label}:</strong> {s.detail}{" "}
+              {s.url ? (
+                <a href={s.url} target="_blank" rel="noopener noreferrer">
+                  {s.license}
+                </a>
+              ) : (
+                <span class="rd-meta">{s.license}</span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    .rd-downloads {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 1.25rem 0 2rem;
+    }
+    .rd-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .rd-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .rd-meta {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .rd-card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.05rem;
+    }
+    .rd-note {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      flex: 1;
+    }
+    .rd-btn {
+      align-self: flex-start;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.5rem 1.25rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .rd-btn:hover {
+      background: var(--accent-hover);
+      text-decoration: none;
+    }
+    .rd-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0 2rem;
+    }
+    .rd-stat {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .rd-stat__value {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .rd-stat__label {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .rd-bands {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1rem 0 2rem;
+    }
+    .rd-band {
+      display: grid;
+      grid-template-columns: 7rem 1fr 3.5rem;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .rd-band__name {
+      color: var(--text-muted);
+      text-align: right;
+    }
+    .rd-band__track {
+      background: var(--bg-alt);
+      border-radius: 4px;
+      height: 16px;
+      overflow: hidden;
+    }
+    .rd-band__bar {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+    .rd-band__count {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+      text-align: right;
+    }
+    .rd-sources {
+      padding-left: 1.25rem;
+    }
+    .rd-sources li {
+      margin-bottom: 0.6rem;
+    }
+  </style>
+</Base>

@@ -1,0 +1,33 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="Blog | Lector" description="Guides and notes on getting the most out of Lector — the self-hosted language learning reader.">
+
+<header class="docs-header">
+  <div class="container">
+    <p class="breadcrumb"><a href="/">lector</a> / blog</p>
+    <h1>Blog</h1>
+  </div>
+</header>
+
+<div class="container">
+  <section class="blog-body">
+    <div class="blog-list">
+
+      <a class="blog-post-card" href="/blog/ocr-afrikaans-dictionary/">
+        <p class="blog-post-card__meta">19 June 2026 &middot; Notes</p>
+        <h3>What I learned by OCRing an Afrikaans dictionary</h3>
+        <p>Digitising a 346-page print dictionary to widen Lector's offline vocabulary — why a smaller book beat a bigger wordlist, what OCR does to a language built on diacritics, and what the data says about Afrikaans.</p>
+      </a>
+
+      <a class="blog-post-card" href="/blog/lm-studio-translation-agent/">
+        <p class="blog-post-card__meta">19 June 2026 &middot; Guide</p>
+        <h3>Run translations locally with LM Studio</h3>
+        <p>Point Lector's translation agent at a local LLM through LM Studio's OpenAI-compatible API — no API keys, no cloud. Setup, the Docker networking gotcha, and headless config.</p>
+      </a>
+
+    </div>
+  </section>
+</div>
+
+</Base>

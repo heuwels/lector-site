@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Run translations locally with LM Studio | Lector</title>
-  <meta name="description" content="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud.">
-  <link rel="icon" href="/logo.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/logo.svg">
-  <link rel="stylesheet" href="/style.css">
-  <script>
-    (function () {
-      var t = localStorage.getItem('theme');
-      if (t) document.documentElement.setAttribute('data-theme', t);
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
-      else document.documentElement.setAttribute('data-theme', 'light');
-    })();
-  </script>
-</head>
-<body>
+---
+import Base from "../../../layouts/Base.astro";
+---
+<Base title="Run translations locally with LM Studio | Lector" description="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud.">
 
 <header class="docs-header">
   <div class="container">
@@ -322,37 +306,4 @@ lms load &lt;model-name&gt;</code></pre>
   </div>
 </div>
 
-<!-- Footer -->
-<footer>
-  <div class="container">
-    <nav class="footer-nav">
-      <a href="/">Home</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/blog/">Blog</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/docs/">Docs</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="/methodology/">Methodology</a>
-      <span class="footer-sep" aria-hidden="true">&middot;</span>
-      <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
-    </nav>
-    <p class="footer-copy"><em>Lector</em> &middot; Latin for "reader" &middot; Built by <a href="https://lukeboyle.com">Luke Boyle</a></p>
-  </div>
-</footer>
-
-<button type="button" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-  <span class="icon-sun">&#x2600;</span>
-  <span class="icon-moon">&#x1F319;</span>
-</button>
-
-<script>
-  function toggleTheme() {
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  }
-</script>
-
-</body>
-</html>
+</Base>
