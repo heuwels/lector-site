@@ -27,7 +27,7 @@ import { languages } from "../../data/languages";
       <div class="features-grid" style="margin-top: 2rem;">
         {
           languages.map((lang) =>
-            lang.status === "complete" ? (
+            lang.status !== "coming-soon" ? (
               <a class="feature" href={`/reference-data/${lang.slug}/`}>
                 <div class="feature-icon">{lang.flag}</div>
                 <h3>{lang.name}</h3>

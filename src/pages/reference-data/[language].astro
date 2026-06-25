@@ -3,8 +3,10 @@ import Base from "../../layouts/Base.astro";
 import { languages } from "../../data/languages";
 
 export function getStaticPaths() {
+  // Complete + partial languages get a page. Partial ones (e.g. German) may have
+  // no Lector data yet but still link recommended community decks.
   return languages
-    .filter((l) => l.status === "complete")
+    .filter((l) => l.status !== "coming-soon")
     .map((l) => ({ params: { language: l.slug }, props: { lang: l } }));
 }
 
@@ -14,9 +16,12 @@ const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
 
 <Base
   title={`${lang.endonym} reference data | Lector`}
-  description={`Downloadable Afrikaans reference data for Lector: ${lang.downloads
-    .map((d) => d.label.toLowerCase())
-    .join(", ")}.`}
+  description={`${lang.endonym} reference data for Lector — ${
+    lang.downloads.length
+      ? "downloadable " +
+        lang.downloads.map((d) => d.label.toLowerCase()).join(", ")
+      : "data sources and recommended Anki decks"
+  }.`}
 >
   <header class="docs-header">
     <div class="container">
@@ -33,38 +38,78 @@ const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
     <div class="docs-body">
       <p>{lang.blurb}</p>
 
-      <h2>Downloads</h2>
-      <div class="rd-downloads">
-        {
-          lang.downloads.map((d) => (
-            <div class="rd-card">
-              <div class="rd-card__head">
-                <span class="tag">{d.format}</span>
-                <span class="rd-meta">
-                  {d.size} &middot; {d.license}
-                </span>
-              </div>
-              <h3>{d.label}</h3>
-              {d.note && <p class="rd-note">{d.note}</p>}
-              <a class="rd-btn" href={d.file} download>
-                Download
-              </a>
+      {
+        lang.downloads.length > 0 && (
+          <>
+            <h2>Downloads</h2>
+            <div class="rd-downloads">
+              {lang.downloads.map((d) => (
+                <div class="rd-card">
+                  <div class="rd-card__head">
+                    <span class="tag">{d.format}</span>
+                    <span class="rd-meta">
+                      {d.size} &middot; {d.license}
+                    </span>
+                  </div>
+                  <h3>{d.label}</h3>
+                  {d.note && <p class="rd-note">{d.note}</p>}
+                  <a class="rd-btn" href={d.file} download>
+                    Download
+                  </a>
+                </div>
+              ))}
             </div>
-          ))
-        }
-      </div>
+          </>
+        )
+      }
 
-      <h2>What's inside</h2>
-      <div class="rd-stats">
-        {
-          lang.stats.map((s) => (
-            <div class="rd-stat">
-              <span class="rd-stat__value">{s.value}</span>
-              <span class="rd-stat__label">{s.label}</span>
+      {
+        lang.recommendedDecks && lang.recommendedDecks.length > 0 && (
+          <>
+            <h2>Recommended Anki decks</h2>
+            <p>
+              Free, community-made German decks on AnkiWeb — a great complement
+              while Lector's own deck is in progress.
+            </p>
+            <div class="rd-downloads">
+              {lang.recommendedDecks.map((d) => (
+                <div class="rd-card">
+                  <div class="rd-card__head">
+                    <span class="tag">AnkiWeb</span>
+                    {d.meta && <span class="rd-meta">{d.meta}</span>}
+                  </div>
+                  <h3>{d.label}</h3>
+                  <p class="rd-note">{d.detail}</p>
+                  <a
+                    class="rd-btn"
+                    href={d.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Open on AnkiWeb &rarr;
+                  </a>
+                </div>
+              ))}
             </div>
-          ))
-        }
-      </div>
+          </>
+        )
+      }
+
+      {
+        lang.stats.length > 0 && (
+          <>
+            <h2>What's inside</h2>
+            <div class="rd-stats">
+              {lang.stats.map((s) => (
+                <div class="rd-stat">
+                  <span class="rd-stat__value">{s.value}</span>
+                  <span class="rd-stat__label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )
+      }
 
       {
         lang.bands && (
@@ -92,29 +137,33 @@ const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
         )
       }
 
-      <h2>Provenance &amp; licensing</h2>
-      <p>
-        Built entirely from open data &mdash; nothing here is derived from
-        copyrighted dictionaries. See the <a href="/methodology/#phase-1"
-          >methodology</a
-        > for how frequency drives vocabulary learning in Lector.
-      </p>
-      <ul class="rd-sources">
-        {
-          lang.sources.map((s) => (
-            <li>
-              <strong>{s.label}:</strong> {s.detail}{" "}
-              {s.url ? (
-                <a href={s.url} target="_blank" rel="noopener noreferrer">
-                  {s.license}
-                </a>
-              ) : (
-                <span class="rd-meta">{s.license}</span>
-              )}
-            </li>
-          ))
-        }
-      </ul>
+      {
+        lang.sources.length > 0 && (
+          <>
+            <h2>Provenance &amp; licensing</h2>
+            <p>
+              Built entirely from open data &mdash; nothing here is derived from
+              copyrighted dictionaries. See the{" "}
+              <a href="/methodology/#phase-1">methodology</a> for how frequency
+              drives vocabulary learning in Lector.
+            </p>
+            <ul class="rd-sources">
+              {lang.sources.map((s) => (
+                <li>
+                  <strong>{s.label}:</strong> {s.detail}{" "}
+                  {s.url ? (
+                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                      {s.license}
+                    </a>
+                  ) : (
+                    <span class="rd-meta">{s.license}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
     </div>
   </div>
 
