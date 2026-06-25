@@ -27,6 +27,15 @@ export interface Band {
   count: number;
 }
 
+// A curated external (community) resource, e.g. a third-party AnkiWeb deck —
+// not Lector's own data, just a good complement we link out to.
+export interface RecommendedDeck {
+  label: string;
+  detail: string;
+  url: string;
+  meta?: string;
+}
+
 export interface Language {
   slug: string;
   name: string;
@@ -38,6 +47,7 @@ export interface Language {
   stats: Stat[];
   bands?: Band[];
   sources: Source[];
+  recommendedDecks?: RecommendedDeck[];
 }
 
 export const languages: Language[] = [
@@ -115,9 +125,32 @@ export const languages: Language[] = [
     flag: "🇩🇪",
     status: "partial",
     blurb:
-      "Partial support — the full German dictionary works for reading and in-app word lookups. Frequency-banded vocabulary and an Anki deck aren't available yet.",
+      "Partial support — the full German dictionary works for reading and in-app word lookups. Lector's own frequency-banded Anki deck isn't ready yet, but several excellent free community decks are linked below.",
     downloads: [],
     stats: [],
     sources: [],
+    recommendedDecks: [
+      {
+        label: "Most Frequent Words, Patterns & Phrases",
+        detail:
+          "~7,800 words in frequency order, with verb conjugations, colour-coded der/die/das genders, example sentences and Wiktionary links.",
+        url: "https://ankiweb.net/shared/info/2012989005",
+        meta: "~7,800 cards · free",
+      },
+      {
+        label: "Deutsch: 4000 German Words by Frequency",
+        detail:
+          "The 4,000 most common German words in frequency order — a compact, widely-used core-vocabulary deck.",
+        url: "https://ankiweb.net/shared/info/653061995",
+        meta: "4,000 cards · free",
+      },
+      {
+        label: "German Mastery: 4,000 Most Frequent Words",
+        detail:
+          "The 4,000 most frequent words tagged by CEFR level (A1–C2), aligned to Goethe-Institut / telc exam vocabulary.",
+        url: "https://ankiweb.net/shared/info/145156667",
+        meta: "4,000 cards · free · A1–C2",
+      },
+    ],
   },
 ];
