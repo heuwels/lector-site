@@ -32,7 +32,7 @@ export interface Language {
   name: string;
   endonym: string;
   flag: string;
-  status: "complete" | "coming-soon";
+  status: "complete" | "partial" | "coming-soon";
   blurb: string;
   downloads: Download[];
   stats: Stat[];
@@ -113,8 +113,9 @@ export const languages: Language[] = [
     name: "German → English",
     endonym: "Deutsch",
     flag: "🇩🇪",
-    status: "coming-soon",
-    blurb: "Coming soon.",
+    status: "partial",
+    blurb:
+      "Partial support — the full German dictionary works for reading and in-app word lookups. Frequency-banded vocabulary and an Anki deck aren't available yet.",
     downloads: [],
     stats: [],
     sources: [],
