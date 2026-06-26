@@ -112,11 +112,21 @@ export const languages: Language[] = [
     name: "Spanish → English",
     endonym: "Español",
     flag: "🇪🇸",
-    status: "coming-soon",
-    blurb: "Coming soon.",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Spanish, at Afrikaans parity. We don't ship our own Spanish Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
     downloads: [],
     stats: [],
     sources: [],
+    recommendedDecks: [
+      {
+        label: "New Spanish Top 5000 Vocabulary",
+        detail:
+          "The 5,000 most frequent Spanish words in frequency order, from A Frequency Dictionary of Spanish (Davies, 2nd ed.), with native audio and bilingual example sentences — a solid frequency-first vocabulary foundation.",
+        url: "https://ankiweb.net/shared/info/2072103552",
+        meta: "5,000 cards · free · audio",
+      },
+    ],
   },
   {
     slug: "german",
