@@ -1,5 +1,6 @@
-// Registry of supported languages. Drives the homepage "Supported languages"
-// section and the /reference-data/[language]/ pages (one page per entry below).
+// Registry of supported languages. Drives the /reference-data/ pages (the index
+// and one page per entry below). NOTE: the homepage "Supported languages"
+// section in src/pages/index.astro is hardcoded separately — keep it in sync.
 
 export interface Download {
   label: string;
