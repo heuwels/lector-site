@@ -123,9 +123,9 @@ export const languages: Language[] = [
     name: "German → English",
     endonym: "Deutsch",
     flag: "🇩🇪",
-    status: "partial",
+    status: "complete",
     blurb:
-      "Partial support — the full German dictionary works for reading and in-app word lookups. Lector's own frequency-banded Anki deck isn't ready yet, but several excellent free community decks are linked below.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in German, at Afrikaans parity. We don't ship our own German Anki deck; the excellent free community decks below cover flashcards.",
     downloads: [],
     stats: [],
     sources: [],
