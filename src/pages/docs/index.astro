@@ -22,20 +22,26 @@ import Base from "../../layouts/Base.astro";
       <p>Create a <code>docker-compose.yml</code> file:</p>
       <pre><code>services:
   lector:
-    image: ghcr.io/3stacks/lector:latest
+    image: ghcr.io/heuwels/lector:latest
     container_name: lector
     restart: unless-stopped
     ports:
-      - "3400:3000"
+      - "3400:3000"   <span class="comment"># web UI</span>
+      - "3457:3457"   <span class="comment"># API (the browser talks to it directly)</span>
     volumes:
       - ./data:/app/data
     environment:
-      - NODE_ENV=production</code></pre>
+      - NODE_ENV=production
+      - API_URL=http://your-server:3457</code></pre>
 
       <p>Then start it:</p>
       <pre><code>docker compose up -d</code></pre>
 
       <p>Lector will be available at <code>http://your-server:3400</code>. All data is stored in a SQLite database inside the <code>data</code> directory.</p>
+
+      <div class="callout">
+        <p><strong>The UI and the API are separate.</strong> Lector's web app runs in your browser and calls its API (Hono, on port <code>3457</code>) <strong>directly</strong> &mdash; there's no server-side proxy. So you must publish port <code>3457</code> alongside the UI, and set <code>API_URL</code> to the address <em>your browser</em> uses to reach the API: the same host you open Lector on, port <code>3457</code> (e.g. <code>http://your-server:3457</code>). Don't use <code>127.0.0.1</code>/<code>localhost</code> here unless you only ever open Lector on the server itself &mdash; it resolves on the browser's machine, not the server. Behind a reverse proxy, set it to your HTTPS origin instead (see <a href="#reverse-proxy">Reverse proxy</a>).</p>
+      </div>
 
       <h3 id="updating">Updating</h3>
       <pre><code><span class="comment"># Pull the latest image</span>
@@ -59,9 +65,16 @@ docker compose up -d</code></pre>
       <h3 id="reverse-proxy">Reverse proxy (HTTPS)</h3>
       <p>If you want HTTPS within your network (recommended), put Lector behind a reverse proxy. <a href="https://caddyserver.com">Caddy</a> handles automatic TLS with minimal configuration:</p>
       <pre><code>lector.home.yourdomain.com &#123;
-    reverse_proxy lector:3000
+    <span class="comment"># The browser calls the API directly, so send /api/* to the API</span>
+    <span class="comment"># port (3457) and everything else to the web UI (3000).</span>
+    handle /api/* &#123;
+        reverse_proxy lector:3457
+    &#125;
+    handle &#123;
+        reverse_proxy lector:3000
+    &#125;
 &#125;</code></pre>
-      <p>Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
+      <p>With a same-origin proxy like this you don't need to publish port <code>3457</code> on the host &mdash; Caddy reaches it over the container network. Set <code>API_URL=https://lector.home.yourdomain.com</code> in the container's environment so the browser sends its API calls to the same origin, and Caddy routes them to the API. Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
 
       <h3 id="backups">Backups</h3>
       <p>Lector stores everything in a SQLite database and your imported books inside the data directory. To back it up:</p>
@@ -188,6 +201,11 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
             <td>Set to <code>production</code> for deployed instances</td>
           </tr>
           <tr>
+            <td><code>API_URL</code></td>
+            <td><code>http://localhost:3457</code></td>
+            <td>Origin the <strong>browser</strong> uses to reach the API (the UI calls it directly). Set to your access host on port 3457, e.g. <code>http://your-server:3457</code>, or your reverse-proxy origin <code>https://lector.home.yourdomain.com</code>. The default only works when browsing from the server itself.</td>
+          </tr>
+          <tr>
             <td><code>LLM_PROVIDER</code></td>
             <td><code>anthropic</code></td>
             <td>AI provider for translations: <code>anthropic</code> or <code>openai</code> (any OpenAI-compatible server)</td>
@@ -234,15 +252,17 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       <p>Here's a complete example with all optional environment variables:</p>
       <pre><code>services:
   lector:
-    image: ghcr.io/3stacks/lector:$&#123;LECTOR_VERSION:-latest&#125;
+    image: ghcr.io/heuwels/lector:$&#123;LECTOR_VERSION:-latest&#125;
     container_name: lector
     restart: unless-stopped
     ports:
       - "3400:3000"
+      - "3457:3457"
     volumes:
       - ./data:/app/data
     environment:
       - NODE_ENV=production
+      - API_URL=http://your-server:3457
       - LLM_PROVIDER=$&#123;LLM_PROVIDER:-anthropic&#125;
       - ANTHROPIC_API_KEY=$&#123;ANTHROPIC_API_KEY&#125;
       - CLAUDE_CODE_OAUTH_TOKEN=$&#123;CLAUDE_CODE_OAUTH_TOKEN&#125;
@@ -280,7 +300,7 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
           </tr>
         </tbody>
       </table>
-      <p>All sentence data is sourced from <a href="https://tatoeba.org">Tatoeba</a>. Adding a new language pair is straightforward. If you'd like to see your language supported, <a href="https://github.com/3stacks/lector">open a PR on GitHub</a>. We'd love contributions.</p>
+      <p>All sentence data is sourced from <a href="https://tatoeba.org">Tatoeba</a>. Adding a new language pair is straightforward. If you'd like to see your language supported, <a href="https://github.com/heuwels/lector">open a PR on GitHub</a>. We'd love contributions.</p>
 
       <!-- Sentence Bank -->
       <h2 id="sentence-bank">Sentence bank</h2>
@@ -296,8 +316,9 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
       <!-- Tech Stack -->
       <h2 id="tech-stack">Tech stack</h2>
       <ul>
-        <li><strong>Framework:</strong> Next.js 16 with React 19</li>
-        <li><strong>Database:</strong> SQLite (better-sqlite3) server-side, Dexie (IndexedDB) client-side</li>
+        <li><strong>Frontend:</strong> Next.js 16 with React 19 &mdash; UI only; the browser calls the API directly</li>
+        <li><strong>API:</strong> Hono on Bun, using <code>bun:sqlite</code></li>
+        <li><strong>Database:</strong> SQLite, server-side only</li>
         <li><strong>Styling:</strong> Tailwind CSS v4</li>
         <li><strong>AI:</strong> Anthropic Claude, or any OpenAI-compatible server &mdash; Ollama, LM Studio, vLLM (all optional)</li>
         <li><strong>TTS:</strong> Google Cloud Text-to-Speech (optional)</li>
