@@ -164,4 +164,25 @@ export const languages: Language[] = [
       },
     ],
   },
+  {
+    slug: "french",
+    name: "French → English",
+    endonym: "Français",
+    flag: "🇫🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in French, at Afrikaans parity. We don't ship our own French Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+    downloads: [],
+    stats: [],
+    sources: [],
+    recommendedDecks: [
+      {
+        label: "5000 Most Frequent French Words",
+        detail:
+          "The 5,000 most frequent French words in frequency order — a widely-used, free core-vocabulary foundation.",
+        url: "https://ankiweb.net/shared/info/614833642",
+        meta: "~5,000 cards · free",
+      },
+    ],
+  },
 ];
