@@ -185,4 +185,25 @@ export const languages: Language[] = [
       },
     ],
   },
+  {
+    slug: "dutch",
+    name: "Dutch → English",
+    endonym: "Nederlands",
+    flag: "🇳🇱",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Dutch, at Afrikaans parity. We don't ship our own Dutch Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+    downloads: [],
+    stats: [],
+    sources: [],
+    recommendedDecks: [
+      {
+        label: "A Frequency Dictionary of Dutch",
+        detail:
+          "The 5,000 most frequent Dutch words in frequency order, from A Frequency Dictionary of Dutch (Routledge), with English equivalents and example sentences — a solid frequency-first vocabulary foundation.",
+        url: "https://ankiweb.net/shared/info/1002891444",
+        meta: "~5,000 cards · free",
+      },
+    ],
+  },
 ];
