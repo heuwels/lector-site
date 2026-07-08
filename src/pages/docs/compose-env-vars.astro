@@ -1,0 +1,71 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Docker Compose + env vars | Lector Docs"
+  description="Keep secrets out of docker-compose.yml with a .env file — version pinning, defaults, and verification."
+  heading="Compose + env vars"
+>
+  <p>A <code>docker-compose.yml</code> tends to end up in a git repo &mdash; which is exactly where API keys shouldn't be. The pattern this guide describes is the one we run our own homeserver on: the compose file is committed and holds <em>structure</em>; a git-ignored <code>.env</code> file next to it holds <em>values</em>.</p>
+
+  <h2 id="the-pattern">The pattern</h2>
+  <p>Compose automatically reads a file named <code>.env</code> in the project directory and substitutes <code>$&#123;VAR&#125;</code> references before starting anything:</p>
+  <pre><code><span class="comment"># docker-compose.yml — committed</span>
+services:
+  lector:
+    image: ghcr.io/heuwels/lector:$&#123;LECTOR_VERSION:-latest&#125;
+    ports:
+      - "3400:3000"
+      - "3457:3457"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - API_URL=https://lector.home.yourdomain.com
+      - ANTHROPIC_API_KEY=$&#123;ANTHROPIC_API_KEY&#125;
+      - GOOGLE_CLOUD_API_KEY=$&#123;GOOGLE_CLOUD_API_KEY&#125;</code></pre>
+
+  <pre><code><span class="comment"># .env — git-ignored, chmod 600</span>
+LECTOR_VERSION=3.2.0
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_CLOUD_API_KEY=AIza...</code></pre>
+
+  <p>Add <code>.env</code> to <code>.gitignore</code> before the first commit. Values are plain <code>KEY=value</code> lines &mdash; no quotes needed unless the value contains spaces or <code>#</code>.</p>
+
+  <h2 id="version-pinning">Pin the version</h2>
+  <p><code>image: ghcr.io/heuwels/lector:$&#123;LECTOR_VERSION:-latest&#125;</code> gives you deliberate upgrades: <code>docker compose pull</code> can never surprise you with a new major. Upgrading becomes an audit trail in one line:</p>
+  <pre><code><span class="comment"># .env</span>
+LECTOR_VERSION=3.2.0   <span class="comment"># was 3.1.0 — upgraded for OIDC login</span></code></pre>
+  <p>then</p>
+  <pre><code>docker compose pull lector &amp;&amp; docker compose up -d lector</code></pre>
+  <p>The <code>:-latest</code> part is a <strong>default</strong>: if the variable is unset, compose falls back to <code>latest</code>. Handy for optional settings; for the version pin you may prefer omitting the default so a missing <code>.env</code> fails loudly instead of floating.</p>
+
+  <h2 id="two-ways">Two ways to pass values in</h2>
+  <p>There are two distinct mechanisms, and it pays to know which one you're using:</p>
+  <ul>
+    <li><strong>Interpolation</strong> (<code>environment:</code> entries with <code>$&#123;VAR&#125;</code>) &mdash; compose substitutes the value <em>into the compose config</em>, then passes it to the container. The compose file documents exactly which variables the container sees. Unset variables become empty strings (and compose warns), so pair optional ones with <code>:-</code> defaults.</li>
+    <li><strong><code>env_file:</code></strong> &mdash; hands the whole file to the container as-is. Less self-documenting, but variables that don't exist in the file are simply absent from the container (no empty-string overrides), which is better for optional secrets:</li>
+  </ul>
+  <pre><code>services:
+  lector:
+    env_file:
+      - ./lector.env   <span class="comment"># every key in the file lands in the container</span></code></pre>
+  <p>Both are fine. We use interpolation for our homeserver (explicit, greppable) and <code>env_file</code> where secrets come and go (a key that's deleted from the file disappears from the container on the next <code>up</code>, rather than lingering as an empty string).</p>
+
+  <h2 id="verify">Verify what the container will get</h2>
+  <pre><code><span class="comment"># Show the fully-resolved config, secrets substituted:</span>
+docker compose config
+
+<span class="comment"># Check a running container's actual environment (names only):</span>
+docker exec lector env | cut -d= -f1 | sort</code></pre>
+  <p><code>docker compose config</code> is the fastest way to catch a typo'd variable name &mdash; it renders exactly what <code>up</code> would use.</p>
+
+  <h2 id="applying-changes">Applying changes</h2>
+  <p>Environment values are read at container <em>start</em>. After editing <code>.env</code> or the compose file:</p>
+  <pre><code>docker compose up -d</code></pre>
+  <p>Compose diffs the resolved config and recreates only the containers whose config actually changed &mdash; an untouched service isn't restarted.</p>
+
+  <div class="callout">
+    <p><strong>Rotating a secret</strong> is the same flow: edit <code>.env</code>, <code>docker compose up -d</code>, done. Nothing to rebuild &mdash; Lector reads all configuration at runtime; no secrets are baked into the image.</p>
+  </div>
+</DocsPage>

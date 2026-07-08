@@ -1,0 +1,33 @@
+---
+// Shared shell for docs pages: breadcrumb header + two-column layout with the
+// section nav in the sticky rail. Body content flows into the slot.
+import Base from "./Base.astro";
+import DocsNav from "../components/DocsNav.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Page name shown in the breadcrumb and H1, e.g. "Installation". */
+  heading: string;
+}
+
+const { title, description, heading } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / <a href="/docs/">docs</a> / {heading.toLowerCase()}</p>
+      <h1>{heading}</h1>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-layout">
+      <main class="docs-body">
+        <slot />
+      </main>
+      <DocsNav />
+    </div>
+  </div>
+</Base>

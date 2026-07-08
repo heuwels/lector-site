@@ -1,0 +1,52 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+import { languages } from "../../data/languages";
+
+const statusLabel: Record<string, string> = {
+  complete: "Available",
+  partial: "Partial",
+  "coming-soon": "Coming soon",
+};
+---
+<DocsPage
+  title="Supported languages | Lector Docs"
+  description="Language packs with dictionaries and frequency-banded cloze sentence banks, and how the sentence data is built."
+  heading="Supported languages"
+>
+  <p>Lector's reader works with any language, but language packs provide on-device dictionaries and frequency-banded sentence banks for cloze practice.</p>
+
+  <table class="env-table">
+    <thead>
+      <tr>
+        <th>Language pair</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        languages.map((lang) => (
+          <tr>
+            <td>
+              <a href={`/reference-data/${lang.slug}/`}>
+                {lang.flag} {lang.name}
+              </a>
+            </td>
+            <td>{statusLabel[lang.status] ?? lang.status}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <p>Each language links to its <a href="/reference-data/">reference data</a> page &mdash; corpus details, frequency bands, and downloadable resources like Anki decks and word-frequency lists.</p>
+  <p>Adding a new language pair is straightforward. If you'd like to see your language supported, <a href="https://github.com/heuwels/lector">open a PR on GitHub</a>. We'd love contributions.</p>
+
+  <h2 id="sentence-bank">Sentence bank</h2>
+  <p>Cloze sentences are sourced from <a href="https://tatoeba.org">Tatoeba</a> and tagged with word frequency data so you learn the most common words first. To regenerate a bank from Tatoeba's latest data dumps:</p>
+  <pre><code>npm run fetch-sentences</code></pre>
+  <p>This downloads Tatoeba's per-language TSV exports, joins target-language sentences with English translations, and tags each with word frequency data.</p>
+
+  <div class="callout">
+    <p><strong>Data attribution:</strong> Sentence banks sourced from <a href="https://tatoeba.org">Tatoeba</a>, licensed under <a href="https://creativecommons.org/licenses/by/2.0/fr/">CC-BY 2.0 FR</a>. Word frequency dictionaries compiled from publicly available corpora &mdash; per-language details on the <a href="/reference-data/">reference data</a> pages.</p>
+  </div>
+</DocsPage>
