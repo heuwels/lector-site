@@ -218,16 +218,21 @@ const tips = [
   <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script is:inline define:vars={{ token: PADDLE_CLIENT_TOKEN }}>
     (function () {
-      if (window.Paddle) {
-        window.Paddle.Initialize({ token: token });
+      if (!window.Paddle) return;
+      window.Paddle.Initialize({ token: token });
+
+      // When this page is set as Paddle's Default Payment Link, Paddle sends
+      // buyers here with ?_ptxn=<transaction id> to finish checkout — resume it.
+      var ptxn = new URLSearchParams(window.location.search).get("_ptxn");
+      if (ptxn) {
+        window.Paddle.Checkout.open({ transactionId: ptxn });
       }
+
       document.querySelectorAll("[data-price]").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          if (window.Paddle) {
-            window.Paddle.Checkout.open({
-              items: [{ priceId: btn.getAttribute("data-price"), quantity: 1 }],
-            });
-          }
+          window.Paddle.Checkout.open({
+            items: [{ priceId: btn.getAttribute("data-price"), quantity: 1 }],
+          });
         });
       });
     })();
