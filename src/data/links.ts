@@ -8,4 +8,4 @@ export const LOGIN_URL = `${APP_URL}/login`;
 
 export const GITHUB = "https://github.com/heuwels/lector";
 export const DISCORD = "https://discord.gg/PD3GAh2Rj";
-export const SPONSOR = "https://github.com/sponsors/heuwels";
+// Support is handled on-site via Paddle (/support), not GitHub Sponsors.

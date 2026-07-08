@@ -1,6 +1,6 @@
 ---
 import Container from "./Container.astro";
-import { GITHUB, DISCORD, SPONSOR } from "../data/links";
+import { GITHUB, DISCORD } from "../data/links";
 
 const columns = [
   {
@@ -24,7 +24,7 @@ const columns = [
     links: [
       { href: GITHUB, label: "GitHub", external: true },
       { href: DISCORD, label: "Discord", external: true },
-      { href: SPONSOR, label: "Sponsor", external: true },
+      { href: "/support/", label: "Support", external: false },
     ],
   },
 ];
