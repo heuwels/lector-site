@@ -1,0 +1,127 @@
+---
+import Base from "../layouts/Base.astro";
+import { PADDLE_CLIENT_TOKEN } from "../data/paddle";
+import { APP_URL } from "../data/links";
+
+// The app (app.lector.dev) creates a Paddle transaction server-side and sends a
+// locked account here with ?_ptxn=<txn>&theme=<light|dark>. This page — on
+// lector.dev, a Paddle-approved checkout domain — opens the overlay for that
+// transaction; app.lector.dev is NOT an approved checkout domain, which is the
+// whole reason checkout is deferred here. Nothing identifying rides the URL:
+// the account is stamped into the transaction (custom_data) back on the app.
+const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
+---
+
+<Base
+  title="Checkout | Lector"
+  description="Complete your Lector Cloud subscription."
+>
+  <section class="flex min-h-[70vh] items-center justify-center px-6 py-20">
+    <div class="mx-auto flex max-w-md flex-col items-center gap-6 text-center">
+      <!-- Default: the overlay loads from Paddle's CDN; hold here until it does. -->
+      <div id="checkout-loading" class="flex flex-col items-center gap-4">
+        <div
+          class="size-8 animate-spin rounded-full border-4 border-olive-950/15 border-t-olive-950 dark:border-white/15 dark:border-t-white"
+        >
+        </div>
+        <p class="text-base/7 text-olive-700 dark:text-olive-400">
+          Opening secure checkout…
+        </p>
+      </div>
+
+      <!-- Flipped in by the Paddle event callback (closed / error / no load). -->
+      <div id="checkout-message" hidden class="flex flex-col items-center gap-4">
+        <h1
+          id="checkout-message-title"
+          class="font-display text-3xl tracking-tight text-olive-950 dark:text-white"
+        >
+          Checkout
+        </h1>
+        <p
+          id="checkout-message-body"
+          class="text-base/7 text-olive-700 dark:text-olive-400"
+        >
+        </p>
+        <a
+          href={SUBSCRIBE_URL}
+          class="inline-flex items-center justify-center rounded-full bg-olive-950 px-5 py-2 text-sm/7 font-medium text-white transition-colors hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
+        >
+          Return to Lector
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Paddle.js overlay checkout, resumed from ?_ptxn. Same pattern as
+       /support, plus: bounce here-without-a-transaction back to the app, and
+       return to /subscribe on completion so its poller activates the account. -->
+  <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script
+    is:inline
+    define:vars={{ token: PADDLE_CLIENT_TOKEN, subscribeUrl: SUBSCRIBE_URL }}
+  >
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var ptxn = params.get("_ptxn");
+      var themeParam = params.get("theme");
+      var theme =
+        themeParam === "dark" || themeParam === "light"
+          ? themeParam
+          : document.documentElement.getAttribute("data-theme") || "light";
+
+      var loading = document.getElementById("checkout-loading");
+      var message = document.getElementById("checkout-message");
+      var messageTitle = document.getElementById("checkout-message-title");
+      var messageBody = document.getElementById("checkout-message-body");
+
+      function showMessage(title, body) {
+        if (loading) loading.hidden = true;
+        if (messageTitle) messageTitle.textContent = title;
+        if (messageBody) messageBody.textContent = body;
+        if (message) message.hidden = false;
+      }
+
+      // No transaction to resume → the visitor didn't come through the app's
+      // subscribe flow. Send them back to start it (the app bounces them to
+      // login if they're not signed in).
+      if (!ptxn) {
+        window.location.replace(subscribeUrl);
+        return;
+      }
+
+      if (!window.Paddle) {
+        showMessage(
+          "Couldn't load checkout",
+          "Please try again in a moment, or head back to Lector to retry.",
+        );
+        return;
+      }
+
+      window.Paddle.Initialize({
+        token: token,
+        eventCallback: function (event) {
+          if (event.name === "checkout.completed") {
+            // The app's /subscribe screen polls until the webhook activates the
+            // account; ?checkout=success tells it to show that state on arrival.
+            window.location.replace(subscribeUrl + "?checkout=success");
+          } else if (event.name === "checkout.closed") {
+            showMessage(
+              "Checkout closed",
+              "You haven't been charged. Head back to Lector and try again whenever you're ready.",
+            );
+          } else if (event.name === "checkout.error") {
+            showMessage(
+              "Something went wrong",
+              "We couldn't open checkout for this link. You haven't been charged — head back to Lector and try again.",
+            );
+          }
+        },
+      });
+
+      window.Paddle.Checkout.open({
+        transactionId: ptxn,
+        settings: { displayMode: "overlay", theme: theme },
+      });
+    })();
+  </script>
+</Base>
