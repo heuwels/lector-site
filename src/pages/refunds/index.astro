@@ -1,0 +1,85 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const SUPPORT = "support@lector.dev";
+---
+
+<Base
+  title="Refund Policy | Lector"
+  description="A 14-day money-back guarantee on cloud plans, cancel any time, and a full refund if you switch to the free self-hosted version mid-cycle."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / refunds</p>
+      <h1>Refund Policy</h1>
+      <p class="post-meta">Last updated 8 July 2026</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>
+        This policy covers the managed cloud plans. The self-hosted version of
+        Lector is free and open source — there's nothing to pay and nothing to
+        refund.
+      </p>
+
+      <div class="callout">
+        <p>
+          <strong>Short version.</strong> 14-day money-back guarantee on your
+          first payment, cancel any time, and if you decide to switch to the free
+          self-hosted version part-way through a cycle, we'll refund the rest of
+          it. No hard feelings.
+        </p>
+      </div>
+
+      <h2>14-day money-back guarantee</h2>
+      <p>
+        If you're not happy with a cloud plan, email us within
+        <strong>14 days</strong> of your first payment and we'll refund it in
+        full — no questions asked.
+      </p>
+
+      <h2>Cancel any time</h2>
+      <p>
+        You can cancel whenever you like. Cancellation stops any future billing,
+        and you keep access until the end of the period you've already paid for.
+        Outside the situations below, we don't normally refund the unused part of
+        a current billing period.
+      </p>
+
+      <h2>Switching to self-hosting</h2>
+      <p>
+        Lector is self-hostable and free, and we'd never want the subscription to
+        trap you. <strong>If you cancel mid-cycle to move to the self-hosted
+        version, email us and we'll refund the unused remainder of your current
+        period.</strong> We'll happily point you at the
+        <a href="/docs/#installation">setup docs</a> too.
+      </p>
+
+      <h2>Annual plans</h2>
+      <p>
+        Cancelled an annual plan early? On request, we'll refund the unused whole
+        months remaining in your term.
+      </p>
+
+      <h2>How refunds are processed</h2>
+      <p>
+        Payments and refunds are handled by
+        <a href="https://www.paddle.com/" target="_blank" rel="noopener noreferrer">Paddle</a>,
+        our merchant of record. Approved refunds are returned to your original
+        payment method through Paddle, and typically take a few business days to
+        appear. This policy doesn't affect any statutory rights you have, such as
+        consumer guarantees under the Australian Consumer Law or the EU right of
+        withdrawal.
+      </p>
+
+      <h2>Requesting a refund</h2>
+      <p>
+        Email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a> from the address on your
+        account, or use the customer portal link on your Paddle receipt. Lector is
+        operated by Luke Boyle.
+      </p>
+    </div>
+  </div>
+</Base>

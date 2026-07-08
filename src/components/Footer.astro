@@ -3,14 +3,13 @@ import Container from "./Container.astro";
 
 const GITHUB = "https://github.com/heuwels/lector";
 const SPONSOR = "https://github.com/sponsors/heuwels";
-const DISCORD = "https://discord.com/channels/1523955062278455296";
+const DISCORD = "https://discord.gg/PD3GAh2Rj";
 
 const columns = [
   {
     title: "Explore",
     links: [
       { href: "/docs/", label: "Docs" },
-      { href: "/pricing/", label: "Pricing" },
       { href: "/reference-data/", label: "Reference data" },
       { href: "/blog/local-llm-translation-eval/", label: "Model eval" },
     ],
@@ -74,21 +73,41 @@ const columns = [
       </div>
 
       <div
-        class="flex flex-col gap-2 border-t border-olive-950/10 pt-8 text-sm/7 text-olive-600 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:text-olive-500"
+        class="flex flex-col gap-6 border-t border-olive-950/10 pt-8 dark:border-white/10"
       >
-        <p>
-          <span
-            class="text-base font-bold tracking-tight text-olive-950 dark:text-white"
-            >lector</span
-          > &middot; Latin for &ldquo;reader&rdquo;
-        </p>
-        <p>
-          Built by <a
-            href="https://lukeboyle.com"
-            class="text-olive-700 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
-            >Luke Boyle</a
-          >
-        </p>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm/7">
+          {
+            [
+              { href: "/terms/", label: "Terms" },
+              { href: "/privacy/", label: "Privacy" },
+              { href: "/refunds/", label: "Refunds" },
+            ].map((link) => (
+              <a
+                href={link.href}
+                class="text-olive-600 hover:text-olive-950 dark:text-olive-500 dark:hover:text-white"
+              >
+                {link.label}
+              </a>
+            ))
+          }
+        </nav>
+        <div
+          class="flex flex-col gap-2 text-sm/7 text-olive-600 sm:flex-row sm:items-center sm:justify-between dark:text-olive-500"
+        >
+          <p>
+            <span
+              class="text-base font-bold tracking-tight text-olive-950 dark:text-white"
+              >lector</span
+            > &middot; Latin for &ldquo;reader&rdquo;
+          </p>
+          <p>
+            Built by <a
+              href="https://lukeboyle.com"
+              class="text-olive-700 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white"
+              >Luke Boyle</a
+            >
+          </p>
+        </div>
       </div>
     </Container>
   </div>

@@ -1,0 +1,100 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const SUPPORT = "support@lector.dev";
+---
+
+<Base
+  title="Privacy Policy | Lector"
+  description="What data Lector collects — almost none. The self-hosted app keeps your data on your own hardware; this site uses privacy-friendly analytics."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / privacy</p>
+      <h1>Privacy Policy</h1>
+      <p class="post-meta">Last updated 8 July 2026</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>
+        Lector is built privacy-first. The self-hosted app keeps everything on
+        your own hardware, and this website collects no personal data. Here's the
+        full picture.
+      </p>
+
+      <div class="callout">
+        <p>
+          <strong>Short version.</strong> Self-host and we see nothing — your
+          reading, vocabulary, and progress never leave your server. This site
+          uses cookieless, privacy-friendly analytics. The cloud service (coming
+          soon) will store only what's needed to run your account, with payments
+          handled by Paddle.
+        </p>
+      </div>
+
+      <h2>The self-hosted app</h2>
+      <p>
+        When you run Lector on your own hardware, <strong>we collect nothing</strong>.
+        Your books, vocabulary, cloze history, journal entries, and settings live
+        in a SQLite file on your server. We have no access to it, no telemetry,
+        and no accounts. Any translation or AI features you enable talk directly
+        from your server to the provider you configure (the Claude API, or a local
+        model) using your own keys — not through us.
+      </p>
+
+      <h2>This website</h2>
+      <p>
+        We use <a href="https://plausible.io/" target="_blank" rel="noopener noreferrer">Plausible</a>,
+        a privacy-friendly analytics tool, to understand aggregate traffic (page
+        views, referrers, rough country). It sets <strong>no cookies</strong>,
+        collects <strong>no personal data</strong>, and doesn't track you across
+        sites. We don't run advertising or third-party trackers.
+      </p>
+
+      <h2>The cloud service</h2>
+      <p>
+        The managed cloud service isn't available yet. When it launches, it will
+        collect only what's needed to provide it:
+      </p>
+      <ul>
+        <li>
+          <strong>Account.</strong> Your email address and authentication
+          details, so you can sign in and we can contact you about your account.
+        </li>
+        <li>
+          <strong>Billing.</strong> Payments are processed by
+          <a href="https://www.paddle.com/" target="_blank" rel="noopener noreferrer">Paddle</a>,
+          our merchant of record. Paddle handles your payment details under
+          <a href="https://www.paddle.com/legal/privacy" target="_blank" rel="noopener noreferrer">its own privacy policy</a>
+          — <strong>we never see or store your card number</strong>. We receive
+          only your subscription status and plan.
+        </li>
+        <li>
+          <strong>Your content.</strong> Text you import or translate is stored to
+          provide the service and may be sent to a translation provider (e.g. the
+          Claude API) to return results. If you enable bring-your-own-key, that
+          processing uses your keys. We don't use your content to train models and
+          we don't sell it.
+        </li>
+      </ul>
+
+      <h2>Your rights</h2>
+      <p>
+        You can request access to, export of, or deletion of your data at any
+        time. If you cancel, your data is retained so you can export it or renew,
+        and is deleted on request. Depending on where you live, you may have
+        additional rights under laws such as the GDPR or the Australian Privacy
+        Principles — we'll honour them.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Privacy questions or requests? Email
+        <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>. Lector is operated by Luke
+        Boyle.
+      </p>
+    </div>
+  </div>
+</Base>
