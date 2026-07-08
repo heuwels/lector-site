@@ -1,5 +1,98 @@
 ---
 import Base from "../layouts/Base.astro";
+import Container from "../components/Container.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Heading from "../components/Heading.astro";
+import Subheading from "../components/Subheading.astro";
+import Text from "../components/Text.astro";
+import Button from "../components/Button.astro";
+import ActionLink from "../components/ActionLink.astro";
+import Faqs from "../components/Faqs.astro";
+import { languages } from "../data/languages";
+
+const GITHUB = "https://github.com/heuwels/lector";
+
+// Feature "moments" — each pairs a real screenshot with a capability. Rendered
+// as alternating rows; screenshots live in /public/images.
+const moments = [
+  {
+    eyebrow: "Read",
+    title: "Turn any book into a lesson.",
+    body: "Import an EPUB, paste an article, or pull one from a URL. Lector renders it in clean Literata typography and colours every word by how well you know it — new, learning, known. Click any word for an instant on-device translation, and an LLM fills in for the rare ones.",
+    img: "/images/reader.png",
+    alt: "Lector reader showing a novel with colour-coded word states and click-to-translate",
+  },
+  {
+    eyebrow: "Practice",
+    title: "Drill the words that matter first.",
+    body: "Thousands of Tatoeba sentence pairs, ordered by frequency so you learn the words you'll actually meet. Multiple-choice and typing modes, scheduled by a spaced-repetition system that brings each sentence back exactly when you're about to forget it.",
+    img: "/images/cloze.png",
+    alt: "Cloze practice with multiple-choice options and mastery tracking",
+  },
+  {
+    eyebrow: "Remember",
+    title: "Mine vocabulary. Push it to Anki.",
+    body: "Save words as you read and Lector builds your personal vocabulary database, tracking known and learning states. When you're ready, export mined words as Basic or Cloze cards straight into Anki over AnkiConnect — no copy-paste, no plugins.",
+    img: "/images/anki.png",
+    alt: "Export-to-Anki dialog choosing Basic or Cloze card type",
+  },
+  {
+    eyebrow: "Understand",
+    title: "A tutor on call, and an editor for your writing.",
+    body: "Ask the built-in LLM tutor grammar questions in plain language. Keep a journal in your target language and get inline corrections with explanations and before/after comparisons. Works with the Claude API or a local model — your choice.",
+    img: "/images/chat.png",
+    alt: "LLM tutor chat showing a grammar conversation",
+  },
+  {
+    eyebrow: "Organise",
+    title: "A library that stays tidy.",
+    body: "Group your collections however you think about them, drag to reorder, and drop new books straight into a group. Reading progress follows each collection so you always know where you left off.",
+    img: "/images/library-groups.png",
+    alt: "Library organised into collapsible groups with drag-to-reorder and reading progress",
+  },
+];
+
+// The remaining capabilities, kept as a compact list so nothing's lost.
+const extras = [
+  ["Text-to-speech", "Optional Google Cloud TTS to hear words and sentences pronounced correctly."],
+  ["Web & paste import", "Pull an article from any URL via Readability, or paste text directly."],
+  ["Offline-first storage", "SQLite server-side, IndexedDB client-side. No cloud accounts, no sync."],
+  ["Statistics dashboard", "CEFR fluency, vocabulary growth, reading streaks, activity heatmaps, cloze mastery."],
+  ["AI translation with a fallback", "Claude or a local LLM on demand, dropping to a 2,000-word offline dictionary."],
+  ["Any language reads", "The reader works with any language; packs add cloze banks and dictionaries."],
+];
+
+const completeLanguages = languages.filter((l) => l.status === "complete");
+
+const faqs = [
+  {
+    question: "Is it really free?",
+    answer:
+      "Yes. Lector is open source and self-hosted — deploy it once and use it forever, with no subscription or feature gates. For comparison, LingQ runs $12.99/mo and Clozemaster Pro about $13/mo. The only optional cost is your own LLM API usage if you don't run a local model.",
+  },
+  {
+    question: "Where does my data live?",
+    answer:
+      "On your hardware. Your reading history, vocabulary, and progress sit in a single SQLite file inside a Docker volume. No third-party databases, no analytics, no telemetry. Backing up is one file copy — rsync, borg, or a USB drive.",
+  },
+  {
+    question: "Do I need an API key or a GPU?",
+    answer:
+      "No. The reader, cloze practice, and vocabulary tracking all work offline against a built-in dictionary. AI translation, the tutor, and writing correction are the only features that call out — and you can point those at a local model (Ollama, Llama, Gemma) instead of the Claude API.",
+  },
+  {
+    question: "Which languages are supported?",
+    answer:
+      `The reader works with any language. Language packs — which add frequency-banded cloze banks and on-device dictionaries — currently cover ${completeLanguages
+        .map((l) => l.endonym)
+        .join(", ")}, with more on the way. Adding a pair is a straightforward pull request.`,
+  },
+  {
+    question: "How is this different from LingQ, Clozemaster, or Anki?",
+    answer:
+      "It's all three, self-hosted and joined up: LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, and first-party AnkiConnect export — plus an LLM tutor and a writing journal. One app, your server, your data.",
+  },
+];
 ---
 
 <Base
@@ -7,377 +100,197 @@ import Base from "../layouts/Base.astro";
   description="A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data."
 >
   <!-- Hero -->
-  <header class="hero">
-    <div class="container">
-      <img src="/logo.svg" alt="Lector logo" class="hero-logo" />
-      <h1>lector</h1>
-      <p class="pronunciation">Latin for "reader"</p>
-      <p class="tagline">
-        A self-hosted language learning reader. Read, practice, remember. All on
-        your own terms.
-      </p>
-      <nav class="hero-nav">
-        <a href="/docs/" class="hero-nav__primary">Get Started</a>
-        <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
-        <a href="#features">Features</a>
-        <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
-        <a href="#languages">Languages</a>
-        <span class="hero-nav__sep" aria-hidden="true">&middot;</span>
-        <a href="#screenshots">Screenshots</a>
-      </nav>
-      <div class="hero-mockup">
-        <div class="mockup-browser">
-          <div class="mockup-browser__bar">
-            <span class="mockup-dot"></span>
-            <span class="mockup-dot"></span>
-            <span class="mockup-dot"></span>
+  <section class="pt-14 pb-20 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Self-hosted &middot; open source &middot; yours forever</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Read your way into a <span class="italic">new language</span>.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        Lector turns the books and articles you actually want to read into a
+        complete course. Click any word to translate, mine vocabulary as you go,
+        drill it with frequency-ordered cloze, and push it to Anki — all running
+        on your own hardware.
+      </Text>
+      <div class="mt-2 flex flex-wrap items-center justify-center gap-3">
+        <Button href="/docs/#installation" size="lg">Get started</Button>
+        <Button href={GITHUB} variant="soft" size="lg" target="_blank" rel="noopener">
+          View source on GitHub
+        </Button>
+      </div>
+    </Container>
+
+    <Container class="mt-14">
+      <div
+        class="mx-auto max-w-5xl rounded-2xl bg-olive-950/2.5 p-2 ring-1 ring-olive-950/5 dark:bg-white/5 dark:ring-white/10"
+      >
+        <img
+          src="/images/reader.png"
+          alt="Lector reader view with click-to-translate and word-state colouring"
+          width="1600"
+          height="1000"
+          class="w-full rounded-xl ring-1 ring-black/10"
+        />
+      </div>
+    </Container>
+  </section>
+
+  <!-- Feature moments -->
+  <section class="py-12">
+    <Container class="flex flex-col gap-6">
+      {
+        moments.map((m, i) => (
+          <div class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5">
+            <div class:list={["flex flex-col gap-4", i % 2 === 1 && "lg:order-2"]}>
+              <Eyebrow>{m.eyebrow}</Eyebrow>
+              <Subheading class="text-3xl/9 sm:text-4xl/12">{m.title}</Subheading>
+              <Text class="text-pretty">{m.body}</Text>
+            </div>
+            <div class:list={[i % 2 === 1 && "lg:order-1"]}>
+              <img
+                src={m.img}
+                alt={m.alt}
+                loading="lazy"
+                class="w-full rounded-xl ring-1 ring-black/10"
+              />
+            </div>
           </div>
-          <img
-            src="/images/reader.png"
-            alt="Lector reader view"
-            style="width: 100%; border-radius: 0 0 8px 8px; display: block"
-          />
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Pitch -->
-  <section class="pitch">
-    <div class="container">
-      <p class="pitch-intro">
-        <strong>Lector</strong> is a self-hosted language learning reader that
-        combines LingQ-style reading with Clozemaster-style cloze practice,
-        AI-powered writing correction, an LLM tutor, and direct AnkiConnect
-        integration. Import EPUBs or web articles, click words to translate,
-        mine vocabulary, drill sentences, and write journal entries with grammar
-        feedback. All from a single app running on your own hardware.
-      </p>
-    </div>
+        ))
+      }
+    </Container>
   </section>
 
-  <hr class="section-rule" />
-
-  <!-- Features -->
-  <section id="features" class="pitch">
-    <div class="container">
-      <h2>What it <span class="accent">does</span></h2>
-      <div class="features-grid">
-        <div class="feature">
-          <div class="feature-icon">&#x1F4D6;</div>
-          <h3>EPUB &amp; Markdown Reader</h3>
-          <p>
-            Beautiful Literata serif typography with an on-device dictionary for
-            rapid translation, falling back to an LLM for uncommon words or
-            phrases. Track word states as you read: new, learning, known.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F5C2;&#xFE0F;</div>
-          <h3>Collections &amp; Groups</h3>
-          <p>
-            Organise your library into groups, drag to reorder collections and
-            lessons, and add new books straight into a group.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F9E9;</div>
-          <h3>Cloze Practice</h3>
-          <p>
-            2900+ pre-loaded sentence pairs from Tatoeba, ordered by word
-            frequency. Multiple choice and typing modes with SRS scheduling.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F4DD;</div>
-          <h3>Vocabulary Mining</h3>
-          <p>
-            Save words while reading, track known and learning states. Build
-            your personal vocabulary database as you go.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F4E6;</div>
-          <h3>AnkiConnect</h3>
-          <p>
-            Push cards directly to Anki Desktop from your browser. Just
-            browser-to-localhost over AnkiConnect.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F310;</div>
-          <h3>Web &amp; Paste Import</h3>
-          <p>
-            Extract articles from any URL via Readability, or paste text
-            directly. Turn anything into reading practice.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F50A;</div>
-          <h3>Text-to-Speech</h3>
-          <p>
-            Optional Google Cloud TTS integration for hearing words and
-            sentences pronounced correctly.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F916;</div>
-          <h3>AI Translation</h3>
-          <p>
-            Claude API or local LLMs (Ollama, Llama, Gemma) for translating
-            uncommon words and phrases on demand. Falls back to a local
-            2000-word dictionary when offline.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x270D;&#xFE0F;</div>
-          <h3>Writing Journal</h3>
-          <p>
-            Write journal entries in your target language and get AI-powered
-            grammar corrections with inline highlighting, explanations, and
-            before/after comparisons.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F4AC;</div>
-          <h3>LLM Tutor Chat</h3>
-          <p>
-            An always-available AI tutor for asking grammar questions, getting
-            explanations, and practising your target language. Works with Claude
-            or local LLMs.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F4CA;</div>
-          <h3>Statistics Dashboard</h3>
-          <p>
-            Track your CEFR fluency level, vocabulary growth, reading streaks,
-            activity heatmaps, and cloze mastery. See your progress at a glance.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">&#x1F4BE;</div>
-          <h3>Offline-First Storage</h3>
-          <p>
-            SQLite server-side, IndexedDB client-side. All your data stays
-            local. No cloud accounts, no sync services, no data harvesting.
-          </p>
-        </div>
+  <!-- Everything else -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>In the box</Eyebrow>
+        <Subheading>Everything else, without the sprawl.</Subheading>
       </div>
-    </div>
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          extras.map(([title, body]) => (
+            <div class="flex flex-col gap-2 border-t border-olive-950/10 pt-4 dark:border-white/10">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
   </section>
-
-  <hr class="section-rule" />
 
   <!-- Languages -->
-  <section id="languages" class="pitch">
-    <div class="container">
-      <h2>Supported <span class="accent">languages</span></h2>
-      <div class="features-grid">
-        <a class="feature" href="/reference-data/afrikaans/">
-          <div class="feature-icon">&#x1F1FF;&#x1F1E6;</div>
-          <h3>Afrikaans &rarr; English</h3>
-          <p>
-            2900+ sentence pairs, full dictionary, and word frequency data. The
-            most complete language pack. <strong>View reference data &rarr;</strong>
-          </p>
-        </a>
-        <a class="feature" href="/reference-data/spanish/">
-          <div class="feature-icon">&#x1F1EA;&#x1F1F8;</div>
-          <h3>Spanish &rarr; English</h3>
-          <p>
-            Full dictionary, tap-to-define, and frequency-banded cloze &mdash; at
-            Afrikaans parity. A community Anki deck for core vocabulary.
-            <strong>View reference data &rarr;</strong>
-          </p>
-        </a>
-        <a class="feature" href="/reference-data/german/">
-          <div class="feature-icon">&#x1F1E9;&#x1F1EA;</div>
-          <h3>German &rarr; English</h3>
-          <p>
-            Full dictionary, tap-to-define, and frequency-banded cloze &mdash; at
-            Afrikaans parity. Curated community Anki decks for flashcards.
-            <strong>View reference data &rarr;</strong>
-          </p>
-        </a>
-        <a class="feature" href="/reference-data/french/">
-          <div class="feature-icon">&#x1F1EB;&#x1F1F7;</div>
-          <h3>French &rarr; English</h3>
-          <p>
-            Full dictionary, tap-to-define, and frequency-banded cloze &mdash; at
-            Afrikaans parity. A community Anki deck for core vocabulary.
-            <strong>View reference data &rarr;</strong>
-          </p>
-        </a>
-        <a class="feature" href="/reference-data/dutch/">
-          <div class="feature-icon">&#x1F1F3;&#x1F1F1;</div>
-          <h3>Dutch &rarr; English</h3>
-          <p>
-            Full dictionary, tap-to-define, and frequency-banded cloze &mdash; at
-            Afrikaans parity. A community Anki deck for core vocabulary.
-            <strong>View reference data &rarr;</strong>
-          </p>
-        </a>
+  <section id="languages" class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Language packs</Eyebrow>
+        <Subheading>Languages, ready to read.</Subheading>
+        <Text class="text-pretty">
+          Each pack ships a frequency-banded cloze bank and an on-device
+          dictionary, at the same depth. The reader itself works with any
+          language.
+        </Text>
       </div>
-      <h3 style="text-align: center; margin-top: 3rem;">Language roadmap</h3>
-      <div class="features-grid">
-        <div class="feature">
-          <div class="feature-icon">⚡</div>
-          <h3>Next up &mdash; quick wins</h3>
-          <p style="font-size: 1.5rem; margin: 0 0 0.5rem;">🇮🇹 🇵🇹</p>
-          <p>
-            <strong>Italian, Portuguese.</strong> Latin-script languages that
-            slot straight into the existing pipeline &mdash; dictionary,
-            frequency-banded cloze, and tap-to-define.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🧭</div>
-          <h3>On the horizon &mdash; bigger lifts</h3>
-          <p style="font-size: 1.5rem; margin: 0 0 0.5rem;">🇷🇺 🇨🇳 🇯🇵</p>
-          <p>
-            <strong>Russian</strong> is next. <strong>Mandarin</strong> and
-            <strong>Japanese</strong> follow as a pair &mdash; they need
-            word-segmentation (those scripts don't put spaces between words) and a
-            pinyin / furigana reading layer, so they're a larger, shared effort.
-          </p>
-        </div>
+
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          completeLanguages.map((lang) => (
+            <a
+              href={`/reference-data/${lang.slug}/`}
+              class="group flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <span class="text-3xl">{lang.flag}</span>
+              <div class="flex flex-col gap-1">
+                <h3 class="font-display text-2xl/7 text-olive-950 dark:text-white">
+                  {lang.name}
+                </h3>
+                <p class="text-sm/6 text-olive-600 dark:text-olive-400">
+                  {lang.endonym}
+                </p>
+              </div>
+              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                Reference data
+                <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
+                  <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
       </div>
-      <p
-        style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;"
+
+      <div
+        class="flex flex-col gap-3 rounded-xl border border-olive-950/10 p-6 sm:flex-row sm:items-center sm:justify-between dark:border-white/10"
       >
-        The reader itself works with any language. Language packs add sentence
-        banks and dictionaries for cloze practice. Want your language?
-        <a href="https://github.com/heuwels/lector">Open a PR</a> &ndash; adding a
-        new language pair is straightforward.
-      </p>
-    </div>
+        <div class="flex flex-col gap-1">
+          <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
+            <span class="mr-2">🇮🇹 🇵🇹 🇷🇺 🇨🇳 🇯🇵</span> On the roadmap
+          </p>
+          <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+            Italian and Portuguese slot straight in. Russian is next; Mandarin
+            and Japanese follow as a pair (word-segmentation + a reading layer).
+          </p>
+        </div>
+        <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">
+          Add your language
+        </Button>
+      </div>
+    </Container>
   </section>
 
-  <hr class="section-rule" />
+  <!-- Why self-host -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Why self-host</Eyebrow>
+        <Subheading>Your course shouldn't rent your progress back to you.</Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          [
+            ["Your data, your server", "Reading history, vocabulary, and progress live in a SQLite file on your hardware. No third parties, no telemetry."],
+            ["No subscriptions", "Deploy once, learn forever. No monthly fees, no premium tiers, no feature gates."],
+            ["Works offline", "Reading, cloze, and vocabulary all run without a connection. Only AI features need the internet."],
+            ["Simple backup", "One SQLite file, one Docker volume. rsync it, borg it, or copy it to a USB drive."],
+          ].map(([title, body]) => (
+            <div class="flex flex-col gap-2 rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
 
-  <!-- Principles -->
-  <section class="principles">
-    <div class="container">
-      <h2>Why <span class="accent">self-host</span></h2>
-      <div class="principles-grid">
-        <div class="principle">
-          <h3>Your data, your server</h3>
-          <p>
-            Your reading history, vocabulary, and progress live in a SQLite file
-            on your hardware. No third-party databases, no analytics, no
-            telemetry.
-          </p>
-        </div>
-        <div class="principle">
-          <h3>No subscriptions</h3>
-          <p>
-            Deploy once, learn forever. No monthly fees, no premium tiers, no
-            feature gates. LingQ charges $12.99/mo, Clozemaster Pro is ~$13/mo.
-            Lector is free.
-          </p>
-        </div>
-        <div class="principle">
-          <h3>Works offline</h3>
-          <p>
-            The reader, cloze practice, and vocabulary tracking all work without
-            internet. AI translation is the only feature that needs a
-            connection.
-          </p>
-        </div>
-        <div class="principle">
-          <h3>Simple backup</h3>
-          <p>
-            One SQLite file, one Docker volume. Back it up however you like:
-            rsync, borg, or just copy it to a USB drive.
-          </p>
+  <!-- Quick install -->
+  <section id="install" class="py-16">
+    <Container class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+      <div class="flex flex-col gap-6">
+        <Eyebrow>Get started</Eyebrow>
+        <Subheading>Running in about a minute.</Subheading>
+        <Text class="text-pretty">
+          One Docker container, one volume. Drop this into a
+          <code class="rounded bg-olive-950/10 px-1.5 py-0.5 font-mono text-[0.85em] dark:bg-white/10">docker-compose.yml</code>
+          and bring it up.
+        </Text>
+        <div class="flex flex-wrap gap-3">
+          <Button href="/docs/#installation" size="lg">Read the docs</Button>
+          <ActionLink href="/docs/#configuration">Configuration &amp; env vars</ActionLink>
         </div>
       </div>
-    </div>
-  </section>
-
-  <hr class="section-rule" />
-
-  <!-- Screenshots -->
-  <section id="screenshots" class="screenshots">
-    <div class="container container--wide">
-      <h2>See it in <span class="accent">action</span></h2>
-      <div class="screenshot-grid">
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/reader.png"
-            alt="Lector reader showing an Afrikaans novel with colour-coded word states"
-            loading="lazy"
-          />
-          <figcaption>
-            Reader: EPUB with click-to-translate and word state tracking
-          </figcaption>
-        </figure>
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/cloze.png"
-            alt="Cloze practice with multiple choice options and mastery tracking"
-            loading="lazy"
-          />
-          <figcaption>
-            Cloze practice: sentence drilling with SRS scheduling
-          </figcaption>
-        </figure>
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/vocab.png"
-            alt="Vocabulary table with word states, translations, and Anki sync"
-            loading="lazy"
-          />
-          <figcaption>
-            Vocabulary: mined words with known/learning states
-          </figcaption>
-        </figure>
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/anki.png"
-            alt="Export-to-Anki dialog choosing Basic or Cloze card type — first-party AnkiConnect integration"
-            loading="lazy"
-          />
-          <figcaption>
-            Anki: export mined words as Basic or Cloze cards, synced straight to
-            your decks
-          </figcaption>
-        </figure>
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/library-groups.png"
-            alt="Library organised into collapsible groups with drag-to-reorder and reading progress"
-            loading="lazy"
-          />
-          <figcaption>
-            Library: collections organised into groups, drag to reorder
-          </figcaption>
-        </figure>
-        <figure class="screenshot-card" onclick="zoomImage(this)">
-          <img
-            src="/images/chat.png"
-            alt="LLM tutor chat showing an Afrikaans grammar conversation"
-            loading="lazy"
-          />
-          <figcaption>
-            LLM Tutor: ask grammar questions and get detailed explanations
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <hr class="section-rule" />
-
-  <!-- Quick Install -->
-  <section class="install" id="install">
-    <div class="container">
-      <h2>Get <span class="accent">started</span></h2>
-      <pre><code><span class="comment"># Create a directory for Lector</span>
+      <div
+        class="overflow-x-auto rounded-2xl bg-olive-950 p-6 font-mono text-sm/6 text-olive-100 ring-1 ring-black/10 dark:bg-black/40"
+      >
+        <pre><code><span class="text-olive-400"># Create a directory for Lector</span>
 mkdir lector && cd lector
 
-<span class="comment"># Create a docker-compose.yml</span>
+<span class="text-olive-400"># Create a docker-compose.yml</span>
 cat &lt;&lt;EOF &gt; docker-compose.yml
 services:
   lector:
@@ -392,39 +305,46 @@ services:
       - ./data:/app/data
 EOF
 
-<span class="comment"># Start it up</span>
+<span class="text-olive-400"># Start it up</span>
 docker compose up -d</code></pre>
-      <p>
-        Then open <code>http://your-server:3400</code> in your browser. That's
-        it.
-      </p>
-      <p>
-        See the <a href="/docs/">full documentation</a> for environment
-        variables, AnkiConnect setup, and reverse proxy configuration.
-      </p>
-    </div>
+      </div>
+    </Container>
   </section>
 
-  <script is:inline>
-    function zoomImage(figure) {
-      var img = figure.querySelector("img");
-      if (!img) return;
-      var overlay = document.createElement("div");
-      overlay.className = "zoom-overlay";
-      var clone = document.createElement("img");
-      clone.src = img.src;
-      clone.alt = img.alt;
-      overlay.appendChild(clone);
-      document.body.appendChild(overlay);
-      requestAnimationFrame(function () {
-        overlay.classList.add("zoom-overlay--active");
-      });
-      overlay.addEventListener("click", function () {
-        overlay.classList.remove("zoom-overlay--active");
-        overlay.addEventListener("transitionend", function () {
-          overlay.remove();
-        });
-      });
-    }
-  </script>
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Questions</Eyebrow>
+        <Subheading>Good to know.</Subheading>
+        <Text class="text-pretty">
+          Still curious? The <a href="/docs/" class="font-medium underline underline-offset-4">docs</a>
+          cover installation, reverse proxies, AnkiConnect, and every environment variable.
+        </Text>
+      </div>
+      <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+          Start reading in your <span class="italic">target language</span> today.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Free, open source, and running on your own server in a minute.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href="/docs/#installation" size="lg" color="light">Get started</Button>
+          <Button href={GITHUB} variant="plain" size="lg" color="light" target="_blank" rel="noopener">
+            View source on GitHub
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
 </Base>

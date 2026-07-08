@@ -1,0 +1,237 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Button from "../../components/Button.astro";
+
+const GITHUB = "https://github.com/heuwels/lector";
+
+// Self-hosted is the real, free, recommended tier. The cloud tiers are the
+// planned managed option (heuwels/lector#224) — shown but not yet available.
+const tiers = [
+  {
+    name: "Self-hosted",
+    price: "$0",
+    period: "forever",
+    badge: "Recommended",
+    tagline: "Run it yourself. Your server, your data, no account.",
+    features: [
+      "Every feature — reader, cloze, mining, journal, tutor",
+      "Unlimited everything, no caps",
+      "Your data never leaves your hardware",
+      "Bring your own LLM keys, or run a fully local model",
+      "Community support on GitHub & Discord",
+    ],
+    cta: { label: "Get started", href: "/docs/#installation" },
+    featured: true,
+  },
+  {
+    name: "Cloud",
+    price: "$5",
+    period: "/month",
+    tagline:
+      "We host it for you — no Docker, no setup. For when you'd rather just read.",
+    features: [
+      "Fully managed — nothing to install or maintain",
+      "Managed translation with a monthly allowance",
+      "Automatic backups and updates",
+      "Bring-your-own-key toggle lifts caps at the same price",
+      "Email support",
+    ],
+    note: "or $50/year — two months free",
+    cta: { label: "Coming soon", href: null },
+  },
+  {
+    name: "Cloud Plus",
+    price: "$12",
+    period: "/month",
+    tagline: "For heavy readers who want the whole thing handled.",
+    features: [
+      "Everything in Cloud",
+      "A much larger monthly translation allowance",
+      "Priority support",
+      "Early access to new language packs",
+    ],
+    note: "or ~$120/year — two months free",
+    cta: { label: "Coming soon", href: null },
+  },
+];
+---
+
+<Base
+  title="Pricing | Lector"
+  description="Lector is self-hosted and free forever. Managed cloud plans — for when you'd rather we ran it — are on the way."
+>
+  <PageHeader
+    title="Pricing"
+    description="Lector is self-hosted and free — forever. Managed cloud plans, for when you'd rather not run a server yourself, are on the way."
+  >
+    <Fragment slot="breadcrumb">
+      <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
+      pricing
+    </Fragment>
+  </PageHeader>
+
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
+        {
+          tiers.map((tier) => (
+            <div
+              class:list={[
+                "flex flex-col gap-6 rounded-2xl p-6 sm:p-8",
+                tier.featured
+                  ? "bg-olive-950 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+                  : "bg-olive-950/2.5 dark:bg-white/5",
+              ]}
+            >
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between gap-2">
+                  <h2
+                    class:list={[
+                      "font-display text-2xl/8 tracking-tight",
+                      tier.featured
+                        ? "text-white"
+                        : "text-olive-950 dark:text-white",
+                    ]}
+                  >
+                    {tier.name}
+                  </h2>
+                  {tier.badge && (
+                    <span class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+                      {tier.badge}
+                    </span>
+                  )}
+                </div>
+
+                <p class="flex items-baseline gap-1">
+                  <span
+                    class:list={[
+                      "font-display text-4xl tracking-tight",
+                      tier.featured
+                        ? "text-white"
+                        : "text-olive-950 dark:text-white",
+                    ]}
+                  >
+                    {tier.price}
+                  </span>
+                  <span
+                    class:list={[
+                      "text-sm/7",
+                      tier.featured ? "text-olive-300" : "text-olive-500",
+                    ]}
+                  >
+                    {tier.period}
+                  </span>
+                </p>
+
+                <p
+                  class:list={[
+                    "text-sm/6 text-pretty",
+                    tier.featured
+                      ? "text-olive-200"
+                      : "text-olive-700 dark:text-olive-400",
+                  ]}
+                >
+                  {tier.tagline}
+                </p>
+
+                <ul class="mt-2 flex flex-col gap-3">
+                  {tier.features.map((f) => (
+                    <li class="flex gap-3">
+                      <svg
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                        class:list={[
+                          "mt-1 size-4 shrink-0",
+                          tier.featured
+                            ? "text-white"
+                            : "text-olive-950 dark:text-white",
+                        ]}
+                      >
+                        <path
+                          d="M13 4.5 6.5 11 3.5 8"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      <span
+                        class:list={[
+                          "text-sm/6",
+                          tier.featured
+                            ? "text-olive-100"
+                            : "text-olive-700 dark:text-olive-400",
+                        ]}
+                      >
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="mt-auto flex flex-col gap-2">
+                {tier.cta.href ? (
+                  <Button
+                    href={tier.cta.href}
+                    size="lg"
+                    color={tier.featured ? "light" : "dark/light"}
+                    class="w-full"
+                  >
+                    {tier.cta.label}
+                  </Button>
+                ) : (
+                  <span class="inline-flex w-full cursor-default items-center justify-center rounded-full bg-olive-950/10 px-4 py-2 text-sm/7 font-medium text-olive-500 dark:bg-white/10 dark:text-olive-400">
+                    {tier.cta.label}
+                  </span>
+                )}
+                {tier.note && (
+                  <p
+                    class:list={[
+                      "text-center text-xs",
+                      tier.featured ? "text-olive-400" : "text-olive-500",
+                    ]}
+                  >
+                    {tier.note}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div
+        class="flex flex-col gap-3 rounded-xl border border-olive-950/10 p-6 text-sm/7 text-olive-700 sm:p-8 dark:border-white/10 dark:text-olive-400"
+      >
+        <p>
+          <span class="font-semibold text-olive-950 dark:text-white"
+            >Self-hosting is free and always will be.</span
+          > The cloud plans only exist to cover the server and managed API keys for
+          people who'd rather not run Docker — the app is the same either way.
+        </p>
+        <p>
+          No lock-in: export your data whenever you like. Prefer your own LLM
+          keys on a cloud plan? Flip the bring-your-own-key toggle — it lifts the
+          usage caps at the same price.
+        </p>
+        <p>
+          Questions about a plan? <a
+            href="/docs/"
+            class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+            >Read the docs</a
+          > or <a
+            href={GITHUB}
+            target="_blank"
+            rel="noopener"
+            class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+            >ask on GitHub</a
+          >.
+        </p>
+      </div>
+    </Container>
+  </section>
+</Base>

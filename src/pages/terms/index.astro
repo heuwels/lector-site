@@ -1,0 +1,126 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const SUPPORT = "support@lector.dev";
+const LICENSE = "https://github.com/heuwels/lector/blob/master/LICENSE";
+---
+
+<Base
+  title="Terms of Service | Lector"
+  description="The terms governing the Lector software, this website, and the managed cloud service."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / terms</p>
+      <h1>Terms of Service</h1>
+      <p class="post-meta">Last updated 8 July 2026</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>
+        Lector is two things: open-source software you can run yourself, and a
+        managed cloud service (coming soon) that runs it for you. These terms
+        cover both, plus this website. By using Lector you agree to them.
+      </p>
+
+      <div class="callout">
+        <p>
+          <strong>Short version.</strong> The self-hosted software is free and open
+          source, provided as-is with no warranty. The cloud service, when available,
+          is a paid subscription sold through Paddle; your data stays yours, and you
+          can cancel any time. See the <a href="/refunds/">Refund Policy</a> and
+          <a href="/privacy/">Privacy Policy</a>.
+        </p>
+      </div>
+
+      <h2>1. The self-hosted software</h2>
+      <p>
+        Lector is licensed under the GNU Affero General Public License v3.0
+        (AGPL-3.0-only). Your rights to use, modify, and redistribute it are
+        governed by that licence — read it in full
+        <a href={LICENSE} target="_blank" rel="noopener noreferrer">here</a>.
+      </p>
+      <p>
+        The software is provided <strong>&ldquo;as is&rdquo;, without warranty of
+        any kind</strong>, express or implied, including but not limited to the
+        warranties of merchantability, fitness for a particular purpose, and
+        non-infringement. When you self-host, you are responsible for your own
+        deployment, your data and backups, and any third-party services or API
+        keys you connect (and their costs). To the maximum extent permitted by
+        law, the authors are not liable for any claim, damages, or other
+        liability arising from the software or its use.
+      </p>
+
+      <h2>2. This website</h2>
+      <p>
+        This site is provided for information about Lector. We may change or
+        update its content at any time. Links to third-party sites (GitHub,
+        AnkiWeb, Discord, and others) are provided for convenience; we aren't
+        responsible for their content.
+      </p>
+
+      <h2>3. The cloud service</h2>
+      <p>
+        The managed cloud service is not yet available. When it launches, the
+        following will apply in addition to the terms above.
+      </p>
+      <ul>
+        <li>
+          <strong>Billing.</strong> Subscriptions are sold and processed by
+          Paddle.com Market Ltd, which acts as the merchant of record for your
+          purchase. Paddle's own
+          <a href="https://www.paddle.com/legal/checkout-buyer-terms" target="_blank" rel="noopener noreferrer">buyer terms</a>
+          also apply to the transaction. Refunds and cancellations are covered by
+          our <a href="/refunds/">Refund Policy</a>.
+        </li>
+        <li>
+          <strong>Your data.</strong> Content you import, create, or translate
+          remains yours. You grant us only the limited rights needed to operate
+          the service for you — storing your data, and processing text through
+          translation providers to return results. We don't sell your data.
+        </li>
+        <li>
+          <strong>Acceptable use.</strong> Don't use the service to break the
+          law, infringe others' rights, abuse the infrastructure, or resell
+          access. We may suspend or terminate accounts that do.
+        </li>
+        <li>
+          <strong>Availability.</strong> We aim for a reliable service but don't
+          guarantee uninterrupted uptime. Features and plans may change with
+          reasonable notice.
+        </li>
+      </ul>
+
+      <h2>4. Limitation of liability</h2>
+      <p>
+        To the maximum extent permitted by law, Lector and its authors are not
+        liable for indirect, incidental, or consequential damages, or for any
+        loss of data or profits, arising from your use of the software, this
+        website, or the cloud service. Nothing in these terms excludes liability
+        that cannot be excluded under applicable law, including your rights under
+        the Australian Consumer Law.
+      </p>
+
+      <h2>5. Changes to these terms</h2>
+      <p>
+        We may update these terms as the project and the cloud service evolve.
+        Material changes will be reflected by the &ldquo;last updated&rdquo; date
+        above. Continued use after a change means you accept the updated terms.
+      </p>
+
+      <h2>6. Contact</h2>
+      <p>
+        Questions about these terms? Email
+        <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>, or reach us on
+        <a href="https://github.com/heuwels/lector" target="_blank" rel="noopener noreferrer">GitHub</a>
+        or <a href="https://discord.gg/PD3GAh2Rj" target="_blank" rel="noopener noreferrer">Discord</a>.
+      </p>
+      <p class="muted" style="font-size: 0.85rem; color: var(--text-muted);">
+        Lector is operated by Luke Boyle. These terms are governed by the laws of
+        Australia.
+      </p>
+    </div>
+  </div>
+</Base>

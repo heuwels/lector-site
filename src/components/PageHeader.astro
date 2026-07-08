@@ -1,0 +1,32 @@
+---
+import Container from "./Container.astro";
+import Text from "./Text.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+---
+
+<section
+  class="border-b border-olive-950/5 bg-olive-950/2.5 dark:border-white/5 dark:bg-white/5"
+>
+  <Container class="flex flex-col gap-4 py-14 sm:py-20">
+    <div class="text-sm/7 text-olive-600 dark:text-olive-400">
+      <slot name="breadcrumb" />
+    </div>
+    <h1
+      class="font-display text-5xl/[1.05] tracking-tight text-olive-950 sm:text-6xl/[1.05] dark:text-white"
+    >
+      {title}
+    </h1>
+    {
+      description && (
+        <Text size="lg" class="max-w-2xl text-pretty">
+          {description}
+        </Text>
+      )
+    }
+  </Container>
+</section>

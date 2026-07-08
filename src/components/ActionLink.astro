@@ -1,0 +1,33 @@
+---
+// Inline "learn more" link with a trailing arrow.
+interface Props {
+  href: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "group inline-flex items-center gap-2 text-sm/7 font-medium text-olive-950 hover:text-sage-700 dark:text-white dark:hover:text-sage-300",
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+  <svg
+    viewBox="0 0 16 16"
+    fill="none"
+    aria-hidden="true"
+    class="size-4 transition-transform group-hover:translate-x-0.5"
+  >
+    <path
+      d="M6.5 3.5 11 8l-4.5 4.5"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+</a>

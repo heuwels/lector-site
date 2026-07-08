@@ -1,0 +1,21 @@
+---
+// Display headline (Instrument Serif). Defaults to <h1>; pass `as` to change.
+interface Props {
+  as?: "h1" | "h2";
+  color?: "dark/light" | "light";
+  class?: string;
+}
+const { as: Tag = "h1", color = "dark/light", class: className } = Astro.props;
+const colorClass =
+  color === "light" ? "text-white" : "text-olive-950 dark:text-white";
+---
+
+<Tag
+  class:list={[
+    "font-display tracking-tight text-balance",
+    colorClass,
+    className,
+  ]}
+>
+  <slot />
+</Tag>
