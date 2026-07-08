@@ -1,13 +1,12 @@
 ---
 import { SITE_PAGES } from "../data/nav";
+import { GITHUB, DISCORD, LOGIN_URL, SIGNUP_URL } from "../data/links";
 import Button from "./Button.astro";
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path === href || path.startsWith(href);
 
-const GITHUB = "https://github.com/heuwels/lector";
-const DISCORD = "https://discord.gg/PD3GAh2Rj";
 const linkBase =
   "text-sm/7 font-medium transition-colors max-lg:text-2xl/10";
 const linkIdle =
@@ -74,7 +73,12 @@ const linkActive = "text-olive-950 dark:text-white";
             ></path>
           </svg>
         </a>
-        <Button href="/docs/#installation" class="max-sm:hidden">Get started</Button>
+        <a
+          href={LOGIN_URL}
+          class="rounded-full px-3 py-1 text-sm/7 font-medium text-olive-700 transition-colors hover:bg-olive-950/5 hover:text-olive-950 max-sm:hidden dark:text-olive-400 dark:hover:bg-white/10 dark:hover:text-white"
+          >Log in</a
+        >
+        <Button href={SIGNUP_URL} class="max-sm:hidden">Get started</Button>
 
         <button
           command="show-modal"
@@ -150,9 +154,10 @@ const linkActive = "text-olive-950 dark:text-white";
               class:list={[linkBase, linkIdle]}>Discord</a
             >
           </div>
-          <div class="mt-auto">
-            <Button href="/docs/#installation" size="lg" class="w-full">
-              Get started
+          <div class="mt-auto flex flex-col gap-2">
+            <Button href={SIGNUP_URL} size="lg" class="w-full">Get started</Button>
+            <Button href={LOGIN_URL} variant="soft" size="lg" class="w-full">
+              Log in
             </Button>
           </div>
         </el-dialog-panel>

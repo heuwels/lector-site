@@ -1,0 +1,235 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import { DISCORD } from "../../data/links";
+import { PADDLE_CLIENT_TOKEN, SPONSOR_PRICES } from "../../data/paddle";
+
+const monthly = [
+  {
+    name: "Supporter",
+    price: "$3",
+    period: "/month",
+    priceId: SPONSOR_PRICES.supporter,
+    perks: [
+      "Discord Supporter badge",
+      "Your name in the supporters list",
+      "A vote on the roadmap",
+    ],
+    featured: false,
+  },
+  {
+    name: "Patron",
+    price: "$9",
+    period: "/month",
+    priceId: SPONSOR_PRICES.patron,
+    perks: [
+      "Everything in Supporter",
+      "A bigger thank-you",
+      "Early access to new features (coming soon)",
+    ],
+    featured: true,
+  },
+];
+
+const tips = [
+  { label: "$5", priceId: SPONSOR_PRICES.tip5 },
+  { label: "$20", priceId: SPONSOR_PRICES.tip20 },
+  { label: "$50", priceId: SPONSOR_PRICES.tip50 },
+];
+---
+
+<Base
+  title="Support Lector"
+  description="Lector is open source and free to self-host. If it's useful to you, chip in — recurring or one-off — and pick up a few supporter perks."
+>
+  <PageHeader
+    title="Support Lector"
+    description="Lector is open source and free to self-host — no VC, no ads, no data harvesting. If it's useful to you, chipping in keeps it going and unlocks a few supporter perks."
+  >
+    <Fragment slot="breadcrumb">
+      <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
+      support
+    </Fragment>
+  </PageHeader>
+
+  <section class="py-16">
+    <Container class="flex flex-col gap-14">
+      <!-- Monthly tiers -->
+      <div class="flex flex-col gap-6">
+        <h2 class="font-display text-3xl/9 tracking-tight text-olive-950 dark:text-white">
+          Become a supporter
+        </h2>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {
+            monthly.map((tier) => (
+              <div
+                class:list={[
+                  "flex flex-col gap-6 rounded-2xl p-6 sm:p-8",
+                  tier.featured
+                    ? "bg-olive-950 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+                    : "bg-olive-950/2.5 dark:bg-white/5",
+                ]}
+              >
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-center justify-between gap-2">
+                    <h3
+                      class:list={[
+                        "font-display text-2xl/8 tracking-tight",
+                        tier.featured ? "text-white" : "text-olive-950 dark:text-white",
+                      ]}
+                    >
+                      {tier.name}
+                    </h3>
+                    {tier.featured && (
+                      <span class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+                        Most support
+                      </span>
+                    )}
+                  </div>
+                  <p class="flex items-baseline gap-1">
+                    <span
+                      class:list={[
+                        "font-display text-4xl tracking-tight",
+                        tier.featured ? "text-white" : "text-olive-950 dark:text-white",
+                      ]}
+                    >
+                      {tier.price}
+                    </span>
+                    <span
+                      class:list={[
+                        "text-sm/7",
+                        tier.featured ? "text-olive-300" : "text-olive-500",
+                      ]}
+                    >
+                      {tier.period}
+                    </span>
+                  </p>
+                  <ul class="flex flex-col gap-3">
+                    {tier.perks.map((perk) => (
+                      <li class="flex gap-3">
+                        <svg
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          aria-hidden="true"
+                          class:list={[
+                            "mt-1 size-4 shrink-0",
+                            tier.featured ? "text-white" : "text-olive-950 dark:text-white",
+                          ]}
+                        >
+                          <path
+                            d="M13 4.5 6.5 11 3.5 8"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <span
+                          class:list={[
+                            "text-sm/6",
+                            tier.featured ? "text-olive-100" : "text-olive-700 dark:text-olive-400",
+                          ]}
+                        >
+                          {perk}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  data-price={tier.priceId}
+                  class:list={[
+                    "mt-auto inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm/7 font-medium transition-colors",
+                    tier.featured
+                      ? "bg-white text-olive-950 hover:bg-olive-100"
+                      : "bg-olive-950 text-white hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200",
+                  ]}
+                >
+                  Become a {tier.name}
+                </button>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- One-time tips -->
+      <div class="flex flex-col gap-6 rounded-2xl bg-olive-950/2.5 p-6 sm:p-8 dark:bg-white/5">
+        <div class="flex flex-col gap-2">
+          <h2 class="font-display text-3xl/9 tracking-tight text-olive-950 dark:text-white">
+            Or leave a tip
+          </h2>
+          <p class="text-base/7 text-olive-700 dark:text-olive-400">
+            A one-off, no strings. You'll still get the Discord Supporter badge
+            and a spot in the supporters list.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {
+            tips.map((tip) => (
+              <button
+                type="button"
+                data-price={tip.priceId}
+                class="inline-flex min-w-24 items-center justify-center rounded-full bg-olive-950/10 px-6 py-2.5 text-base font-medium text-olive-950 transition-colors hover:bg-olive-950/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
+              >
+                {tip.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- What you get -->
+      <div class="flex flex-col gap-4">
+        <h2 class="font-display text-2xl/8 tracking-tight text-olive-950 dark:text-white">
+          What supporters get
+        </h2>
+        <ul class="grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
+          {
+            [
+              ["Discord Supporter badge", "A coloured role in the Lector Discord."],
+              ["Supporters list", "Your name credited on the site as a thank-you."],
+              ["Roadmap input", "Recurring supporters get a say in what's built next."],
+              ["Early access", "Try new features and language packs first — coming soon."],
+            ].map(([title, body]) => (
+              <li class="flex flex-col gap-1 border-l-2 border-olive-950/10 pl-4 dark:border-white/10">
+                <span class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                  {title}
+                </span>
+                <span class="text-sm/6 text-olive-700 dark:text-olive-400">{body}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="max-w-3xl text-sm/7 text-olive-600 dark:text-olive-500">
+          Payments are handled by Paddle, our merchant of record — see the
+          <a href="/refunds/" class="font-medium text-olive-950 underline underline-offset-4 dark:text-white">refund policy</a>.
+          The Discord badge is granted by hand for now: after you support, say hi
+          in <a href={DISCORD} target="_blank" rel="noopener" class="font-medium text-olive-950 underline underline-offset-4 dark:text-white">the Discord</a>
+          and we'll sort it out.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Paddle.js overlay checkout -->
+  <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+  <script is:inline define:vars={{ token: PADDLE_CLIENT_TOKEN }}>
+    (function () {
+      if (window.Paddle) {
+        window.Paddle.Initialize({ token: token });
+      }
+      document.querySelectorAll("[data-price]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          if (window.Paddle) {
+            window.Paddle.Checkout.open({
+              items: [{ priceId: btn.getAttribute("data-price"), quantity: 1 }],
+            });
+          }
+        });
+      });
+    })();
+  </script>
+</Base>

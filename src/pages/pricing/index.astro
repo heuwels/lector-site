@@ -4,16 +4,17 @@ import Container from "../../components/Container.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import Button from "../../components/Button.astro";
 
-const GITHUB = "https://github.com/heuwels/lector";
+import { GITHUB, SIGNUP_URL } from "../../data/links";
 
-// Self-hosted is the real, free, recommended tier. The cloud tiers are the
-// planned managed option (heuwels/lector#224) — shown but not yet available.
+// Self-hosted is free and open source. The cloud tiers are the managed option
+// (heuwels/lector#224); billing runs through Paddle. Cloud is in beta — sign-up
+// is live at app.lector.dev, checkout is still being wired.
 const tiers = [
   {
     name: "Self-hosted",
     price: "$0",
     period: "forever",
-    badge: "Recommended",
+    badge: "Free & open source",
     tagline: "Run it yourself. Your server, your data, no account.",
     features: [
       "Every feature — reader, cloze, mining, journal, tutor",
@@ -23,12 +24,13 @@ const tiers = [
       "Community support on GitHub & Discord",
     ],
     cta: { label: "Get started", href: "/docs/#installation" },
-    featured: true,
+    featured: false,
   },
   {
     name: "Cloud",
     price: "$5",
     period: "/month",
+    badge: "Beta",
     tagline:
       "We host it for you — no Docker, no setup. For when you'd rather just read.",
     features: [
@@ -39,7 +41,8 @@ const tiers = [
       "Email support",
     ],
     note: "or $50/year — two months free",
-    cta: { label: "Coming soon", href: null },
+    cta: { label: "Start free", href: SIGNUP_URL },
+    featured: true,
   },
   {
     name: "Cloud Plus",
@@ -53,18 +56,18 @@ const tiers = [
       "Early access to new language packs",
     ],
     note: "or ~$120/year — two months free",
-    cta: { label: "Coming soon", href: null },
+    cta: { label: "Start free", href: SIGNUP_URL },
   },
 ];
 ---
 
 <Base
   title="Pricing | Lector"
-  description="Lector is self-hosted and free forever. Managed cloud plans — for when you'd rather we ran it — are on the way."
+  description="Lector is self-hosted and free forever. Or let us run it for you with Lector Cloud, from $5/month."
 >
   <PageHeader
     title="Pricing"
-    description="Lector is self-hosted and free — forever. Managed cloud plans, for when you'd rather not run a server yourself, are on the way."
+    description="Self-host Lector for free, forever. Or let us run it for you — Lector Cloud is in beta, from $5/month."
   >
     <Fragment slot="breadcrumb">
       <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
@@ -98,7 +101,14 @@ const tiers = [
                     {tier.name}
                   </h2>
                   {tier.badge && (
-                    <span class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+                    <span
+                      class:list={[
+                        "inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium",
+                        tier.featured
+                          ? "bg-white/15 text-white"
+                          : "bg-olive-950/10 text-olive-700 dark:bg-white/10 dark:text-olive-300",
+                      ]}
+                    >
                       {tier.badge}
                     </span>
                   )}
