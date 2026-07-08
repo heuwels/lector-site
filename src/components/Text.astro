@@ -1,0 +1,13 @@
+---
+// Muted body copy.
+interface Props {
+  size?: "md" | "lg";
+  class?: string;
+}
+const { size = "md", class: className } = Astro.props;
+const sizeClass = size === "lg" ? "text-lg/8" : "text-base/7";
+---
+
+<div class:list={[sizeClass, "text-olive-700 dark:text-olive-400", className]}>
+  <slot />
+</div>

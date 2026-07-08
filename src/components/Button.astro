@@ -1,0 +1,51 @@
+---
+// Oatmeal button — pill-shaped. Renders an <a> when `href` is set, else a
+// <button>. Variants: solid (default), soft, plain. Sizes: md, lg.
+interface Props {
+  href?: string;
+  variant?: "solid" | "soft" | "plain";
+  size?: "md" | "lg";
+  color?: "dark/light" | "light";
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  href,
+  variant = "solid",
+  size = "md",
+  color = "dark/light",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex shrink-0 items-center justify-center rounded-full text-sm/7 font-medium transition-colors";
+const gap = variant === "plain" ? "gap-2" : "gap-1";
+const sizes = { md: "px-3 py-1", lg: "px-4 py-2" }[size];
+
+const variants = {
+  solid:
+    color === "light"
+      ? "bg-white text-olive-950 hover:bg-olive-100 dark:bg-olive-100 dark:hover:bg-white"
+      : "bg-olive-950 text-white hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200",
+  soft: "bg-olive-950/10 text-olive-950 hover:bg-olive-950/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/20",
+  plain:
+    color === "light"
+      ? "text-white hover:bg-white/15 dark:hover:bg-white/10"
+      : "text-olive-950 hover:bg-olive-950/10 dark:text-white dark:hover:bg-white/10",
+}[variant];
+
+const classes = [base, gap, sizes, variants, className];
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button class:list={classes} {...rest}>
+      <slot />
+    </button>
+  )
+}

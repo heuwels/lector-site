@@ -1,0 +1,16 @@
+---
+// Small label above a section headline.
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "text-sm/7 font-semibold text-sage-700 dark:text-sage-300",
+    className,
+  ]}
+>
+  <slot />
+</div>

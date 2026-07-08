@@ -1,5 +1,9 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Subheading from "../../components/Subheading.astro";
+import Button from "../../components/Button.astro";
 import { languages } from "../../data/languages";
 
 export function getStaticPaths() {
@@ -12,6 +16,12 @@ export function getStaticPaths() {
 
 const { lang } = Astro.props;
 const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
+
+const cardClass =
+  "flex flex-col rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5";
+const tagClass =
+  "inline-block rounded-full bg-olive-950/10 px-2.5 py-0.5 text-xs font-medium text-olive-700 dark:bg-white/10 dark:text-olive-300";
+const metaClass = "text-xs text-olive-600 dark:text-olive-400";
 ---
 
 <Base
@@ -23,268 +33,185 @@ const maxBand = Math.max(1, ...(lang.bands?.map((b) => b.count) ?? []));
       : "data sources and recommended Anki decks"
   }.`}
 >
-  <header class="docs-header">
-    <div class="container">
-      <p class="breadcrumb">
-        <a href="/">lector</a> / <a href="/reference-data/">reference data</a> / {
-          lang.endonym
-        }
-      </p>
-      <h1>{lang.flag} {lang.endonym} reference data</h1>
-    </div>
-  </header>
+  <PageHeader title={`${lang.flag} ${lang.endonym} reference data`}>
+    <Fragment slot="breadcrumb">
+      <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
+      <a
+        href="/reference-data/"
+        class="hover:text-olive-950 dark:hover:text-white">reference data</a
+      > / {lang.endonym}
+    </Fragment>
+  </PageHeader>
 
-  <div class="container">
-    <div class="docs-body">
-      <p>{lang.blurb}</p>
+  <section class="py-16">
+    <Container class="flex flex-col gap-14">
+      <p class="max-w-3xl text-lg/8 text-olive-700 dark:text-olive-400">
+        {lang.blurb}
+      </p>
 
       {
         lang.downloads.length > 0 && (
-          <>
-            <h2>Downloads</h2>
-            <div class="rd-downloads">
+          <div class="flex flex-col gap-6">
+            <Subheading>Downloads</Subheading>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {lang.downloads.map((d) => (
-                <div class="rd-card">
-                  <div class="rd-card__head">
-                    <span class="tag">{d.format}</span>
-                    <span class="rd-meta">
+                <div class={cardClass}>
+                  <div class="mb-3 flex items-center justify-between gap-2">
+                    <span class={tagClass}>{d.format}</span>
+                    <span class={metaClass}>
                       {d.size} &middot; {d.license}
                     </span>
                   </div>
-                  <h3>{d.label}</h3>
-                  {d.note && <p class="rd-note">{d.note}</p>}
-                  <a class="rd-btn" href={d.file} download>
+                  <h3 class="text-lg/7 font-semibold text-olive-950 dark:text-white">
+                    {d.label}
+                  </h3>
+                  {d.note && (
+                    <p class="mt-2 mb-5 flex-1 text-sm/7 text-olive-700 dark:text-olive-400">
+                      {d.note}
+                    </p>
+                  )}
+                  <Button href={d.file} download class="mt-auto self-start">
                     Download
-                  </a>
+                  </Button>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )
       }
 
       {
         lang.recommendedDecks && lang.recommendedDecks.length > 0 && (
-          <>
-            <h2>Recommended Anki decks</h2>
-            <p>
+          <div class="flex flex-col gap-6">
+            <Subheading>Recommended Anki decks</Subheading>
+            <p class="max-w-3xl text-base/7 text-olive-700 dark:text-olive-400">
               Free, community-made decks on AnkiWeb. People have dedicated a lot
               of time to these, and they're an excellent way to build a core
               vocabulary foundation. In Lector you'll mine your own specific
               cards from what you read — so think of these as the frequency-first
               base to start from.
             </p>
-            <div class="rd-downloads">
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {lang.recommendedDecks.map((d) => (
-                <div class="rd-card">
-                  <div class="rd-card__head">
-                    <span class="tag">AnkiWeb</span>
-                    {d.meta && <span class="rd-meta">{d.meta}</span>}
+                <div class={cardClass}>
+                  <div class="mb-3 flex items-center justify-between gap-2">
+                    <span class={tagClass}>AnkiWeb</span>
+                    {d.meta && <span class={metaClass}>{d.meta}</span>}
                   </div>
-                  <h3>{d.label}</h3>
-                  <p class="rd-note">{d.detail}</p>
-                  <a
-                    class="rd-btn"
+                  <h3 class="text-lg/7 font-semibold text-olive-950 dark:text-white">
+                    {d.label}
+                  </h3>
+                  <p class="mt-2 mb-5 flex-1 text-sm/7 text-olive-700 dark:text-olive-400">
+                    {d.detail}
+                  </p>
+                  <Button
                     href={d.url}
+                    variant="soft"
                     target="_blank"
                     rel="noopener noreferrer"
+                    class="mt-auto self-start"
                   >
                     Open on AnkiWeb &rarr;
-                  </a>
+                  </Button>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )
       }
 
       {
         lang.stats.length > 0 && (
-          <>
-            <h2>What's inside</h2>
-            <div class="rd-stats">
+          <div class="flex flex-col gap-6">
+            <Subheading>What's inside</Subheading>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {lang.stats.map((s) => (
-                <div class="rd-stat">
-                  <span class="rd-stat__value">{s.value}</span>
-                  <span class="rd-stat__label">{s.label}</span>
+                <div class="flex flex-col gap-1 rounded-xl bg-olive-950/2.5 p-5 dark:bg-white/5">
+                  <span class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                    {s.value}
+                  </span>
+                  <span class="text-xs tracking-wide text-olive-600 uppercase dark:text-olive-400">
+                    {s.label}
+                  </span>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )
       }
 
       {
         lang.bands && (
-          <>
-            <h3>Anki deck — cards per frequency band</h3>
-            <p>
+          <div class="flex flex-col gap-4">
+            <h3 class="font-display text-2xl/8 tracking-tight text-olive-950 dark:text-white">
+              Anki deck — cards per frequency band
+            </h3>
+            <p class="max-w-3xl text-base/7 text-olive-700 dark:text-olive-400">
               The deck is split into six sub-decks by blended frequency. Study
               the most common words first (Core), then work down.
             </p>
-            <div class="rd-bands">
+            <div class="flex flex-col gap-2">
               {lang.bands.map((b) => (
-                <div class="rd-band">
-                  <span class="rd-band__name">{b.name}</span>
-                  <span class="rd-band__track">
+                <div class="grid grid-cols-[6rem_1fr_3.5rem] items-center gap-3 text-sm">
+                  <span class="text-right text-olive-600 dark:text-olive-400">
+                    {b.name}
+                  </span>
+                  <span class="h-4 overflow-hidden rounded bg-olive-950/10 dark:bg-white/10">
                     <span
-                      class="rd-band__bar"
+                      class="block h-full rounded bg-sage-600 dark:bg-sage-400"
                       style={`width: ${Math.round((b.count / maxBand) * 100)}%`}
                     />
                   </span>
-                  <span class="rd-band__count">{b.count.toLocaleString()}</span>
+                  <span class="text-right text-olive-600 tabular-nums dark:text-olive-400">
+                    {b.count.toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )
       }
 
       {
         lang.sources.length > 0 && (
-          <>
-            <h2>Provenance &amp; licensing</h2>
-            <p>
-              Built entirely from open data &mdash; nothing here is derived from
+          <div class="flex flex-col gap-6">
+            <Subheading>Provenance &amp; licensing</Subheading>
+            <p class="max-w-3xl text-base/7 text-olive-700 dark:text-olive-400">
+              Built entirely from open data — nothing here is derived from
               copyrighted dictionaries. See the{" "}
-              <a href="/methodology/#phase-1">methodology</a> for how frequency
-              drives vocabulary learning in Lector.
+              <a
+                href="/methodology/#phase-1"
+                class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+              >
+                methodology
+              </a>{" "}
+              for how frequency drives vocabulary learning in Lector.
             </p>
-            <ul class="rd-sources">
+            <ul class="flex max-w-3xl flex-col gap-3">
               {lang.sources.map((s) => (
-                <li>
-                  <strong>{s.label}:</strong> {s.detail}{" "}
+                <li class="border-l-2 border-olive-950/10 pl-4 text-base/7 text-olive-700 dark:border-white/10 dark:text-olive-400">
+                  <strong class="font-semibold text-olive-950 dark:text-white">
+                    {s.label}:
+                  </strong>{" "}
+                  {s.detail}{" "}
                   {s.url ? (
-                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+                    >
                       {s.license}
                     </a>
                   ) : (
-                    <span class="rd-meta">{s.license}</span>
+                    <span class={metaClass}>{s.license}</span>
                   )}
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         )
       }
-    </div>
-  </div>
-
-  <style>
-    .rd-downloads {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
-      margin: 1.25rem 0 2rem;
-    }
-    .rd-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-    }
-    .rd-card__head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .rd-meta {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-    .rd-card h3 {
-      margin: 0 0 0.4rem;
-      font-size: 1.05rem;
-    }
-    .rd-note {
-      color: var(--text-muted);
-      font-size: 0.88rem;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-      flex: 1;
-    }
-    .rd-btn {
-      align-self: flex-start;
-      background: var(--accent);
-      color: #fff;
-      padding: 0.5rem 1.25rem;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: background 0.2s;
-    }
-    .rd-btn:hover {
-      background: var(--accent-hover);
-      text-decoration: none;
-    }
-    .rd-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      margin: 1.25rem 0 2rem;
-    }
-    .rd-stat {
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
-    }
-    .rd-stat__value {
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-    .rd-stat__label {
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .rd-bands {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin: 1rem 0 2rem;
-    }
-    .rd-band {
-      display: grid;
-      grid-template-columns: 7rem 1fr 3.5rem;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.9rem;
-    }
-    .rd-band__name {
-      color: var(--text-muted);
-      text-align: right;
-    }
-    .rd-band__track {
-      background: var(--bg-alt);
-      border-radius: 4px;
-      height: 16px;
-      overflow: hidden;
-    }
-    .rd-band__bar {
-      display: block;
-      height: 100%;
-      background: var(--accent);
-      border-radius: 4px;
-    }
-    .rd-band__count {
-      font-variant-numeric: tabular-nums;
-      color: var(--text-muted);
-      text-align: right;
-    }
-    .rd-sources {
-      padding-left: 1.25rem;
-    }
-    .rd-sources li {
-      margin-bottom: 0.6rem;
-    }
-  </style>
+    </Container>
+  </section>
 </Base>

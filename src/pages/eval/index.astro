@@ -3,18 +3,20 @@ import Base from "../../layouts/Base.astro";
 ---
 <Base title="Which local LLM translates best? A reproducible eval">
 <style is:global>
-/* palette matched to lector-site "warm sand / sage" theme */
-:root{--bg:#f3eee3;--card:#fffdf7;--text:#2c2a23;--muted:#6b6356;--border:#e9e1d0;
---accent:#2f8a76;--accent-soft:#efe9dc;--best:#226a5a;--best-soft:#e3ede8;--hero-bg:#ece4d3;
+/* palette mapped onto the site's olive / sage Tailwind theme (@theme in global.css).
+   Categorical + semantic chart colours (language dots, tier dots, warn/delta reds)
+   are intentionally left as-is below — they encode data, not brand. */
+:root{--bg:var(--color-olive-100);--card:#fff;--text:var(--color-olive-950);--muted:var(--color-olive-600);--border:var(--color-olive-300);
+--accent:var(--color-sage-600);--accent-soft:oklch(94% 0.02 160);--best:var(--color-sage-700);--best-soft:oklch(93% 0.045 165);--hero-bg:var(--color-olive-200);
 --mono:"SF Mono","Fira Code","JetBrains Mono",Menlo}
-[data-theme="dark"]{--bg:#17140f;--card:#211d16;--text:#ece5d6;--muted:#a99e8a;--border:#352f24;
---accent:#54ab92;--accent-soft:#2a251c;--best:#7fc9b3;--best-soft:#21342c;--hero-bg:#1f1b14}
+[data-theme="dark"]{--bg:var(--color-olive-950);--card:var(--color-olive-900);--text:var(--color-olive-100);--muted:var(--color-olive-400);--border:var(--color-olive-800);
+--accent:var(--color-sage-300);--accent-soft:oklch(30% 0.03 160);--best:var(--color-sage-300);--best-soft:oklch(33% 0.05 165);--hero-bg:var(--color-olive-900)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);line-height:1.7;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;-webkit-font-smoothing:antialiased}
+font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
 code,pre{font-family:var(--mono),monospace}
 .wrap{max-width:880px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
 /* site chrome: header band, footer, theme toggle (mirrors lector-site) */
-.site-header{background:var(--hero-bg);border-bottom:1px solid var(--border);padding:3rem 0 2rem}
+.site-header{background:var(--hero-bg);border-bottom:1px solid var(--border);padding:3.5rem 0 2.5rem}
 .site-header .wrap{padding-top:0;padding-bottom:0}
 .breadcrumb{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}
 .breadcrumb a{color:var(--muted)}
@@ -29,9 +31,9 @@ code,pre{font-family:var(--mono),monospace}
 [data-theme="dark"] .theme-toggle .icon-sun{display:inline}
 [data-theme="light"] .theme-toggle .icon-moon{display:inline}
 :root:not([data-theme]) .theme-toggle .icon-moon{display:inline}
-h1{font-size:2rem;letter-spacing:-.02em;margin:0 0 .25rem}
-h2{font-size:1.5rem;margin:3rem 0 1rem;padding-top:1rem;border-top:1px solid var(--border)}
-h3{font-size:1.15rem;margin:2rem 0 .75rem}
+h1{font-family:var(--font-display);font-weight:400;font-size:2.75rem;line-height:1.05;letter-spacing:-.01em;margin:0 0 .25rem}
+h2{font-family:var(--font-display);font-weight:400;font-size:1.9rem;letter-spacing:-.01em;margin:3rem 0 1rem;padding-top:1.75rem;border-top:1px solid var(--border)}
+h3{font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem}
 .date{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem}
 .lead{font-size:1.1rem;color:var(--muted)}
 .repo{font-size:.92rem;margin:.4rem 0 1.4rem;padding:.55rem .9rem .55rem 1.1rem;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 6px 6px 0}
