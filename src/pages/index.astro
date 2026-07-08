@@ -9,8 +9,7 @@ import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
 import { languages } from "../data/languages";
-
-const GITHUB = "https://github.com/heuwels/lector";
+import { GITHUB, SIGNUP_URL } from "../data/links";
 
 // Feature "moments" — each pairs a real screenshot with a capability. Rendered
 // as alternating rows; screenshots live in /public/images.
@@ -68,7 +67,12 @@ const faqs = [
   {
     question: "Is it really free?",
     answer:
-      "Yes. Lector is open source and self-hosted — deploy it once and use it forever, with no subscription or feature gates. For comparison, LingQ runs $12.99/mo and Clozemaster Pro about $13/mo. The only optional cost is your own LLM API usage if you don't run a local model.",
+      "Self-hosting is free forever — deploy it once and use it with no subscription or feature gates (your only optional cost is your own LLM API usage if you don't run a local model). Prefer not to run a server? Lector Cloud starts at $5/mo and we host it for you. Either way it's the same app. For comparison, LingQ runs $12.99/mo and Clozemaster Pro about $13/mo.",
+  },
+  {
+    question: "Self-host or cloud — which should I choose?",
+    answer:
+      "If you're comfortable running a Docker container, self-host: it's free, your data never leaves your hardware, and you bring your own LLM keys. If you'd rather just read and let someone else handle servers, backups, and updates, Lector Cloud (in beta) does exactly that from $5/mo. You can move between them — export any time, no lock-in.",
   },
   {
     question: "Where does my data live?",
@@ -102,21 +106,26 @@ const faqs = [
   <!-- Hero -->
   <section class="pt-14 pb-20 sm:pt-20">
     <Container class="flex flex-col items-center gap-6 text-center">
-      <Eyebrow>Self-hosted &middot; open source &middot; yours forever</Eyebrow>
+      <Eyebrow>Open source &middot; self-host or cloud</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
         Read your way into a <span class="italic">new language</span>.
       </Heading>
       <Text size="lg" class="max-w-2xl text-pretty">
         Lector turns the books and articles you actually want to read into a
         complete course. Click any word to translate, mine vocabulary as you go,
-        drill it with frequency-ordered cloze, and push it to Anki — all running
-        on your own hardware.
+        drill it with frequency-ordered cloze, and push it to Anki — on our
+        cloud, or your own hardware.
       </Text>
-      <div class="mt-2 flex flex-wrap items-center justify-center gap-3">
-        <Button href="/docs/#installation" size="lg">Get started</Button>
-        <Button href={GITHUB} variant="soft" size="lg" target="_blank" rel="noopener">
-          View source on GitHub
-        </Button>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg">Start on the cloud</Button>
+          <Button href="/docs/#installation" variant="soft" size="lg">
+            Self-host, free
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Cloud is in beta &middot; self-hosting is free forever
+        </p>
       </div>
     </Container>
 
@@ -241,6 +250,61 @@ const faqs = [
     </Container>
   </section>
 
+  <!-- Two ways to run it -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Two ways to run it</Eyebrow>
+        <Subheading>Open source. Your way.</Subheading>
+        <Text class="text-pretty">
+          The same app, whichever way you run it. Host it yourself for free, or
+          let us run it for you.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+        <div class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5">
+          <div class="flex items-center gap-3">
+            <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+              Self-host
+            </h3>
+            <span class="inline-flex rounded-full bg-sage-600/15 px-2.5 py-0.5 text-xs font-medium text-sage-700 dark:text-sage-300">
+              Free
+            </span>
+          </div>
+          <Text class="flex-1 text-pretty">
+            Run the Docker image on your own hardware. Your data never leaves
+            your server, you bring your own LLM keys (or run a local model), and
+            it's free forever.
+          </Text>
+          <ActionLink href="/docs/#installation">Read the setup docs</ActionLink>
+        </div>
+
+        <div class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10">
+          <div class="flex items-center gap-3">
+            <h3 class="font-display text-2xl/8 text-white">Lector Cloud</h3>
+            <span class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+              Beta &middot; from $5/mo
+            </span>
+          </div>
+          <p class="flex-1 text-pretty text-base/7 text-olive-200">
+            We host it, back it up, and keep it updated. No Docker, no setup —
+            just sign in and start reading. For when you'd rather not run a
+            server.
+          </p>
+          <a
+            href={SIGNUP_URL}
+            class="group inline-flex items-center gap-2 text-sm/7 font-medium text-white"
+          >
+            Start on the cloud
+            <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
+              <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+
   <!-- Why self-host -->
   <section class="py-16">
     <Container class="flex flex-col gap-10">
@@ -336,12 +400,12 @@ docker compose up -d</code></pre>
           Start reading in your <span class="italic">target language</span> today.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
-          Free, open source, and running on your own server in a minute.
+          Open source to self-host for free, or on our cloud in a click.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href="/docs/#installation" size="lg" color="light">Get started</Button>
-          <Button href={GITHUB} variant="plain" size="lg" color="light" target="_blank" rel="noopener">
-            View source on GitHub
+          <Button href={SIGNUP_URL} size="lg" color="light">Start on the cloud</Button>
+          <Button href="/docs/#installation" variant="plain" size="lg" color="light">
+            Self-host, free
           </Button>
         </div>
       </div>

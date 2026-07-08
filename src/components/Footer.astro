@@ -1,15 +1,13 @@
 ---
 import Container from "./Container.astro";
-
-const GITHUB = "https://github.com/heuwels/lector";
-const SPONSOR = "https://github.com/sponsors/heuwels";
-const DISCORD = "https://discord.gg/PD3GAh2Rj";
+import { GITHUB, DISCORD, SPONSOR } from "../data/links";
 
 const columns = [
   {
     title: "Explore",
     links: [
       { href: "/docs/", label: "Docs" },
+      { href: "/pricing/", label: "Pricing" },
       { href: "/reference-data/", label: "Reference data" },
       { href: "/blog/local-llm-translation-eval/", label: "Model eval" },
     ],
