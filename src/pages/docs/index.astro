@@ -1,5 +1,66 @@
 ---
 import Base from "../../layouts/Base.astro";
+
+const sections: {
+  label: string;
+  pages: { href: string; title: string; blurb: string }[];
+}[] = [
+  {
+    label: "Getting started",
+    pages: [
+      {
+        href: "/docs/installation/",
+        title: "Installation",
+        blurb: "Run Lector with Docker Compose in two minutes — ports, volumes, updating.",
+      },
+      {
+        href: "/docs/configuration/",
+        title: "Configuration",
+        blurb: "The full environment-variable reference: core, AI providers, TTS, accounts.",
+      },
+    ],
+  },
+  {
+    label: "Guides",
+    pages: [
+      {
+        href: "/docs/compose-env-vars/",
+        title: "Compose + env vars",
+        blurb: "Keep secrets out of your compose file with .env — version pinning, defaults, verification.",
+      },
+      {
+        href: "/docs/backups/",
+        title: "Backups",
+        blurb: "From a one-line tar to the nightly staged-and-offsite system we run ourselves.",
+      },
+      {
+        href: "/docs/multi-user-oidc/",
+        title: "Multi-user & OIDC",
+        blurb: "Per-user libraries with SSO through Google, Authentik, Keycloak, or any OIDC provider.",
+      },
+      {
+        href: "/docs/self-hosting/",
+        title: "Tailscale & HTTPS",
+        blurb: "Private access over your tailnet, and same-origin HTTPS with Caddy.",
+      },
+    ],
+  },
+  {
+    label: "Using Lector",
+    pages: [
+      {
+        href: "/docs/features/",
+        title: "Reading & practice",
+        blurb: "EPUBs and articles, click-to-translate, word states, cloze SRS, AI providers, AnkiConnect.",
+      },
+      {
+        href: "/docs/languages/",
+        title: "Supported languages",
+        blurb: "Language packs, sentence banks, and how the frequency data is built.",
+      },
+    ],
+  },
+];
 ---
 <Base title="Documentation | Lector" description="Installation guide, configuration, and self-hosting documentation for Lector.">
 
@@ -11,310 +72,27 @@ import Base from "../../layouts/Base.astro";
 </header>
 
 <div class="container">
-  <div class="docs-layout">
-    <main class="docs-body">
+  <main class="docs-body docs-index">
+    <p class="docs-intro">Everything here assumes the Docker image &mdash; a single container, a bind-mounted data directory, and configuration by environment variable. New here? Start with <a href="/docs/installation/">Installation</a>.</p>
 
-      <!-- Installation -->
-      <h2 id="installation">Installation</h2>
-      <p>Lector is distributed as a Docker image. The recommended way to run it is with Docker Compose.</p>
+    {
+      sections.map((section) => (
+        <section class="docs-section">
+          <h2>{section.label}</h2>
+          <div class="docs-grid">
+            {section.pages.map((page) => (
+              <a class="docs-card" href={page.href}>
+                <h3>{page.title}</h3>
+                <p>{page.blurb}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))
+    }
 
-      <h3 id="docker-compose">Docker Compose</h3>
-      <p>Create a <code>docker-compose.yml</code> file:</p>
-      <pre><code>services:
-  lector:
-    image: ghcr.io/heuwels/lector:latest
-    container_name: lector
-    restart: unless-stopped
-    ports:
-      - "3400:3000"   <span class="comment"># web UI</span>
-      - "3457:3457"   <span class="comment"># API (the browser talks to it directly)</span>
-    volumes:
-      - ./data:/app/data
-    environment:
-      - NODE_ENV=production
-      - API_URL=http://your-server:3457</code></pre>
-
-      <p>Then start it:</p>
-      <pre><code>docker compose up -d</code></pre>
-
-      <p>Lector will be available at <code>http://your-server:3400</code>. All data is stored in a SQLite database inside the <code>data</code> directory.</p>
-
-      <div class="callout">
-        <p><strong>The UI and the API are separate.</strong> Lector's web app runs in your browser and calls its API (Hono, on port <code>3457</code>) <strong>directly</strong> &mdash; there's no server-side proxy. So you must publish port <code>3457</code> alongside the UI, and set <code>API_URL</code> to the address <em>your browser</em> uses to reach the API: the same host you open Lector on, port <code>3457</code> (e.g. <code>http://your-server:3457</code>). Don't use <code>127.0.0.1</code>/<code>localhost</code> here unless you only ever open Lector on the server itself &mdash; it resolves on the browser's machine, not the server. Behind a reverse proxy, set it to your HTTPS origin instead (see <a href="#reverse-proxy">Reverse proxy</a>).</p>
-      </div>
-
-      <h3 id="updating">Updating</h3>
-      <pre><code><span class="comment"># Pull the latest image</span>
-docker compose pull
-
-<span class="comment"># Restart with the new version</span>
-docker compose up -d</code></pre>
-      <p>Your data is stored in a bind mount and will persist across updates.</p>
-
-      <!-- Self-Hosting -->
-      <h2 id="self-hosting">Self-hosting</h2>
-
-      <div class="callout">
-        <p>Lector is designed to run on your home network. Your reading history, vocabulary, and learning progress stay on hardware you control. There are no cloud accounts, no telemetry, and no external dependencies beyond optional AI translation.</p>
-      </div>
-
-      <h3 id="network-access">Network access</h3>
-      <p>Lector is designed to be accessed via a WireGuard VPN. We use <a href="https://tailscale.com">Tailscale</a>, which takes about five minutes to set up and gives every device on your tailnet a stable IP. This means your data never leaves your network.</p>
-      <p>With Tailscale, you can access Lector from your phone, from work, or from anywhere, without exposing any ports to the public internet.</p>
-
-      <h3 id="reverse-proxy">Reverse proxy (HTTPS)</h3>
-      <p>If you want HTTPS within your network (recommended), put Lector behind a reverse proxy. <a href="https://caddyserver.com">Caddy</a> handles automatic TLS with minimal configuration:</p>
-      <pre><code>lector.home.yourdomain.com &#123;
-    <span class="comment"># The browser calls the API directly, so send /api/* to the API</span>
-    <span class="comment"># port (3457) and everything else to the web UI (3000).</span>
-    handle /api/* &#123;
-        reverse_proxy lector:3457
-    &#125;
-    handle &#123;
-        reverse_proxy lector:3000
-    &#125;
-&#125;</code></pre>
-      <p>With a same-origin proxy like this you don't need to publish port <code>3457</code> on the host &mdash; Caddy reaches it over the container network. Set <code>API_URL=https://lector.home.yourdomain.com</code> in the container's environment so the browser sends its API calls to the same origin, and Caddy routes them to the API. Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
-
-      <h3 id="backups">Backups</h3>
-      <p>Lector stores everything in a SQLite database and your imported books inside the data directory. To back it up:</p>
-      <pre><code><span class="comment"># Copy the data directory</span>
-cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
-      <p>Or include the bind mount path in your regular backup routine (rsync, borg, restic, etc.).</p>
-
-      <!-- Reading -->
-      <h2 id="reading">Reading</h2>
-      <p>Lector supports two content formats:</p>
-      <ul>
-        <li><strong>EPUB files</strong>: upload directly through the library interface</li>
-        <li><strong>Web articles</strong>: paste a URL and Lector extracts the content via Readability</li>
-      </ul>
-      <p>You can also paste raw text directly for quick reading practice.</p>
-
-      <h3 id="click-to-translate">Click-to-translate</h3>
-      <p>Click any word while reading to see its translation. If you have an <code>ANTHROPIC_API_KEY</code> configured, Lector uses Claude for context-aware translation of uncommon words and phrases. Without an API key, it falls back to a built-in dictionary of the top 2000 words.</p>
-
-      <p>Translation quality depends on which <a href="#llm-providers">AI provider</a> you have configured. See the LLM Providers section below for setup instructions.</p>
-
-      <h3 id="word-states">Word states</h3>
-      <p>Every word you encounter is tracked with a state:</p>
-      <ul>
-        <li><strong>New</strong>: you haven't interacted with this word yet</li>
-        <li><strong>Learning</strong>: you've looked it up or saved it</li>
-        <li><strong>Known</strong>: you've marked it as known</li>
-      </ul>
-      <p>Words are highlighted in your text based on their state, so you can see at a glance how much of a passage you already know.</p>
-
-      <!-- Cloze Practice -->
-      <h2 id="cloze-practice">Cloze Practice</h2>
-      <p>The cloze practice system ships with ~2900 Afrikaans-English sentence pairs from <a href="https://tatoeba.org">Tatoeba</a>, ordered by word frequency so you learn common words first.</p>
-
-      <h3 id="practice-modes">Practice modes</h3>
-      <ul>
-        <li><strong>Multiple choice</strong>: pick the correct word from four options</li>
-        <li><strong>Typing</strong>: type the missing word (with optional hard mode that disables hints)</li>
-      </ul>
-
-      <h3 id="srs-scheduling">SRS scheduling</h3>
-      <p>Sentences are scheduled using spaced repetition with five mastery levels:</p>
-      <table class="env-table">
-        <thead>
-          <tr>
-            <th>Mastery</th>
-            <th>Interval</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>0%</td><td>Immediate</td></tr>
-          <tr><td>25%</td><td>1 day</td></tr>
-          <tr><td>50%</td><td>3 days</td></tr>
-          <tr><td>75%</td><td>7 days</td></tr>
-          <tr><td>100%</td><td>14 days</td></tr>
-        </tbody>
-      </table>
-
-      <!-- LLM Providers -->
-      <h2 id="llm-providers">LLM Providers</h2>
-      <p>Lector uses a large language model for context-aware translations when you click words and phrases. You choose between two providers in <strong>Settings &rarr; AI Provider</strong>: <strong>Anthropic</strong> (cloud) or <strong>Local / self-hosted</strong> (any OpenAI-compatible server).</p>
-
-      <div class="callout">
-        <p><strong>A note on local quality:</strong> a capable local model holds up well even on a low-resource language like Afrikaans. In our own testing (Afrikaans &rarr; English, chrF++ on Tatoeba), a good ~12B model run through LM Studio matched the cloud models. What matters is picking a general instruction-tuned model (roughly 8B or larger, not a tiny or coder-only model), more than choosing cloud over local.</p>
-      </div>
-
-      <h3 id="provider-anthropic">Anthropic (cloud)</h3>
-      <p>The highest-quality option. Uses Claude for context-aware translation of words, phrases, and grammar explanations.</p>
-      <p>Lector supports two authentication methods:</p>
-      <ul>
-        <li><strong>API key:</strong> Get one from <a href="https://console.anthropic.com">console.anthropic.com</a>. Set <code>ANTHROPIC_API_KEY</code> in your environment, or enter it in Settings. Pay-as-you-go billing.</li>
-        <li><strong>OAuth token (Pro/Team plan):</strong> Uses your existing Claude Pro or Team subscription credits. Set <code>CLAUDE_CODE_OAUTH_TOKEN</code> in your environment. Note: OAuth connections have slower initial startup times compared to API keys.</li>
-      </ul>
-      <ul>
-        <li>Best translation quality, especially for less common languages</li>
-        <li>Requires internet access and an Anthropic account</li>
-      </ul>
-
-      <h3 id="provider-openai">Local / self-hosted (OpenAI-compatible)</h3>
-      <p>Points Lector at any server that speaks the OpenAI chat API: <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, vLLM, or a remote OpenAI-compatible endpoint. One config covers them all: an endpoint, an optional API key, and a model name. The text you're translating stays on your hardware (unless you point it at a remote endpoint).</p>
-      <p>In <strong>Settings &rarr; AI Provider</strong>, choose <strong>Local / self-hosted (OpenAI-compatible)</strong>, then set:</p>
-      <ul>
-        <li><strong>Preset</strong> (optional) &mdash; pick <strong>Ollama</strong> or <strong>LM Studio</strong> to autofill the endpoint, or <strong>Custom</strong> for anything else. It only fills the endpoint; edit it afterwards if you like.</li>
-        <li><strong>Endpoint</strong> &mdash; the base URL of your server (<code>http://localhost:1234</code> for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends <code>/v1</code> itself. The call is made server-side, so <code>localhost</code> works even when Lector is hosted elsewhere, except from inside Docker, where you need a host-reachable address.</li>
-        <li><strong>API Key</strong> (optional) &mdash; leave empty for a local server. Only needed for reverse-proxied or cloud endpoints. Sent as a Bearer token from the server, never exposed to the browser.</li>
-        <li><strong>Model</strong> &mdash; click <strong>Fetch models</strong> to list what the server reports via <code>/v1/models</code>, or type a model id directly.</li>
-      </ul>
-      <p>Use <strong>Refresh</strong> to confirm a green "Connected" status. For a full walkthrough with LM Studio, including the Docker networking gotcha, see <a href="/blog/lm-studio-translation-agent/">Run translations locally with LM Studio</a>.</p>
-
-      <!-- AnkiConnect -->
-      <h2 id="ankiconnect">AnkiConnect</h2>
-      <p>Lector connects directly to <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a> running on your local machine. This lets you push vocabulary cards from Lector straight into Anki Desktop. No proxy server, no cloud sync.</p>
-
-      <h3 id="anki-setup">Setup</h3>
-      <ol>
-        <li>Install the <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect add-on</a> in Anki Desktop</li>
-        <li>In AnkiConnect's config, add your Lector origin to the CORS allowlist:</li>
-      </ol>
-      <pre><code>&#123;
-  "webCorsOriginList": ["http://localhost:3000"]
-&#125;</code></pre>
-      <p>If you're accessing Lector via a reverse proxy, add that origin too (e.g. <code>https://lector.home.yourdomain.com</code>).</p>
-
-      <div class="callout">
-        <p><strong>Note:</strong> AnkiConnect runs on <code>localhost:8765</code> by default. The connection is browser-to-localhost, so Anki Desktop must be running on the same machine as your browser.</p>
-      </div>
-
-      <!-- Configuration -->
-      <h2 id="configuration">Configuration</h2>
-
-      <h3 id="environment-variables">Environment variables</h3>
-      <table class="env-table">
-        <thead>
-          <tr>
-            <th>Variable</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>NODE_ENV</code></td>
-            <td><code>production</code></td>
-            <td>Set to <code>production</code> for deployed instances</td>
-          </tr>
-          <tr>
-            <td><code>API_URL</code></td>
-            <td><code>http://localhost:3457</code></td>
-            <td>Origin the <strong>browser</strong> uses to reach the API (the UI calls it directly). Set to your access host on port 3457, e.g. <code>http://your-server:3457</code>, or your reverse-proxy origin <code>https://lector.home.yourdomain.com</code>. The default only works when browsing from the server itself.</td>
-          </tr>
-          <tr>
-            <td><code>LLM_PROVIDER</code></td>
-            <td><code>anthropic</code></td>
-            <td>AI provider for translations: <code>anthropic</code> or <code>openai</code> (any OpenAI-compatible server)</td>
-          </tr>
-          <tr>
-            <td><code>ANTHROPIC_API_KEY</code></td>
-            <td>&mdash;</td>
-            <td>Claude API key (only needed when <code>LLM_PROVIDER=anthropic</code>)</td>
-          </tr>
-          <tr>
-            <td><code>CLAUDE_CODE_OAUTH_TOKEN</code></td>
-            <td>&mdash;</td>
-            <td>OAuth token for Pro/Team plan credits (alternative to API key, slower startup)</td>
-          </tr>
-          <tr>
-            <td><code>OPENAI_COMPAT_URL</code></td>
-            <td>&mdash;</td>
-            <td>Base URL of your OpenAI-compatible server, e.g. <code>http://localhost:1234</code> (LM Studio) or <code>http://localhost:11434</code> (Ollama). Used when <code>LLM_PROVIDER=openai</code>.</td>
-          </tr>
-          <tr>
-            <td><code>OPENAI_COMPAT_MODEL</code></td>
-            <td>&mdash;</td>
-            <td>Model id to request from that server</td>
-          </tr>
-          <tr>
-            <td><code>OPENAI_COMPAT_API_KEY</code></td>
-            <td>&mdash;</td>
-            <td>Optional. Bearer token, only for authenticated endpoints</td>
-          </tr>
-          <tr>
-            <td><code>OLLAMA_URL</code> / <code>LMSTUDIO_URL</code> / <code>APFEL_URL</code></td>
-            <td>&mdash;</td>
-            <td>Legacy. Still read as fallbacks for the OpenAI-compatible endpoint so existing deployments keep working.</td>
-          </tr>
-          <tr>
-            <td><code>GOOGLE_CLOUD_API_KEY</code></td>
-            <td>&mdash;</td>
-            <td>Optional. Google Cloud API key for text-to-speech pronunciation.</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 id="full-compose">Full Docker Compose example</h3>
-      <p>Here's a complete example with all optional environment variables:</p>
-      <pre><code>services:
-  lector:
-    image: ghcr.io/heuwels/lector:$&#123;LECTOR_VERSION:-latest&#125;
-    container_name: lector
-    restart: unless-stopped
-    ports:
-      - "3400:3000"
-      - "3457:3457"
-    volumes:
-      - ./data:/app/data
-    environment:
-      - NODE_ENV=production
-      - API_URL=http://your-server:3457
-      - LLM_PROVIDER=$&#123;LLM_PROVIDER:-anthropic&#125;
-      - ANTHROPIC_API_KEY=$&#123;ANTHROPIC_API_KEY&#125;
-      - CLAUDE_CODE_OAUTH_TOKEN=$&#123;CLAUDE_CODE_OAUTH_TOKEN&#125;
-      - APFEL_URL=$&#123;APFEL_URL&#125;
-      - OLLAMA_URL=$&#123;OLLAMA_URL&#125;
-      - OLLAMA_MODEL=$&#123;OLLAMA_MODEL&#125;
-      - GOOGLE_CLOUD_API_KEY=$&#123;GOOGLE_CLOUD_API_KEY&#125;</code></pre>
-
-      <!-- Supported Languages -->
-      <h2 id="supported-languages">Supported languages</h2>
-      <p>Lector's reader works with any language, but language packs provide sentence banks and dictionaries for cloze practice.</p>
-      <table class="env-table">
-        <thead>
-          <tr>
-            <th>Language pair</th>
-            <th>Status</th>
-            <th>Sentences</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Afrikaans &rarr; English</td>
-            <td>Available</td>
-            <td>~2900</td>
-          </tr>
-          <tr>
-            <td>Spanish &rarr; English</td>
-            <td>Coming soon</td>
-            <td>&mdash;</td>
-          </tr>
-          <tr>
-            <td>German &rarr; English</td>
-            <td>Partial &mdash; dictionary</td>
-            <td>&mdash;</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>All sentence data is sourced from <a href="https://tatoeba.org">Tatoeba</a>. Adding a new language pair is straightforward. If you'd like to see your language supported, <a href="https://github.com/heuwels/lector">open a PR on GitHub</a>. We'd love contributions.</p>
-
-      <!-- Sentence Bank -->
-      <h2 id="sentence-bank">Sentence bank</h2>
-      <p>The cloze practice system ships with ~2900 Afrikaans-English sentence pairs sourced from <a href="https://tatoeba.org">Tatoeba</a>. Each sentence is tagged with word frequency data so you learn the most common words first.</p>
-      <p>To regenerate from Tatoeba's latest data dumps:</p>
-      <pre><code>npm run fetch-sentences</code></pre>
-      <p>This downloads Tatoeba's per-language TSV exports, joins Afrikaans sentences with English translations, and tags each with word frequency data.</p>
-
-      <div class="callout">
-        <p><strong>Data attribution:</strong> Sentence bank sourced from <a href="https://tatoeba.org">Tatoeba</a>, licensed under <a href="https://creativecommons.org/licenses/by/2.0/fr/">CC-BY 2.0 FR</a>. Word frequency dictionary compiled from publicly available frequency lists.</p>
-      </div>
-
-      <!-- Tech Stack -->
-      <h2 id="tech-stack">Tech stack</h2>
+    <section class="docs-section">
+      <h2>Tech stack</h2>
       <ul>
         <li><strong>Frontend:</strong> Next.js 16 with React 19 &mdash; UI only; the browser calls the API directly</li>
         <li><strong>API:</strong> Hono on Bun, using <code>bun:sqlite</code></li>
@@ -324,36 +102,54 @@ cp -r ./data ./backup-$(date +%Y%m%d)</code></pre>
         <li><strong>TTS:</strong> Google Cloud Text-to-Speech (optional)</li>
         <li><strong>Container:</strong> Docker (single image, bind mount for data)</li>
       </ul>
-
-    </main>
-
-    <nav class="docs-toc">
-      <h4>On this page</h4>
-      <a href="#installation">Installation</a>
-      <a href="#docker-compose">Docker Compose</a>
-      <a href="#updating">Updating</a>
-      <a href="#self-hosting">Self-hosting</a>
-      <a href="#network-access">Network access</a>
-      <a href="#reverse-proxy">Reverse proxy</a>
-      <a href="#backups">Backups</a>
-      <a href="#reading">Reading</a>
-      <a href="#click-to-translate">Click-to-translate</a>
-      <a href="#word-states">Word states</a>
-      <a href="#cloze-practice">Cloze practice</a>
-      <a href="#practice-modes">Practice modes</a>
-      <a href="#srs-scheduling">SRS scheduling</a>
-      <a href="#llm-providers">LLM Providers</a>
-      <a href="#provider-anthropic">Anthropic</a>
-      <a href="#provider-openai">Local / self-hosted</a>
-      <a href="#ankiconnect">AnkiConnect</a>
-      <a href="#configuration">Configuration</a>
-      <a href="#environment-variables">Environment variables</a>
-      <a href="#full-compose">Full compose example</a>
-      <a href="#supported-languages">Supported languages</a>
-      <a href="#sentence-bank">Sentence bank</a>
-      <a href="#tech-stack">Tech stack</a>
-    </nav>
-  </div>
+    </section>
+  </main>
 </div>
+
+<style>
+  .docs-index {
+    padding-bottom: 4rem;
+  }
+  .docs-intro {
+    max-width: 62ch;
+  }
+  .docs-section {
+    margin-top: 2.5rem;
+  }
+  .docs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .docs-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .docs-card {
+    display: block;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  .docs-card:hover {
+    border-color: var(--text-muted);
+    text-decoration: none;
+  }
+  .docs-card h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    color: var(--text);
+  }
+  .docs-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+</style>
 
 </Base>

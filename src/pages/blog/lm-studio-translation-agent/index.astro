@@ -54,13 +54,13 @@ import Base from "../../../layouts/Base.astro";
           capable instruction-tuned model, a general one rather than a 4B coder model, and local quality lands closer to the cloud
           than the cost gap suggests. Treat these as relative gaps on a Tatoeba set, not absolute scores. The one model that
           struggled was, of all things, Apple Intelligence's on-device model, which errored on about a quarter of the Afrikaans
-          sentences. The docs' <a href="/docs/#llm-providers">LLM Providers</a> section has the trade-offs.</p>
+          sentences. The docs' <a href="/docs/features/#llm-providers">LLM Providers</a> section has the trade-offs.</p>
       </div>
 
       <!-- Prereqs -->
       <h2 id="prerequisites">What you'll need</h2>
       <ul>
-        <li>A running Lector instance. See the <a href="/docs/#installation">installation guide</a> if you don't have one yet.</li>
+        <li>A running Lector instance. See the <a href="/docs/installation/">installation guide</a> if you don't have one yet.</li>
         <li>A machine to run LM Studio on (macOS on Apple Silicon, Windows, or Linux). This can be the same machine as Lector or a
           different one on your network.</li>
         <li>Enough memory for your chosen model. A 7-8B model quantised to 4-bit needs roughly 5-6&nbsp;GB of RAM or VRAM.</li>
@@ -114,7 +114,7 @@ lms load &lt;model-name&gt;</code></pre>
 
       <figure>
         <img src="/images/lmstudio-settings.png" alt="Lector's AI Provider settings configured for LM Studio: provider set to LM Studio, endpoint pointing at a Tailscale address, the google/gemma-4-e4b model selected, and a green Connected status.">
-        <figcaption>Lector's <strong>Settings &rarr; AI Provider</strong> panel configured for LM Studio. Here the server runs on another machine reached over <a href="/docs/#network-access">Tailscale</a> (a <code>100.x</code> address), with <code>google/gemma-4-e4b</code> selected and a live <em>Connected</em> check.</figcaption>
+        <figcaption>Lector's <strong>Settings &rarr; AI Provider</strong> panel configured for LM Studio. Here the server runs on another machine reached over <a href="/docs/self-hosting/#network-access">Tailscale</a> (a <code>100.x</code> address), with <code>google/gemma-4-e4b</code> selected and a live <em>Connected</em> check.</figcaption>
       </figure>
 
       <h3 id="field-endpoint">Endpoint</h3>
@@ -283,7 +283,7 @@ lms load &lt;model-name&gt;</code></pre>
       <h2 id="wrap-up">You're not locked in</h2>
       <p>Because Lector speaks the OpenAI-compatible API, LM Studio is one option among several behind the same provider: Ollama,
         vLLM, or a remote OpenAI-compatible endpoint all use the same endpoint / model / optional-key flow (Ollama and LM Studio
-        even get presets that autofill the endpoint). The other provider is <a href="/docs/#provider-anthropic">Anthropic</a>
+        even get presets that autofill the endpoint). The other provider is <a href="/docs/features/#provider-anthropic">Anthropic</a>
         (Claude), for when you want cloud quality. Start local with LM Studio, switch to Claude for a tricky language, switch back
         &mdash; your books and progress don't care which agent is doing the translating.</p>
 

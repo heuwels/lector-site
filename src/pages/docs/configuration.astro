@@ -1,0 +1,171 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Configuration | Lector Docs"
+  description="Every Lector environment variable — core, AI providers, TTS, multi-user accounts, and OIDC."
+  heading="Configuration"
+>
+  <p>Lector is configured entirely through environment variables &mdash; nothing is baked into the image. Variables are read at container start, so changing one is: edit, <code>docker compose up -d</code>.</p>
+
+  <h2 id="environment-variables">Core</h2>
+  <table class="env-table">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>NODE_ENV</code></td>
+        <td><code>production</code></td>
+        <td>Set to <code>production</code> for deployed instances</td>
+      </tr>
+      <tr>
+        <td><code>API_URL</code></td>
+        <td><code>http://localhost:3457</code></td>
+        <td>Origin the <strong>browser</strong> uses to reach the API (the UI calls it directly). Set to your access host on port 3457, e.g. <code>http://your-server:3457</code>, or your reverse-proxy origin <code>https://lector.home.yourdomain.com</code>. The default only works when browsing from the server itself.</td>
+      </tr>
+      <tr>
+        <td><code>GOOGLE_CLOUD_API_KEY</code></td>
+        <td>&mdash;</td>
+        <td>Optional. Google Cloud API key for text-to-speech pronunciation.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="llm-env">AI translation</h2>
+  <table class="env-table">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>LLM_PROVIDER</code></td>
+        <td><code>anthropic</code></td>
+        <td>AI provider for translations: <code>anthropic</code> or <code>openai</code> (any OpenAI-compatible server)</td>
+      </tr>
+      <tr>
+        <td><code>ANTHROPIC_API_KEY</code></td>
+        <td>&mdash;</td>
+        <td>Claude API key (only needed when <code>LLM_PROVIDER=anthropic</code>)</td>
+      </tr>
+      <tr>
+        <td><code>CLAUDE_CODE_OAUTH_TOKEN</code></td>
+        <td>&mdash;</td>
+        <td>OAuth token for Pro/Team plan credits (alternative to API key, slower startup)</td>
+      </tr>
+      <tr>
+        <td><code>OPENAI_COMPAT_URL</code></td>
+        <td>&mdash;</td>
+        <td>Base URL of your OpenAI-compatible server, e.g. <code>http://localhost:1234</code> (LM Studio) or <code>http://localhost:11434</code> (Ollama). Used when <code>LLM_PROVIDER=openai</code>.</td>
+      </tr>
+      <tr>
+        <td><code>OPENAI_COMPAT_MODEL</code></td>
+        <td>&mdash;</td>
+        <td>Model id to request from that server</td>
+      </tr>
+      <tr>
+        <td><code>OPENAI_COMPAT_API_KEY</code></td>
+        <td>&mdash;</td>
+        <td>Optional. Bearer token, only for authenticated endpoints</td>
+      </tr>
+      <tr>
+        <td><code>OLLAMA_URL</code> / <code>LMSTUDIO_URL</code> / <code>APFEL_URL</code></td>
+        <td>&mdash;</td>
+        <td>Legacy. Still read as fallbacks for the OpenAI-compatible endpoint so existing deployments keep working.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="accounts-env">Multi-user accounts &amp; OIDC</h2>
+  <p>Off by default &mdash; a plain install is single-user with no login. See the <a href="/docs/multi-user-oidc/">Multi-user &amp; OIDC guide</a> for the walkthrough.</p>
+  <table class="env-table">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Default</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>LECTOR_MODE</code></td>
+        <td><code>selfhost</code></td>
+        <td>Set to <code>cloud</code> to turn on accounts: login/register pages, sessions, per-user libraries.</td>
+      </tr>
+      <tr>
+        <td><code>BETTER_AUTH_SECRET</code></td>
+        <td>&mdash;</td>
+        <td><strong>Required in cloud mode</strong> (refuses to boot without it). Session-signing secret &mdash; generate with <code>openssl rand -base64 32</code>.</td>
+      </tr>
+      <tr>
+        <td><code>BETTER_AUTH_URL</code></td>
+        <td>&mdash;</td>
+        <td>The public origin auth links and OAuth callbacks are minted against, e.g. <code>https://lector.home.yourdomain.com</code>.</td>
+      </tr>
+      <tr>
+        <td><code>OIDC_ISSUER</code></td>
+        <td>&mdash;</td>
+        <td>BYO OIDC: your identity provider's issuer origin (or a pasted discovery URL). Needs all three <code>OIDC_*</code> credentials. v3.2.0+.</td>
+      </tr>
+      <tr>
+        <td><code>OIDC_CLIENT_ID</code> / <code>OIDC_CLIENT_SECRET</code></td>
+        <td>&mdash;</td>
+        <td>The OAuth client you register on the IdP for Lector.</td>
+      </tr>
+      <tr>
+        <td><code>OIDC_PROVIDER_NAME</code></td>
+        <td><code>SSO</code></td>
+        <td>Label for the login button ("Continue with &lt;name&gt;").</td>
+      </tr>
+      <tr>
+        <td><code>OIDC_SCOPES</code></td>
+        <td><code>openid profile email</code></td>
+        <td>Override the requested scopes (space- or comma-separated).</td>
+      </tr>
+      <tr>
+        <td><code>GITHUB_CLIENT_ID</code> / <code>GITHUB_CLIENT_SECRET</code></td>
+        <td>&mdash;</td>
+        <td>Optional; enables "Continue with GitHub".</td>
+      </tr>
+      <tr>
+        <td><code>RESEND_API_KEY</code> (+ <code>EMAIL_FROM</code>)</td>
+        <td>&mdash;</td>
+        <td>Email delivery for verification and password-reset links (the sending domain must be verified with Resend). Without it, emails land in the server log.</td>
+      </tr>
+      <tr>
+        <td><code>TURNSTILE_SITE_KEY</code> / <code>TURNSTILE_SECRET_KEY</code></td>
+        <td>&mdash;</td>
+        <td>Optional; Cloudflare Turnstile bot protection on sign-up/sign-in/reset (set both or neither). Mostly for internet-exposed instances.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="full-compose">Full Docker Compose example</h2>
+  <p>A complete single-user example with the common options. For the <code>$&#123;VAR&#125;</code> / <code>.env</code> pattern, see <a href="/docs/compose-env-vars/">Compose + env vars</a>.</p>
+  <pre><code>services:
+  lector:
+    image: ghcr.io/heuwels/lector:$&#123;LECTOR_VERSION:-latest&#125;
+    container_name: lector
+    restart: unless-stopped
+    ports:
+      - "3400:3000"
+      - "3457:3457"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://your-server:3457
+      - LLM_PROVIDER=$&#123;LLM_PROVIDER:-anthropic&#125;
+      - ANTHROPIC_API_KEY=$&#123;ANTHROPIC_API_KEY&#125;
+      - OPENAI_COMPAT_URL=$&#123;OPENAI_COMPAT_URL&#125;
+      - OPENAI_COMPAT_MODEL=$&#123;OPENAI_COMPAT_MODEL&#125;
+      - GOOGLE_CLOUD_API_KEY=$&#123;GOOGLE_CLOUD_API_KEY&#125;</code></pre>
+</DocsPage>

@@ -1,0 +1,75 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Backups | Lector Docs"
+  description="Back up Lector's data directory — from a one-line copy to the nightly staged-and-offsite system we run ourselves."
+  heading="Backups"
+>
+  <p>Everything Lector knows lives in one directory: the bind mount at <code>./data</code> &mdash; a SQLite database (your vocabulary, progress, settings, accounts) plus your imported books. Back that directory up and you can rebuild the whole instance; lose it and it's gone. Dictionaries are re-downloadable and don't need backing up, but they live in the same directory and are small enough that it isn't worth excluding them.</p>
+
+  <h2 id="one-liner">Level 0: the one-liner</h2>
+  <pre><code>tar -czf lector-$(date +%Y%m%d).tar.gz -C ./data .</code></pre>
+  <p>That's a restorable backup. Everything below is about doing it on a schedule, keeping history, and getting it off the machine.</p>
+
+  <div class="callout">
+    <p><strong>SQLite consistency:</strong> copy the <em>whole</em> directory &mdash; alongside <code>lector.db</code> there may be <code>-wal</code> and <code>-shm</code> files holding recent writes, and a <code>tar</code> of the directory picks them up automatically. A backup taken while Lector is running is crash-consistent (SQLite recovers it like a power loss). For belt and braces, wrap the tar in <code>docker compose stop lector</code> / <code>docker compose start lector</code> &mdash; at 3am nobody notices the ten seconds.</p>
+  </div>
+
+  <h2 id="the-system">The system we actually run</h2>
+  <p>Our homeserver backs up Lector (and everything else) with a three-part setup that's about 40 lines of shell in total: <strong>per-app job scripts</strong>, staged locally with retention, then <strong>one sync job</strong> that pushes the staging directory offsite. A runner executes the jobs nightly and sends a push notification if anything fails.</p>
+
+  <h3 id="job-script">1. A job script per app</h3>
+  <p>Each app gets a small script that stages a timestamped archive and prunes old ones. Lector's, verbatim:</p>
+  <pre><code>#!/bin/bash
+set -e
+
+DATA_DIR="$HOME/home-server/apps/lector/data"
+LOCAL_BACKUP="$HOME/backups/staged/lector"
+
+mkdir -p "$LOCAL_BACKUP"
+
+BACKUP_NAME="lector-$(date +%Y%m%d-%H%M%S).tar.gz"
+tar -czf "$LOCAL_BACKUP/$BACKUP_NAME" -C "$DATA_DIR" .
+
+<span class="comment"># Keep the last 30 days</span>
+find "$LOCAL_BACKUP" -name "lector-*.tar.gz" -mtime +30 -delete
+
+echo "Lector backup complete: $BACKUP_NAME"</code></pre>
+  <p>Thirty daily archives of a text-heavy SQLite database compress small &mdash; retention is cheap, and it's what saves you when you only notice a problem a week later.</p>
+
+  <h3 id="offsite">2. One sync job for offsite</h3>
+  <p>The staging directory is mirrored to cloud storage with <a href="https://rclone.org">rclone</a> &mdash; ours goes to Backblaze B2, but the same line works with S3, R2, Google Drive, or a friend's NAS over SFTP:</p>
+  <pre><code>rclone sync "$HOME/backups/staged" b2:your-bucket/backups/ \
+    --transfers 4 --fast-list -v</code></pre>
+  <p>Because every app stages into the same directory, offsite is one job, not one per app. <code>rclone sync</code> mirrors deletions too, so the 30-day retention propagates to the bucket instead of growing forever.</p>
+
+  <h3 id="scheduling">3. Schedule it and make failures loud</h3>
+  <p>A runner script executes every job in the jobs directory, then the sync. Schedule it nightly &mdash; cron on Linux:</p>
+  <pre><code>0 3 * * * $HOME/home-server/backups/runner.sh</code></pre>
+  <p>or a LaunchAgent on macOS (<code>StartCalendarInterval</code> with <code>Hour = 3</code>). The part that matters more than the schedule: <strong>a backup system that fails silently is a time bomb</strong>. Our runner posts to <a href="https://ntfy.sh">ntfy.sh</a> on failure, so a broken job is a phone notification, not a discovery during a restore:</p>
+  <pre><code>curl -s \
+  -H "Title: Backup failed: lector" \
+  -H "Priority: high" \
+  -d "Job exited non-zero — check the log" \
+  "https://ntfy.sh/your-private-topic"</code></pre>
+
+  <h2 id="restoring">Restoring</h2>
+  <pre><code><span class="comment"># 1. Stop Lector</span>
+docker compose stop lector
+
+<span class="comment"># 2. Move the broken data dir aside (never delete until verified)</span>
+mv ./data ./data.broken
+
+<span class="comment"># 3. Unpack the archive</span>
+mkdir -p ./data
+tar -xzf ~/backups/staged/lector/lector-20260708-030000.tar.gz -C ./data
+
+<span class="comment"># 4. Start and verify</span>
+docker compose start lector</code></pre>
+  <p>Open the app and check your library and vocabulary are there. Then &mdash; and only then &mdash; remove <code>data.broken</code>.</p>
+
+  <div class="callout">
+    <p><strong>Do a restore drill once.</strong> Unpack a backup into a scratch directory, point a second Lector container at it, confirm your data is really in there. A backup you've never restored is a hope, not a backup.</p>
+  </div>
+</DocsPage>

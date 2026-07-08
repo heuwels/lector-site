@@ -1,0 +1,68 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Multi-user & OIDC SSO | Lector Docs"
+  description="Turn on accounts and sign in with your own identity provider — Google, Authentik, Keycloak, Auth0, Pocket ID — via three environment variables."
+  heading="Multi-user & OIDC"
+>
+  <p>A plain Lector install is single-user with no login &mdash; that never changes by itself. Setting <code>LECTOR_MODE=cloud</code> opts into <strong>accounts</strong>: a login/register page, sessions, and a fully separate library (books, vocabulary, progress, settings) per user. It's how you share one instance with a household without sharing a vocabulary list.</p>
+  <p>On top of that, <strong>BYO OIDC</strong> (v3.2.0+) lets everyone sign in through an identity provider you already have &mdash; Google, Authentik, Keycloak, Auth0, Entra, Pocket ID &mdash; instead of managing passwords.</p>
+
+  <h2 id="accounts">Step 1: turn on accounts</h2>
+  <pre><code>environment:
+  - LECTOR_MODE=cloud
+  - BETTER_AUTH_SECRET=$&#123;LECTOR_BETTER_AUTH_SECRET&#125;   <span class="comment"># openssl rand -base64 32</span>
+  - BETTER_AUTH_URL=https://lector.home.yourdomain.com  <span class="comment"># the origin you browse to</span></code></pre>
+  <ul>
+    <li><code>BETTER_AUTH_SECRET</code> is <strong>required</strong> &mdash; cloud mode refuses to boot without one. Generate it once and keep it stable (rotating it signs everyone out).</li>
+    <li><code>BETTER_AUTH_URL</code> is the public origin login links and OAuth callbacks are minted against &mdash; use the exact URL you open Lector on. Accounts work best behind a same-origin reverse proxy (see <a href="/docs/self-hosting/#reverse-proxy">Tailscale &amp; HTTPS</a>).</li>
+  </ul>
+  <p>With just these, Lector offers email/password signup. Verification emails need an email transport (<code>RESEND_API_KEY</code>) &mdash; without one, links only appear in the server logs. If you're doing SSO anyway, skip straight to OIDC: <strong>OIDC users don't need email verification at all</strong>.</p>
+
+  <h2 id="oidc">Step 2: point it at your IdP</h2>
+  <pre><code>environment:
+  <span class="comment"># …the three lines above, plus:</span>
+  - OIDC_ISSUER=https://auth.yourdomain.com
+  - OIDC_CLIENT_ID=$&#123;LECTOR_OIDC_CLIENT_ID&#125;
+  - OIDC_CLIENT_SECRET=$&#123;LECTOR_OIDC_CLIENT_SECRET&#125;
+  - OIDC_PROVIDER_NAME=Authentik   <span class="comment"># login button label, default "SSO"</span></code></pre>
+  <p>All three credentials set &rarr; the login page grows a <strong>"Continue with &lt;name&gt;"</strong> button. Lector reads the provider's <em>discovery document</em> (<code>&lt;issuer&gt;/.well-known/openid-configuration</code>) and uses PKCE &mdash; any spec-compliant OIDC provider works. <code>OIDC_ISSUER</code> accepts either the issuer origin or a full discovery URL pasted from your IdP's docs (handy for Keycloak's <code>/realms/&lt;name&gt;</code> paths).</p>
+
+  <p>On the IdP side, register a <strong>web application</strong> client for Lector with this redirect URI:</p>
+  <pre><code>https://lector.home.yourdomain.com/api/auth/oauth2/callback/oidc</code></pre>
+
+  <h2 id="google">Worked example: Google</h2>
+  <p>Google is a perfectly good OIDC provider for a household &mdash; everyone already has an account, and there's nothing extra to self-host. This is the setup we run at home:</p>
+  <ol>
+    <li>In <a href="https://console.cloud.google.com/apis/credentials">Google Cloud Console &rarr; Credentials</a>, create (or reuse) an <strong>OAuth client ID</strong> of type <strong>Web application</strong>.</li>
+    <li>Under <strong>Authorized redirect URIs</strong>, add<br /><code>https://lector.home.yourdomain.com/api/auth/oauth2/callback/oidc</code></li>
+    <li>Copy the client ID and secret into your <code>.env</code>, and set the issuer to Google's:</li>
+  </ol>
+  <pre><code>environment:
+  - LECTOR_MODE=cloud
+  - BETTER_AUTH_SECRET=$&#123;LECTOR_BETTER_AUTH_SECRET&#125;
+  - BETTER_AUTH_URL=https://lector.home.yourdomain.com
+  - OIDC_ISSUER=https://accounts.google.com
+  - OIDC_CLIENT_ID=$&#123;LECTOR_OIDC_CLIENT_ID&#125;
+  - OIDC_CLIENT_SECRET=$&#123;LECTOR_OIDC_CLIENT_SECRET&#125;
+  - OIDC_PROVIDER_NAME=Google</code></pre>
+  <p>Then <code>docker compose up -d</code>, open Lector, and sign in with Google. If Google answers with <code>redirect_uri_mismatch</code>, the URI in step 2 doesn't exactly match your <code>BETTER_AUTH_URL</code> origin &mdash; scheme, host, and path must all agree.</p>
+  <p>If you already use an OAuth client for another self-hosted app (Actual Budget, say), you can reuse it: just add Lector's redirect URI alongside the existing ones.</p>
+
+  <h2 id="who-can-sign-in">Who can sign in?</h2>
+  <p>Anyone who can <em>reach the page</em> and <em>pass your IdP</em> gets an account with its own empty library. Two consequences worth thinking through:</p>
+  <ul>
+    <li><strong>With a private IdP</strong> (Authentik, Keycloak, Pocket ID), your IdP's user list is the allowlist &mdash; done.</li>
+    <li><strong>With a public IdP like Google</strong>, any Google account qualifies &mdash; so keep the instance on a private network. On a <a href="/docs/self-hosting/">Tailscale-only hostname</a> that means: your tailnet is the gate, Google is just the login. Avoid exposing a Google-OIDC instance to the open internet.</li>
+  </ul>
+  <p>Email/password signup stays available on the login page, but without an email transport configured those accounts can't complete verification &mdash; in practice an instance with OIDC and no <code>RESEND_API_KEY</code> is SSO-only.</p>
+
+  <h2 id="notes">Notes</h2>
+  <ul>
+    <li><strong>Existing single-user data:</strong> flipping an established instance to cloud mode doesn't delete anything, but data created before the flip belongs to the internal single-user tenant and isn't visible to any account. Back up first, and treat the flip as a fresh start &mdash; or migrate the old rows to your new user in the database (open a <a href="https://github.com/heuwels/lector/discussions">discussion</a> if you want a hand).</li>
+    <li><strong>Per-user API tokens:</strong> in cloud mode each signed-in user can mint scoped API tokens in Settings for CLI/script access &mdash; the same tokens single-user mode has, tenanted per account.</li>
+    <li><strong>GitHub login</strong> is also available as a dedicated provider via <code>GITHUB_CLIENT_ID</code>/<code>GITHUB_CLIENT_SECRET</code>, and both can coexist with OIDC.</li>
+    <li><strong>Bot protection:</strong> internet-exposed instances can put Cloudflare Turnstile on the auth forms with <code>TURNSTILE_SITE_KEY</code>/<code>TURNSTILE_SECRET_KEY</code>. Pointless on a tailnet; useful on the open web.</li>
+  </ul>
+</DocsPage>

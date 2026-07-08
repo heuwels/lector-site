@@ -1,0 +1,51 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Installation | Lector Docs"
+  description="Install Lector with Docker Compose — quickstart, ports, and updating."
+  heading="Installation"
+>
+  <p>Lector is distributed as a Docker image. The recommended way to run it is with Docker Compose.</p>
+
+  <h2 id="docker-compose">Docker Compose</h2>
+  <p>Create a <code>docker-compose.yml</code> file:</p>
+  <pre><code>services:
+  lector:
+    image: ghcr.io/heuwels/lector:latest
+    container_name: lector
+    restart: unless-stopped
+    ports:
+      - "3400:3000"   <span class="comment"># web UI</span>
+      - "3457:3457"   <span class="comment"># API (the browser talks to it directly)</span>
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://your-server:3457</code></pre>
+
+  <p>Then start it:</p>
+  <pre><code>docker compose up -d</code></pre>
+
+  <p>Lector will be available at <code>http://your-server:3400</code>. All data is stored in a SQLite database inside the <code>data</code> directory.</p>
+
+  <div class="callout">
+    <p><strong>The UI and the API are separate.</strong> Lector's web app runs in your browser and calls its API (Hono, on port <code>3457</code>) <strong>directly</strong> &mdash; there's no server-side proxy. So you must publish port <code>3457</code> alongside the UI, and set <code>API_URL</code> to the address <em>your browser</em> uses to reach the API: the same host you open Lector on, port <code>3457</code> (e.g. <code>http://your-server:3457</code>). Don't use <code>127.0.0.1</code>/<code>localhost</code> here unless you only ever open Lector on the server itself &mdash; it resolves on the browser's machine, not the server. Behind a reverse proxy, set it to your HTTPS origin instead (see <a href="/docs/self-hosting/#reverse-proxy">Reverse proxy</a>).</p>
+  </div>
+
+  <h2 id="updating">Updating</h2>
+  <pre><code><span class="comment"># Pull the latest image</span>
+docker compose pull
+
+<span class="comment"># Restart with the new version</span>
+docker compose up -d</code></pre>
+  <p>Your data is stored in a bind mount and will persist across updates. Releases are tagged &mdash; pin a version instead of <code>latest</code> if you prefer explicit upgrades (see <a href="/docs/compose-env-vars/">Compose + env vars</a>).</p>
+
+  <h2 id="next-steps">Next steps</h2>
+  <ul>
+    <li><a href="/docs/configuration/">Configuration</a> &mdash; the full environment-variable reference</li>
+    <li><a href="/docs/self-hosting/">Tailscale &amp; HTTPS</a> &mdash; private network access and a reverse proxy</li>
+    <li><a href="/docs/backups/">Backups</a> &mdash; protect the data directory</li>
+    <li><a href="/docs/multi-user-oidc/">Multi-user &amp; OIDC</a> &mdash; give each household member their own library</li>
+  </ul>
+</DocsPage>

@@ -1,0 +1,65 @@
+---
+// Section navigation for the docs — rendered in the sticky right rail on
+// every docs page (reuses the .docs-toc styles). Highlights the current page.
+const sections: { label: string; links: { href: string; text: string }[] }[] = [
+  {
+    label: "Getting started",
+    links: [
+      { href: "/docs/installation/", text: "Installation" },
+      { href: "/docs/configuration/", text: "Configuration" },
+    ],
+  },
+  {
+    label: "Guides",
+    links: [
+      { href: "/docs/compose-env-vars/", text: "Compose + env vars" },
+      { href: "/docs/backups/", text: "Backups" },
+      { href: "/docs/multi-user-oidc/", text: "Multi-user & OIDC" },
+      { href: "/docs/self-hosting/", text: "Tailscale & HTTPS" },
+    ],
+  },
+  {
+    label: "Using Lector",
+    links: [
+      { href: "/docs/features/", text: "Reading & practice" },
+      { href: "/docs/languages/", text: "Supported languages" },
+    ],
+  },
+];
+
+const current = Astro.url.pathname;
+---
+
+<nav class="docs-toc">
+  <h4><a href="/docs/">Docs</a></h4>
+  {
+    sections.map((section) => (
+      <div class="docs-nav-group">
+        <p class="docs-nav-label">{section.label}</p>
+        {section.links.map((link) => (
+          <a href={link.href} aria-current={current === link.href ? "page" : undefined}>
+            {link.text}
+          </a>
+        ))}
+      </div>
+    ))
+  }
+</nav>
+
+<style>
+  .docs-nav-group {
+    margin-bottom: 1.1rem;
+  }
+  .docs-nav-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    opacity: 0.7;
+    margin: 0 0 0.35rem;
+  }
+  .docs-toc a[aria-current="page"] {
+    color: var(--text);
+    font-weight: 600;
+  }
+</style>

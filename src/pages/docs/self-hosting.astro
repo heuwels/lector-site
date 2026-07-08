@@ -1,0 +1,34 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+---
+<DocsPage
+  title="Tailscale & HTTPS | Lector Docs"
+  description="Private network access with Tailscale and same-origin HTTPS with a Caddy reverse proxy."
+  heading="Tailscale & HTTPS"
+>
+  <div class="callout">
+    <p>Lector is designed to run on your home network. Your reading history, vocabulary, and learning progress stay on hardware you control. There are no cloud accounts, no telemetry, and no external dependencies beyond optional AI translation.</p>
+  </div>
+
+  <h2 id="network-access">Network access</h2>
+  <p>Lector is designed to be accessed via a WireGuard VPN. We use <a href="https://tailscale.com">Tailscale</a>, which takes about five minutes to set up and gives every device on your tailnet a stable IP. This means your data never leaves your network.</p>
+  <p>With Tailscale, you can access Lector from your phone, from work, or from anywhere, without exposing any ports to the public internet.</p>
+
+  <h2 id="reverse-proxy">Reverse proxy (HTTPS)</h2>
+  <p>If you want HTTPS within your network (recommended), put Lector behind a reverse proxy. <a href="https://caddyserver.com">Caddy</a> handles automatic TLS with minimal configuration:</p>
+  <pre><code>lector.home.yourdomain.com &#123;
+    <span class="comment"># The browser calls the API directly, so send /api/* to the API</span>
+    <span class="comment"># port (3457) and everything else to the web UI (3000).</span>
+    handle /api/* &#123;
+        reverse_proxy lector:3457
+    &#125;
+    handle &#123;
+        reverse_proxy lector:3000
+    &#125;
+&#125;</code></pre>
+  <p>With a same-origin proxy like this you don't need to publish port <code>3457</code> on the host &mdash; Caddy reaches it over the container network. Set <code>API_URL=https://lector.home.yourdomain.com</code> in the container's environment so the browser sends its API calls to the same origin, and Caddy routes them to the API. Caddy will automatically provision and renew certificates. Pair this with a local DNS entry (e.g. via Pi-hole or your router) pointing <code>lector.home.yourdomain.com</code> to your server's IP.</p>
+
+  <div class="callout">
+    <p><strong>Planning on <a href="/docs/multi-user-oidc/">multi-user accounts</a>?</strong> A same-origin HTTPS proxy is the shape they're happiest in: session cookies and OAuth callbacks all ride one origin, so no cross-origin configuration is needed &mdash; just set <code>BETTER_AUTH_URL</code> to the same origin as <code>API_URL</code>.</p>
+  </div>
+</DocsPage>
