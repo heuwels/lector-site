@@ -8,6 +8,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   output: "static",
   site: "https://lector.dev",
+  // The former /eval/ page is now a blog post; keep the old URL working.
+  redirects: {
+    "/eval": "/blog/local-llm-translation-eval/",
+  },
   vite: {
     plugins: [tailwindcss()],
   },

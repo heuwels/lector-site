@@ -1,5 +1,5 @@
 ---
-import Base from "../../layouts/Base.astro";
+import Base from "../../../layouts/Base.astro";
 ---
 <Base title="Which local LLM translates best? A reproducible eval">
 <style is:global>
@@ -37,7 +37,7 @@ h3{font-size:1.15rem;font-weight:600;margin:2rem 0 .75rem}
 .date{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem}
 .lead{font-size:1.1rem;color:var(--muted)}
 .repo{font-size:.92rem;margin:.4rem 0 1.4rem;padding:.55rem .9rem .55rem 1.1rem;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 6px 6px 0}
-a{color:var(--accent)}.muted{color:var(--muted);font-size:.92rem}
+a{color:var(--accent)}.wrap a:hover,.site-header a:hover{text-decoration:underline}.muted{color:var(--muted);font-size:.92rem}
 table.board{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95rem}
 .board th,.board td{border-bottom:1px solid var(--border);padding:.55rem .6rem;text-align:center}
 .board th{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
@@ -86,7 +86,7 @@ code{background:var(--border);padding:.1rem .35rem;border-radius:4px;font-size:.
 [data-theme="dark"] .warn{background:#2a1416}
 </style>
 <header class="site-header"><div class="wrap">
-<p class="breadcrumb"><a href="/">lector</a> / eval</p>
+<p class="breadcrumb"><a href="/">lector</a> / <a href="/blog/">blog</a> / model eval</p>
 <h1>Which local LLM translates best? A reproducible eval</h1>
 <p class="date">2026-06-19 · source → English · Afrikaans / German / Spanish</p>
 </div></header>

@@ -111,12 +111,12 @@
     --link: var(--color-sage-300);
   }
 
+  /* No blanket hover underline — buttons, nav, and cards are all <a>s and must
+     not read as text links. Prose links opt back in via the content-page rules
+     below (.docs-body a, breadcrumbs, eval .wrap a). */
   a {
     color: var(--link);
     text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
   }
 
   code,
@@ -219,6 +219,13 @@
 }
 .docs-header .breadcrumb a {
   color: var(--text-muted);
+}
+/* Prose links (docs / methodology / blog bodies + breadcrumbs) keep the classic
+   underline-on-hover. Buttons and cards are excluded because they aren't here. */
+.docs-body a:hover,
+.docs-header .breadcrumb a:hover,
+.post-meta a:hover {
+  text-decoration: underline;
 }
 .post-meta {
   font-size: 0.85rem;
