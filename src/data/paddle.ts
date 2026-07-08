@@ -2,11 +2,11 @@
 // /support checkout (Paddle.js overlay).
 //
 // PADDLE_CLIENT_TOKEN is a *client-side* token (safe to ship publicly), NOT the
-// secret API key. Create one in Paddle → Developer tools → Authentication →
-// Client-side tokens, then paste it below. Until it's set, the support page's
-// buttons fall back to a friendly "not live yet" message.
+// secret API key. Created in Paddle → Developer tools → Authentication →
+// Client-side tokens. Checkout also requires the site's domain to be approved
+// in Paddle → Checkout settings.
 
-export const PADDLE_CLIENT_TOKEN = "REPLACE_WITH_PADDLE_CLIENT_TOKEN";
+export const PADDLE_CLIENT_TOKEN = "live_a3a63d5d54f8af501effa61bbc9";
 
 // Live sponsorship prices (created in Paddle 2026-07-08).
 export const SPONSOR_PRICES = {

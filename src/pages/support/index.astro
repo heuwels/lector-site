@@ -216,28 +216,17 @@ const tips = [
 
   <!-- Paddle.js overlay checkout -->
   <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-  <script is:inline define:vars={{ token: PADDLE_CLIENT_TOKEN, discord: DISCORD }}>
+  <script is:inline define:vars={{ token: PADDLE_CLIENT_TOKEN }}>
     (function () {
-      var ready = token && token.indexOf("REPLACE") === -1;
-      if (ready && window.Paddle) {
-        try {
-          window.Paddle.Initialize({ token: token });
-        } catch (e) {
-          ready = false;
-        }
+      if (window.Paddle) {
+        window.Paddle.Initialize({ token: token });
       }
       document.querySelectorAll("[data-price]").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          if (ready && window.Paddle) {
+          if (window.Paddle) {
             window.Paddle.Checkout.open({
               items: [{ priceId: btn.getAttribute("data-price"), quantity: 1 }],
             });
-          } else {
-            alert(
-              "Supporter checkout isn't switched on yet — hop into the Discord (" +
-                discord +
-                ") and we'll get you sorted."
-            );
           }
         });
       });
