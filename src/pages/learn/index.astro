@@ -1,0 +1,97 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Text from "../../components/Text.astro";
+import ActionLink from "../../components/ActionLink.astro";
+import { getCollection } from "astro:content";
+import { breadcrumbSchema } from "../../lib/schema";
+
+const entries = (await getCollection("learn")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const pillar = entries.find((e) => e.data.kind === "pillar")!;
+const clusterArticles = entries.filter((e) => e.data.kind === "cluster");
+
+const schema = [
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Learn", url: "/learn/" },
+  ]),
+];
+---
+
+<Base
+  title="How to learn a language by reading — guides | Lector"
+  description="Guides and explainers on learning a language by reading: comprehensible input, sentence mining, spaced repetition, and frequency-based vocabulary."
+  schema={schema}
+>
+  <section class="pt-14 pb-12 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Learn</Eyebrow>
+      <Heading class="max-w-3xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Learn by <span class="italic">reading</span>.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        The ideas behind Lector, explained. Start with the full guide, then dig
+        into the pieces — comprehensible input, sentence mining, spaced
+        repetition, and frequency-first vocabulary.
+      </Text>
+    </Container>
+  </section>
+
+  <section class="pb-16">
+    <Container class="flex flex-col gap-2">
+      <a
+        href={`/learn/${pillar.id}/`}
+        class="group flex flex-col gap-3 rounded-2xl bg-olive-950 p-8 text-white transition-colors hover:bg-olive-800 dark:bg-white/10 dark:hover:bg-white/15 dark:ring-1 dark:ring-white/10"
+      >
+        <span class="inline-flex w-fit rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+          Start here
+        </span>
+        <h2 class="font-display text-3xl/9 text-white sm:text-4xl/12">
+          {pillar.data.title}
+        </h2>
+        <p class="max-w-2xl text-base/7 text-olive-200">{pillar.data.blurb}</p>
+        <span class="mt-1 inline-flex items-center gap-1 text-sm/7 font-medium text-white">
+          Read the guide
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            class="size-4 transition-transform group-hover:translate-x-0.5"
+          >
+            <path
+              d="M6.5 3.5 11 8l-4.5 4.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      </a>
+
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          clusterArticles.map((a) => (
+            <a
+              href={`/learn/${a.id}/`}
+              class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                {a.data.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {a.data.blurb}
+              </p>
+              <ActionLink href={`/learn/${a.id}/`} class="mt-1">
+                Read
+              </ActionLink>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+</Base>

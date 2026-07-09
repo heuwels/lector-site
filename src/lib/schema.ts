@@ -116,3 +116,22 @@ export function datasetSchema(opts: {
     },
   };
 }
+
+/** Article — for the /learn/ pillar + cluster educational pages. */
+export function articleSchema(opts: {
+  headline: string;
+  description: string;
+  url: string;
+  keywords?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline,
+    description: opts.description,
+    url: opts.url.startsWith("http") ? opts.url : `${SITE}${opts.url}`,
+    author: { "@type": "Organization", name: "Lector", url: SITE },
+    publisher: { "@type": "Organization", name: "Lector", url: SITE },
+    ...(opts.keywords ? { keywords: opts.keywords.join(", ") } : {}),
+  };
+}

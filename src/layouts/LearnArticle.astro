@@ -1,0 +1,100 @@
+---
+// Shared shell for /learn/ pillar + cluster articles: prose body (reuses the
+// .docs-body legacy prose styles, like the blog/methodology) with Article +
+// FAQPage + Breadcrumb schema and an auto "keep reading" cross-link block.
+import Base from "./Base.astro";
+import Faqs from "../components/Faqs.astro";
+import { getCollection } from "astro:content";
+import { articleSchema, faqPageSchema, breadcrumbSchema } from "../lib/schema";
+
+interface Faq {
+  question: string;
+  answer: string;
+}
+interface Props {
+  title: string;
+  description: string;
+  oneLiner: string;
+  slug: string;
+  keywords?: string[];
+  faqs?: Faq[];
+}
+const { title, description, oneLiner, slug, keywords, faqs } = Astro.props;
+const url = `/learn/${slug}/`;
+const related = (await getCollection("learn"))
+  .filter((a) => a.id !== slug)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const schema = [
+  articleSchema({ headline: title, description, url, keywords }),
+  ...(faqs && faqs.length ? [faqPageSchema(faqs)] : []),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Learn", url: "/learn/" },
+    { name: title, url },
+  ]),
+];
+---
+
+<Base title={`${title} | Lector`} description={description} schema={schema}>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb">
+        <a href="/">lector</a> / <a href="/learn/">learn</a>
+      </p>
+      <h1>{title}</h1>
+      <p class="learn-lead">{oneLiner}</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-layout">
+      <main class="docs-body">
+        <slot />
+
+        {
+          faqs && faqs.length ? (
+            <>
+              <h2 id="faq">Frequently asked</h2>
+              <Faqs items={faqs} />
+            </>
+          ) : null
+        }
+
+        <section class="learn-related">
+          <h2>Keep reading</h2>
+          <ul>
+            {
+              related.map((a) => (
+                <li>
+                  <a href={`/learn/${a.id}/`}>{a.data.title}</a> &mdash; {a.data.blurb}
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <style>
+    .learn-lead {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      max-width: 46rem;
+    }
+    .learn-related {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .learn-related ul {
+      padding-left: 1.1rem;
+    }
+    .learn-related li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</Base>
