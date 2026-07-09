@@ -10,7 +10,7 @@ import ActionLink from "../../components/ActionLink.astro";
 import Faqs from "../../components/Faqs.astro";
 import { languages } from "../../data/languages";
 import { languageGuides } from "../../data/languageGuides";
-import { SIGNUP_URL } from "../../data/links";
+import { SIGNUP_URL, DISCORD } from "../../data/links";
 import { faqPageSchema, courseSchema, breadcrumbSchema } from "../../lib/schema";
 
 export function getStaticPaths() {
@@ -279,6 +279,27 @@ const schema = [
         </Text>
       </div>
       <Faqs items={guide.faqs} />
+    </Container>
+  </section>
+
+  <!-- Community -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-6 rounded-2xl bg-olive-950/2.5 px-6 py-12 text-center dark:bg-white/5"
+      >
+        <Eyebrow>Get involved</Eyebrow>
+        <Subheading class="max-w-2xl">
+          Learning {langName}? You're in good company.
+        </Subheading>
+        <Text class="max-w-xl text-pretty">
+          Come chat with other learners on our Discord — swap resources, compare
+          progress, ask questions, and stay motivated while you read your way in.
+        </Text>
+        <Button href={DISCORD} variant="soft" target="_blank" rel="noopener">
+          Join the Discord
+        </Button>
+      </div>
     </Container>
   </section>
 
