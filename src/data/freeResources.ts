@@ -39,6 +39,83 @@ export interface FreeResource {
 
 const CC_BY_SA = "https://creativecommons.org/licenses/by-sa/4.0/";
 
+// Wiktionary-derived (kaikki.org) on-device dictionaries, published per language
+// as GitHub releases on heuwels/lector. Pure Wiktionary → CC BY-SA 4.0. They're
+// large, so we link the release asset rather than host it.
+function wiktionaryDict(opts: {
+  languageSlug: string;
+  language: string;
+  langCode: string;
+  entries: string;
+  senses: string;
+  size: string;
+  releaseTag: string;
+}): FreeResource {
+  const releases = "https://github.com/heuwels/lector/releases";
+  const releaseUrl = `${releases}/tag/${opts.releaseTag}`;
+  return {
+    slug: `${opts.languageSlug}-dictionary`,
+    kind: "dataset",
+    title: `Free ${opts.language}–English dictionary`,
+    language: opts.language,
+    languageSlug: opts.languageSlug,
+    tagline: `A free, open ${opts.language} → English dictionary as a SQLite database: ${opts.entries} entries and ${opts.senses} senses, built from Wiktionary (kaikki.org). It's the same dictionary that powers Lector's offline lookups.`,
+    file: `${releases}/download/${opts.releaseTag}/dictionary-${opts.langCode}.db`,
+    format: "SQLite",
+    encodingFormat: "application/vnd.sqlite3",
+    size: opts.size,
+    license: "CC BY-SA 4.0",
+    licenseUrl: CC_BY_SA,
+    stats: [
+      { label: "Entries", value: opts.entries },
+      { label: "Senses", value: opts.senses },
+      { label: "Format", value: "SQLite" },
+      { label: "License", value: "CC BY-SA 4.0" },
+    ],
+    inside: [
+      `${opts.entries} ${opts.language} headwords with ${opts.senses} English senses, in a single SQLite file.`,
+      "Extracted from Wiktionary via kaikki.org — an open, community-built dictionary.",
+      "The same dictionary Lector uses for instant, offline word lookups while you read.",
+      "Query it with any SQLite client, or read it from code (Python's sqlite3, better-sqlite3, and friends).",
+    ],
+    howTo: [
+      {
+        title: "Download the database",
+        body: `Grab dictionary-${opts.langCode}.db from the GitHub release below (about ${opts.size}). It's a standard SQLite file.`,
+      },
+      {
+        title: "Open or query it",
+        body: "Open it in a SQLite browser, or read it from code. Inspect the tables to see the entry and sense schema.",
+      },
+      {
+        title: "Keep the attribution",
+        body: "It's derived from Wiktionary (CC BY-SA 4.0), so preserve attribution and share-alike if you redistribute it.",
+      },
+    ],
+    faqs: [
+      {
+        question: `Is the ${opts.language} dictionary free to use?`,
+        answer: `Yes — it's extracted from Wiktionary and licensed CC BY-SA 4.0, so you're free to download, use, and adapt it with attribution and share-alike.`,
+      },
+      {
+        question: `What format is the ${opts.language} dictionary in?`,
+        answer: `A single SQLite database (dictionary-${opts.langCode}.db, about ${opts.size}) with ${opts.entries} entries and ${opts.senses} senses. Open it with any SQLite client, or read it from code.`,
+      },
+      {
+        question: `Where does the ${opts.language} dictionary data come from?`,
+        answer: `It's extracted from Wiktionary via kaikki.org and packaged as a lookup database. Full details are on the <a href='${releaseUrl}'>GitHub release</a>.`,
+      },
+    ],
+    keywords: [
+      `free ${opts.language} English dictionary`,
+      `${opts.language} dictionary download`,
+      `${opts.language} English dictionary data`,
+      `open ${opts.language} dictionary`,
+      `${opts.language} SQLite dictionary`,
+    ],
+  };
+}
+
 export const freeResources: Record<string, FreeResource> = {
   "afrikaans-anki-deck": {
     slug: "afrikaans-anki-deck",
@@ -260,4 +337,44 @@ export const freeResources: Record<string, FreeResource> = {
       "Afrikaans SQLite dictionary",
     ],
   },
+
+  "german-dictionary": wiktionaryDict({
+    languageSlug: "german",
+    language: "German",
+    langCode: "de",
+    entries: "340,553",
+    senses: "723,492",
+    size: "146 MB",
+    releaseTag: "dict-de-2026-06-25",
+  }),
+
+  "spanish-dictionary": wiktionaryDict({
+    languageSlug: "spanish",
+    language: "Spanish",
+    langCode: "es",
+    entries: "764,524",
+    senses: "901,613",
+    size: "260 MB",
+    releaseTag: "dict-es-2026-06-26",
+  }),
+
+  "french-dictionary": wiktionaryDict({
+    languageSlug: "french",
+    language: "French",
+    langCode: "fr",
+    entries: "384,577",
+    senses: "488,500",
+    size: "99 MB",
+    releaseTag: "dict-fr-2026-07-07",
+  }),
+
+  "dutch-dictionary": wiktionaryDict({
+    languageSlug: "dutch",
+    language: "Dutch",
+    langCode: "nl",
+    entries: "135,986",
+    senses: "206,960",
+    size: "47 MB",
+    releaseTag: "dict-nl-2026-07-07",
+  }),
 };

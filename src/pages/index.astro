@@ -78,7 +78,7 @@ const faqs = [
   {
     question: "Where does my data live?",
     answer:
-      "On your hardware. Your reading history, vocabulary, and progress sit in a single SQLite file inside a Docker volume. No third-party databases, no analytics, no telemetry. Backing up is one file copy — rsync, borg, or a USB drive.",
+      "It depends how you run it. Self-hosted, everything lives on your hardware — reading history, vocabulary, and progress in a single SQLite file inside a Docker volume, with no third-party databases, analytics, or telemetry, and backups are one file copy. On Lector Cloud, we host it for you in AWS (us-east-1); you can export your data any time, with no lock-in.",
   },
   {
     question: "Do I need an API key or a GPU?",
