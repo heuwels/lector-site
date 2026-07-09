@@ -85,3 +85,34 @@ export function softwareApplicationSchema() {
     },
   };
 }
+
+/** Dataset — for free, downloadable reference resources (decks, frequency lists). */
+export function datasetSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  contentUrl: string;
+  encodingFormat: string;
+  /** License URL, e.g. https://creativecommons.org/licenses/by-sa/4.0/. */
+  license: string;
+  keywords?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url.startsWith("http") ? opts.url : `${SITE}${opts.url}`,
+    license: opts.license,
+    isAccessibleForFree: true,
+    creator: { "@type": "Organization", name: "Lector", url: SITE },
+    ...(opts.keywords ? { keywords: opts.keywords.join(", ") } : {}),
+    distribution: {
+      "@type": "DataDownload",
+      encodingFormat: opts.encodingFormat,
+      contentUrl: opts.contentUrl.startsWith("http")
+        ? opts.contentUrl
+        : `${SITE}${opts.contentUrl}`,
+    },
+  };
+}

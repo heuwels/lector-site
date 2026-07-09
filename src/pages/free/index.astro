@@ -1,0 +1,75 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Text from "../../components/Text.astro";
+import { freeResources } from "../../data/freeResources";
+import { breadcrumbSchema } from "../../lib/schema";
+
+const items = Object.values(freeResources);
+const schema = [
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Free resources", url: "/free/" },
+  ]),
+];
+---
+
+<Base
+  title="Free language-learning resources | Lector"
+  description="Free, open downloads for language learners — a frequency-banded Afrikaans Anki deck and a 443k-word Afrikaans frequency list, CC BY-SA 4.0."
+  schema={schema}
+>
+  <section class="pt-14 pb-12 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Free resources</Eyebrow>
+      <Heading class="max-w-3xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Free to <span class="italic">download</span>.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        Open, ready-to-use downloads for language learners — built from public
+        corpora and free under CC BY-SA 4.0. No account needed.
+      </Text>
+    </Container>
+  </section>
+
+  <section class="pb-16">
+    <Container>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          items.map((r) => (
+            <a
+              href={`/free/${r.slug}/`}
+              class="group flex flex-col gap-3 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <span class="inline-flex w-fit rounded-full bg-sage-600/15 px-2.5 py-0.5 text-xs font-medium text-sage-700 dark:text-sage-300">
+                {r.format} &middot; {r.size} &middot; {r.license}
+              </span>
+              <h2 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                {r.title}
+              </h2>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{r.tagline}</p>
+              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                Download &amp; how to use
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="size-4 transition-transform group-hover:translate-x-0.5"
+                >
+                  <path
+                    d="M6.5 3.5 11 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+</Base>
