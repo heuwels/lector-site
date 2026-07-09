@@ -1,0 +1,75 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Text from "../../components/Text.astro";
+import { comparisons } from "../../data/comparisons";
+import { breadcrumbSchema } from "../../lib/schema";
+
+const items = Object.values(comparisons);
+const schema = [
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Comparisons", url: "/vs/" },
+  ]),
+];
+---
+
+<Base
+  title="Lector vs the alternatives | Lector"
+  description="Honest, side-by-side comparisons of Lector against LingQ and Clozemaster — price, reading, cloze practice, Anki export, and data ownership."
+  schema={schema}
+>
+  <section class="pt-14 pb-12 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Comparisons</Eyebrow>
+      <Heading class="max-w-3xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        How Lector <span class="italic">compares</span>.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        Honest, side-by-side breakdowns against the popular subscription apps —
+        where they win, where Lector wins, and who should pick which.
+      </Text>
+    </Container>
+  </section>
+
+  <section class="pb-16">
+    <Container>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          items.map((c) => (
+            <a
+              href={`/vs/${c.slug}/`}
+              class="group flex flex-col gap-3 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <h2 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                Lector vs {c.name}
+              </h2>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                See how Lector compares to {c.name} on price, reading, cloze
+                practice, Anki export, and data ownership.
+              </p>
+              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                Read the comparison
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="size-4 transition-transform group-hover:translate-x-0.5"
+                >
+                  <path
+                    d="M6.5 3.5 11 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+</Base>
