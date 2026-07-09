@@ -189,4 +189,75 @@ export const freeResources: Record<string, FreeResource> = {
       "Afrikaans vocabulary frequency",
     ],
   },
+
+  "afrikaans-dictionary": {
+    slug: "afrikaans-dictionary",
+    kind: "dataset",
+    title: "Free Afrikaans–English dictionary",
+    language: "Afrikaans",
+    languageSlug: "afrikaans",
+    tagline:
+      "A free, open Afrikaans → English dictionary as a SQLite database: 15,686 entries and 21,023 senses, assembled from Wiktionary, FreeDict, and public-domain sources. It's the same dictionary that powers Lector's offline lookups.",
+    file: "https://github.com/heuwels/lector/releases/download/dict-af-2026-06-19/dictionary-af.db",
+    format: "SQLite",
+    encodingFormat: "application/vnd.sqlite3",
+    size: "3 MB",
+    license: "Open · FreeDict GPL-2.0 + Wiktionary CC BY-SA",
+    licenseUrl: "https://github.com/heuwels/lector/releases/tag/dict-af-2026-06-19",
+    stats: [
+      { label: "Entries", value: "15,686" },
+      { label: "Senses", value: "21,023" },
+      { label: "Format", value: "SQLite" },
+      { label: "License", value: "Open source" },
+    ],
+    inside: [
+      "15,686 Afrikaans headwords with 21,023 English senses, in a single SQLite file.",
+      "Assembled and de-duplicated from open sources: Wiktionary (via kaikki.org), FreeDict afr-eng, morphological roots, and public-domain dictionary text.",
+      "The same dictionary Lector uses for instant, offline word lookups while you read.",
+      "Query it with any SQLite client, or read it from code (Python's sqlite3, better-sqlite3, and friends).",
+    ],
+    howTo: [
+      {
+        title: "Download the database",
+        body: "Grab dictionary-af.db from the GitHub release below (about 3 MB). It's a standard SQLite file.",
+      },
+      {
+        title: "Open or query it",
+        body: "Open it in a SQLite browser, or read it from code. Inspect the tables to see the entry and sense schema.",
+      },
+      {
+        title: "Keep the attribution",
+        body: "It bundles FreeDict afr-eng (GPL-2.0) and Wiktionary data (CC BY-SA), so preserve the attribution and COPYING from the release if you redistribute it.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Is the Afrikaans dictionary free to use?",
+        answer:
+          "Yes — it's built entirely from open sources and free to download and use. It includes FreeDict afr-eng (GPL-2.0) and Wiktionary data (CC BY-SA), so if you redistribute it, keep the attribution and COPYING noted on the <a href='https://github.com/heuwels/lector/releases/tag/dict-af-2026-06-19'>GitHub release</a>.",
+      },
+      {
+        question: "What format is the dictionary in?",
+        answer:
+          "A single SQLite database (dictionary-af.db, about 3 MB) with 15,686 entries and 21,023 senses. Open it with any SQLite client, or read it from code.",
+      },
+      {
+        question: "Where does the dictionary data come from?",
+        answer:
+          "It's assembled from Wiktionary (via kaikki.org), FreeDict's afr-eng dictionary, morphological roots, and public-domain dictionary text — de-duplicated into one lookup database. Full provenance and licensing are on the <a href='https://github.com/heuwels/lector/releases/tag/dict-af-2026-06-19'>GitHub release</a>.",
+      },
+      {
+        question: "It looks a little sparse — will it grow?",
+        answer:
+          "Yes. Coverage will expand as more public-domain source material is digitised. The download always points at the current release.",
+      },
+    ],
+    keywords: [
+      "free Afrikaans English dictionary",
+      "Afrikaans dictionary download",
+      "Afrikaans English dictionary data",
+      "open Afrikaans dictionary",
+      "Afrikaans SQLite dictionary",
+    ],
+  },
 };
