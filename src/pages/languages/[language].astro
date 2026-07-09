@@ -57,7 +57,6 @@ const schema = [
   <!-- Hero -->
   <section class="pt-14 pb-16 sm:pt-20">
     <Container class="flex flex-col items-center gap-6 text-center">
-      <Eyebrow>{lang.flag} Learn {langName}</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
         Learn {langName} by <span class="italic">reading</span>.
       </Heading>
@@ -181,63 +180,45 @@ const schema = [
     </Container>
   </section>
 
-  <!-- How Lector helps: personalised screenshots -->
+  <!-- How Lector helps: personalised practice screenshot -->
   <section class="py-12">
     <Container class="flex flex-col gap-6">
       <div class="flex max-w-2xl flex-col gap-4">
         <Eyebrow>How Lector helps</Eyebrow>
         <Subheading>Read it. Practice it. Remember it.</Subheading>
+        <Text class="text-pretty">
+          The reader (above) turns any {langName} text into a lesson — tap any
+          word to translate it, hear it in a native voice, and track what you
+          know. Then frequency-ordered cloze practice locks the core vocabulary
+          in, and mined words push straight to Anki.
+        </Text>
       </div>
 
       <div
         class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5"
       >
         <div class="flex flex-col gap-4">
-          <Eyebrow>Read</Eyebrow>
+          <Eyebrow>Practice</Eyebrow>
           <Subheading class="text-3xl/9 sm:text-4xl/12">
-            Every word, one tap away.
+            Drill the words that matter first.
           </Subheading>
           <Text class="text-pretty">
-            Drop in a book, an article, or a URL. Lector colours every word by how
-            well you know it and gives you an instant translation on tap — so you
-            read real {langName} from day one, not textbook drills.
+            Frequency-ordered cloze sentences build the core of {langName}{" "}
+            vocabulary, scheduled by spaced repetition so each one returns right
+            when you're about to forget it — in multiple-choice or typing mode.
+            Practise listening to native pronunciation on every word and
+            sentence, powered by Google text-to-speech.
           </Text>
         </div>
         <div>
           <img
-            src={guide.readerImg}
-            alt={guide.readerAlt}
+            src={guide.clozeImg}
+            alt={guide.clozeAlt}
             loading="lazy"
             class="w-full rounded-xl ring-1 ring-black/10"
           />
         </div>
       </div>
-
-      {
-        guide.clozeImg && (
-          <div class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5">
-            <div class="flex flex-col gap-4 lg:order-2">
-              <Eyebrow>Practice</Eyebrow>
-              <Subheading class="text-3xl/9 sm:text-4xl/12">
-                Drill the words that matter first.
-              </Subheading>
-              <Text class="text-pretty">
-                Frequency-ordered cloze sentences build the core of {langName}{" "}
-                vocabulary, scheduled by spaced repetition so each one returns
-                right when you're about to forget it.
-              </Text>
-            </div>
-            <div class="lg:order-1">
-              <img
-                src={guide.clozeImg}
-                alt={guide.clozeAlt}
-                loading="lazy"
-                class="w-full rounded-xl ring-1 ring-black/10"
-              />
-            </div>
-          </div>
-        )
-      }
     </Container>
   </section>
 
@@ -246,10 +227,11 @@ const schema = [
     <Container class="flex flex-col gap-10">
       <div class="flex max-w-2xl flex-col gap-4">
         <Eyebrow>Free resources</Eyebrow>
-        <Subheading>Start today, for nothing.</Subheading>
+        <Subheading>Free resources to get you started.</Subheading>
         <Text class="text-pretty">
-          You don't need to pay to begin. Grab the open {langName} reference data,
-          or bring your own books and mine cards into Anki as you read.
+          The {langName} reference data and Anki decks below are free to download
+          and use on their own. To turn them into a full reading course, self-host
+          Lector for free or start on the cloud from $5/mo.
         </Text>
       </div>
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
