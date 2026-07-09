@@ -1,0 +1,254 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import ActionLink from "../../components/ActionLink.astro";
+import Faqs from "../../components/Faqs.astro";
+import { freeResources } from "../../data/freeResources";
+import { SIGNUP_URL } from "../../data/links";
+import { faqPageSchema, breadcrumbSchema, datasetSchema } from "../../lib/schema";
+
+export function getStaticPaths() {
+  return Object.values(freeResources).map((r) => ({
+    params: { resource: r.slug },
+    props: { r },
+  }));
+}
+
+const { r } = Astro.props;
+const url = `/free/${r.slug}/`;
+const maxBand = Math.max(1, ...(r.bands?.map((b) => b.count) ?? []));
+
+const title = `${r.title} — free download | Lector`;
+const description = r.tagline;
+
+const schema = [
+  datasetSchema({
+    name: r.title,
+    description: r.tagline,
+    url,
+    contentUrl: r.file,
+    encodingFormat: r.encodingFormat,
+    license: r.licenseUrl,
+    keywords: r.keywords,
+  }),
+  faqPageSchema(r.faqs),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Free resources", url: "/free/" },
+    { name: r.title, url },
+  ]),
+];
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero + download -->
+  <section class="pt-14 pb-12 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Free resource &middot; {r.language}</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-6xl/[1.05]">
+        {r.title}
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">{r.tagline}</Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={r.file} download size="lg">
+            Download the {r.format} &middot; {r.size}
+          </Button>
+          <ActionLink href={`/reference-data/${r.languageSlug}/`}>
+            Provenance &amp; licensing
+          </ActionLink>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Free &middot; {r.license} &middot; no account needed
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Stats -->
+  <section class="pb-4">
+    <Container>
+      <dl class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {
+          r.stats.map((s) => (
+            <div class="flex flex-col gap-1 rounded-xl bg-olive-950/2.5 p-5 dark:bg-white/5">
+              <dt class="text-xs/6 text-olive-600 dark:text-olive-400">{s.label}</dt>
+              <dd class="font-display text-xl/7 text-olive-950 dark:text-white">
+                {s.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </Container>
+  </section>
+
+  <!-- What's inside -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-14">
+      <div class="flex flex-col gap-4">
+        <Eyebrow>What's inside</Eyebrow>
+        <Subheading>What you get.</Subheading>
+        <ul class="flex flex-col gap-3">
+          {
+            r.inside.map((line) => (
+              <li class="flex gap-3 text-base/7 text-olive-700 dark:text-olive-400">
+                <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-sage-600" />
+                <span>{line}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {
+        r.bands && (
+          <div class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-6 sm:p-8 dark:bg-white/5">
+            <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+              Cards per frequency band
+            </h3>
+            <div class="flex flex-col gap-2.5">
+              {r.bands.map((b) => (
+                <div class="grid grid-cols-[6.5rem_1fr_3rem] items-center gap-3 text-sm">
+                  <span class="text-right text-olive-600 dark:text-olive-400">
+                    {b.name}
+                  </span>
+                  <span class="h-3 overflow-hidden rounded bg-olive-950/8 dark:bg-white/10">
+                    <span
+                      class="block h-full rounded bg-sage-600"
+                      style={`width:${Math.round((b.count / maxBand) * 100)}%`}
+                    />
+                  </span>
+                  <span class="text-right tabular-nums text-olive-600 dark:text-olive-400">
+                    {b.count.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </Container>
+  </section>
+
+  <!-- How to use -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>How to use it</Eyebrow>
+        <Subheading>From download to first review.</Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-3">
+        {
+          r.howTo.map((step, i) => (
+            <div class="flex flex-col gap-2 border-t border-olive-950/10 pt-4 dark:border-white/10">
+              <span class="font-display text-2xl text-olive-400 dark:text-olive-500">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {step.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{step.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- Funnel to Lector -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Go further</Eyebrow>
+        <Subheading>Turn a word list into fluency.</Subheading>
+        <Text class="text-pretty">
+          A deck and a frequency list are a great start. Lector turns them into a
+          full course &mdash; read real {r.language} with tap-to-translate, drill
+          the same frequency-ordered words with cloze, and mine your own cards
+          straight into Anki.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <a
+          href={`/languages/${r.languageSlug}/`}
+          class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <h3 class="font-display text-xl/7 text-olive-950 dark:text-white">
+            Learn {r.language}
+          </h3>
+          <p class="text-sm/6 text-olive-700 dark:text-olive-400">
+            Why and how to learn {r.language} by reading.
+          </p>
+          <ActionLink href={`/languages/${r.languageSlug}/`} class="mt-1">
+            Read the guide
+          </ActionLink>
+        </a>
+        <a
+          href="/docs/anki/"
+          class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <h3 class="font-display text-xl/7 text-olive-950 dark:text-white">
+            New to Anki?
+          </h3>
+          <p class="text-sm/6 text-olive-700 dark:text-olive-400">
+            A from-scratch guide to spaced-repetition flashcards.
+          </p>
+          <ActionLink href="/docs/anki/" class="mt-1">Getting started</ActionLink>
+        </a>
+        <a
+          href={`/reference-data/${r.languageSlug}/`}
+          class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <h3 class="font-display text-xl/7 text-olive-950 dark:text-white">
+            Reference data
+          </h3>
+          <p class="text-sm/6 text-olive-700 dark:text-olive-400">
+            Full provenance, licensing, and all {r.language} downloads.
+          </p>
+          <ActionLink href={`/reference-data/${r.languageSlug}/`} class="mt-1">
+            Browse the data
+          </ActionLink>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Questions</Eyebrow>
+        <Subheading>Good to know.</Subheading>
+      </div>
+      <Faqs items={r.faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+          Read your way into <span class="italic">{r.language}</span>.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Open source to self-host for free, or on our cloud in a click.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg" color="light">Start on the cloud</Button>
+          <Button href="/docs/installation/" variant="plain" size="lg" color="light">
+            Self-host, free
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>
