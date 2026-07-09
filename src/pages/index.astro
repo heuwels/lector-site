@@ -9,7 +9,7 @@ import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
 import { languages } from "../data/languages";
-import { GITHUB, SIGNUP_URL } from "../data/links";
+import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
 import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
 
 // Feature "moments" — each pairs a real screenshot with a capability. Rendered
@@ -389,6 +389,25 @@ docker compose up -d</code></pre>
         </Text>
       </div>
       <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Community -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-6 rounded-2xl bg-olive-950/2.5 px-6 py-12 text-center dark:bg-white/5"
+      >
+        <Eyebrow>Get involved</Eyebrow>
+        <Subheading class="max-w-2xl">Learn alongside other readers.</Subheading>
+        <Text class="max-w-xl text-pretty">
+          Join our Discord to swap resources, compare progress, request new
+          languages, and help shape where Lector goes next.
+        </Text>
+        <Button href={DISCORD} variant="soft" target="_blank" rel="noopener">
+          Join the Discord
+        </Button>
+      </div>
     </Container>
   </section>
 
