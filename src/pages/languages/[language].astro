@@ -1,0 +1,324 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import ActionLink from "../../components/ActionLink.astro";
+import Faqs from "../../components/Faqs.astro";
+import { languages } from "../../data/languages";
+import { languageGuides } from "../../data/languageGuides";
+import { SIGNUP_URL } from "../../data/links";
+import { faqPageSchema, courseSchema, breadcrumbSchema } from "../../lib/schema";
+
+export function getStaticPaths() {
+  // A guide page exists only for complete languages that have marketing content.
+  return languages
+    .filter((l) => l.status === "complete" && languageGuides[l.slug])
+    .map((l) => ({
+      params: { language: l.slug },
+      props: { lang: l, guide: languageGuides[l.slug] },
+    }));
+}
+
+const { lang, guide } = Astro.props;
+// lang.name is "Afrikaans → English"; the English name of the language is the first part.
+const langName = lang.name.split("→")[0].trim();
+const url = `/languages/${lang.slug}/`;
+
+const title = `Learn ${langName} — the best way for English speakers | Lector`;
+const description = `How to learn ${langName} by reading real texts: ${guide.fsiCategory} (${guide.approxHours}) for English speakers. Free and self-hosted, with frequency-based practice and Anki export.`;
+
+const stats = [
+  { label: "Native speakers", value: guide.nativeSpeakers },
+  { label: "Difficulty (FSI)", value: guide.fsiCategory },
+  { label: "To proficiency", value: guide.approxHours },
+];
+
+const schema = [
+  faqPageSchema(guide.faqs),
+  courseSchema({
+    name: `Learn ${langName} with Lector`,
+    description: `Learn ${langName} by reading real texts with click-to-translate, frequency-based cloze practice, and Anki export.`,
+    url,
+    weeks: guide.approxWeeks,
+  }),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Languages", url: "/languages/" },
+    { name: langName, url },
+  ]),
+];
+---
+
+<Base title={title} description={description} image={guide.readerImg} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-16 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>{lang.flag} Learn {langName}</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Learn {langName} by <span class="italic">reading</span>.
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">{guide.answer}</Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg">Start on the cloud</Button>
+          <Button href="/docs/installation/" variant="soft" size="lg">
+            Self-host, free
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Cloud is in beta &middot; self-hosting is free forever
+        </p>
+      </div>
+    </Container>
+
+    <Container class="mt-14">
+      <div
+        class="mx-auto max-w-5xl rounded-2xl bg-olive-950/2.5 p-2 ring-1 ring-olive-950/5 dark:bg-white/5 dark:ring-white/10"
+      >
+        <img
+          src={guide.readerImg}
+          alt={guide.readerAlt}
+          width="1600"
+          height="1000"
+          class="w-full rounded-xl ring-1 ring-black/10"
+        />
+      </div>
+    </Container>
+  </section>
+
+  <!-- Facts strip -->
+  <section class="pb-4">
+    <Container>
+      <dl class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {
+          stats.map((s) => (
+            <div class="flex flex-col gap-1 rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <dt class="text-sm/6 text-olive-600 dark:text-olive-400">{s.label}</dt>
+              <dd class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                {s.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </Container>
+  </section>
+
+  <!-- Why learn -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Why {langName}</Eyebrow>
+        <Subheading>Reasons to start.</Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-3">
+        {
+          guide.whyLearn.map((reason, i) => (
+            <div class="flex flex-col gap-2 border-t border-olive-950/10 pt-4 dark:border-white/10">
+              <span class="font-display text-2xl text-olive-400 dark:text-olive-500">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <p class="text-base/7 text-olive-700 dark:text-olive-400">{reason}</p>
+            </div>
+          ))
+        }
+      </div>
+      {
+        guide.mutualIntelligibility && (
+          <div class="rounded-2xl bg-sage-600/10 p-6 dark:bg-sage-600/15">
+            <p class="text-base/7 text-olive-800 dark:text-olive-200">
+              <span class="font-semibold text-olive-950 dark:text-white">
+                Bonus:{" "}
+              </span>
+              {guide.mutualIntelligibility}
+            </p>
+          </div>
+        )
+      }
+    </Container>
+  </section>
+
+  <!-- How hard / the method with a sample passage -->
+  <section class="py-16">
+    <Container
+      class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5"
+    >
+      <div class="flex flex-col gap-4">
+        <Eyebrow>Is it hard? How long?</Eyebrow>
+        <Subheading class="text-3xl/9 sm:text-4xl/12">
+          The honest version.
+        </Subheading>
+        <Text class="text-pretty">{guide.difficultyNote}</Text>
+        <Text class="text-pretty">
+          Whatever the category, the method is the same: read a lot of {langName},
+          learn the most common words first, and let a spaced-repetition system
+          resurface them right before you forget.
+          <a href="/methodology/" class="font-medium underline underline-offset-4">
+            See the method
+          </a>.
+        </Text>
+      </div>
+      <!-- Sample passage, styled like the reader -->
+      <figure
+        class="flex flex-col gap-4 rounded-xl bg-white p-6 ring-1 ring-olive-950/10 dark:bg-olive-950 dark:ring-white/10"
+      >
+        <figcaption class="text-xs/6 font-medium tracking-wide text-olive-500 uppercase">
+          A line of {langName}
+        </figcaption>
+        <p
+          class="font-display text-2xl/9 text-balance text-olive-950 dark:text-white"
+        >
+          {guide.sample.text}
+        </p>
+        <p class="text-sm/6 text-olive-600 italic dark:text-olive-400">
+          {guide.sample.translation}
+        </p>
+      </figure>
+    </Container>
+  </section>
+
+  <!-- How Lector helps: personalised screenshots -->
+  <section class="py-12">
+    <Container class="flex flex-col gap-6">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>How Lector helps</Eyebrow>
+        <Subheading>Read it. Practice it. Remember it.</Subheading>
+      </div>
+
+      <div
+        class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5"
+      >
+        <div class="flex flex-col gap-4">
+          <Eyebrow>Read</Eyebrow>
+          <Subheading class="text-3xl/9 sm:text-4xl/12">
+            Every word, one tap away.
+          </Subheading>
+          <Text class="text-pretty">
+            Drop in a book, an article, or a URL. Lector colours every word by how
+            well you know it and gives you an instant translation on tap — so you
+            read real {langName} from day one, not textbook drills.
+          </Text>
+        </div>
+        <div>
+          <img
+            src={guide.readerImg}
+            alt={guide.readerAlt}
+            loading="lazy"
+            class="w-full rounded-xl ring-1 ring-black/10"
+          />
+        </div>
+      </div>
+
+      {
+        guide.clozeImg && (
+          <div class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5">
+            <div class="flex flex-col gap-4 lg:order-2">
+              <Eyebrow>Practice</Eyebrow>
+              <Subheading class="text-3xl/9 sm:text-4xl/12">
+                Drill the words that matter first.
+              </Subheading>
+              <Text class="text-pretty">
+                Frequency-ordered cloze sentences build the core of {langName}{" "}
+                vocabulary, scheduled by spaced repetition so each one returns
+                right when you're about to forget it.
+              </Text>
+            </div>
+            <div class="lg:order-1">
+              <img
+                src={guide.clozeImg}
+                alt={guide.clozeAlt}
+                loading="lazy"
+                class="w-full rounded-xl ring-1 ring-black/10"
+              />
+            </div>
+          </div>
+        )
+      }
+    </Container>
+  </section>
+
+  <!-- Free resources -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Free resources</Eyebrow>
+        <Subheading>Start today, for nothing.</Subheading>
+        <Text class="text-pretty">
+          You don't need to pay to begin. Grab the open {langName} reference data,
+          or bring your own books and mine cards into Anki as you read.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <a
+          href={`/reference-data/${lang.slug}/`}
+          class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+            {langName} reference data
+          </h3>
+          <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+            Frequency lists and Anki decks built from open corpora — free to
+            download and use.
+          </p>
+          <ActionLink href={`/reference-data/${lang.slug}/`} class="mt-2">
+            Browse the data
+          </ActionLink>
+        </a>
+        <a
+          href="/docs/anki/"
+          class="group flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+        >
+          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+            New to Anki?
+          </h3>
+          <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+            A from-scratch guide to spaced-repetition flashcards and loading your
+            first {langName} deck.
+          </p>
+          <ActionLink href="/docs/anki/" class="mt-2">Getting started with Anki</ActionLink>
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Questions</Eyebrow>
+        <Subheading>Learning {langName}, answered.</Subheading>
+        <Text class="text-pretty">
+          More on the <a href="/methodology/" class="font-medium underline underline-offset-4">method</a>,
+          or jump into the <a href="/docs/" class="font-medium underline underline-offset-4">docs</a>.
+        </Text>
+      </div>
+      <Faqs items={guide.faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+          Start reading <span class="italic">{langName}</span> today.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Open source to self-host for free, or on our cloud in a click.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg" color="light">Start on the cloud</Button>
+          <Button href="/docs/installation/" variant="plain" size="lg" color="light">
+            Self-host, free
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>

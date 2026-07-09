@@ -1,0 +1,33 @@
+# Lector
+
+> Lector is a self-hosted (or cloud-hosted) language-learning reader. Read the EPUBs and articles you actually want to read in your target language: click any word for an instant translation, mine vocabulary as you go, drill it with frequency-ordered cloze practice and spaced repetition, and export cards straight to Anki over AnkiConnect. It's open source — self-host it for free and your reading history, vocabulary, and progress stay in a SQLite file on your own hardware, or use Lector Cloud from $5/mo. Language packs (frequency-banded cloze banks + on-device dictionaries) currently cover Afrikaans, Dutch, French, Spanish, and German, with more on the way.
+
+## Learn a language (guides for English speakers)
+
+- [Learn Afrikaans](https://lector.dev/languages/afrikaans/): Why and how to learn Afrikaans — an FSI Category I language (~600 hours), the easiest tier for English speakers, and mutually intelligible with Dutch.
+- [Learn Dutch](https://lector.dev/languages/dutch/): Learn Dutch by reading — one of the closest major languages to English, ~25 million native speakers.
+- [Learn French](https://lector.dev/languages/french/): Learn French by reading — ~300 million speakers worldwide, thousands of cognates with English.
+- [Learn Spanish](https://lector.dev/languages/spanish/): Learn Spanish by reading — the world's second-most-spoken native language, highly phonetic and beginner-friendly.
+- [Learn German](https://lector.dev/languages/german/): Learn German by reading — the most-spoken native language in the EU; FSI Category II.
+- [All languages](https://lector.dev/languages/): Index of every supported language guide.
+
+## Method
+
+- [Methodology](https://lector.dev/methodology/): The three-phase approach — frequency-based vocabulary, extensive reading with sentence mining, then comprehensible-input immersion. Draws on Krashen's comprehensible input and Kaufmann's learning-by-reading.
+
+## Docs
+
+- [Documentation](https://lector.dev/docs/): Installation, configuration, self-hosting, and features.
+- [Installation](https://lector.dev/docs/installation/): Run Lector with Docker Compose in about a minute.
+- [Reading & practice](https://lector.dev/docs/features/): The reader, click-to-translate, word states, cloze SRS, AI providers, and AnkiConnect.
+- [Supported languages](https://lector.dev/docs/languages/): Language packs and how the frequency data is built.
+
+## Reference data (free, open)
+
+- [Reference data](https://lector.dev/reference-data/): Downloadable frequency-banded Anki decks and word-frequency lists per language, built from public corpora.
+- [Afrikaans reference data](https://lector.dev/reference-data/afrikaans/): A free 9,066-card frequency-banded Afrikaans Anki deck and a 443k-word frequency list (CC BY-SA 4.0).
+
+## Run it
+
+- [Pricing](https://lector.dev/pricing/): Self-host free forever, or Lector Cloud from $5/mo.
+- [Blog](https://lector.dev/blog/): Notes on building Lector — local-LLM translation quality, OCRing an Afrikaans dictionary, and more.

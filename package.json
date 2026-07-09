@@ -9,6 +9,7 @@
     "deploy": "astro build && wrangler pages deploy dist --project-name=lector-site"
   },
   "devDependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^5",
     "tailwindcss": "^4.3.2",
