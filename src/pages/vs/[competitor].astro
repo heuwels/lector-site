@@ -1,0 +1,243 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import Faqs from "../../components/Faqs.astro";
+import { comparisons } from "../../data/comparisons";
+import { SIGNUP_URL } from "../../data/links";
+import { faqPageSchema, breadcrumbSchema } from "../../lib/schema";
+
+export function getStaticPaths() {
+  return Object.values(comparisons).map((c) => ({
+    params: { competitor: c.slug },
+    props: { c },
+  }));
+}
+
+const { c } = Astro.props;
+const url = `/vs/${c.slug}/`;
+const title = `Lector vs ${c.name}: a free, self-hosted alternative | Lector`;
+const description = `An honest ${c.name} comparison: how the self-hosted, open-source Lector stacks up on price, reading, cloze practice, Anki export, and data ownership — with a feature table and FAQ.`;
+
+const schema = [
+  faqPageSchema(c.faqs),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: `Lector vs ${c.name}`, url },
+  ]),
+];
+
+const cellMuted = "text-olive-700 dark:text-olive-400";
+const cellStrong = "text-olive-950 dark:text-white font-medium";
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-14 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Comparison</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Lector <span class="italic">vs</span> {c.name}
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">{c.verdict}</Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg">Start on the cloud</Button>
+          <Button href="/docs/installation/" variant="soft" size="lg">
+            Self-host, free
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Cloud is in beta &middot; self-hosting is free forever
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Intro -->
+  <section class="pb-4">
+    <Container>
+      <Text class="max-w-3xl text-pretty">{c.intro}</Text>
+    </Container>
+  </section>
+
+  <!-- Comparison table -->
+  <section class="py-12">
+    <Container class="flex flex-col gap-6">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>At a glance</Eyebrow>
+        <Subheading>Feature by feature.</Subheading>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[40rem] border-collapse text-left text-sm/6">
+          <thead>
+            <tr class="border-b border-olive-950/15 dark:border-white/15">
+              <th class="w-1/3 py-3 pr-4 font-normal text-olive-500"></th>
+              <th class="w-1/3 rounded-t-lg bg-sage-600/10 px-4 py-3 font-display text-xl text-olive-950 dark:text-white">
+                Lector
+              </th>
+              <th class="w-1/3 px-4 py-3 font-display text-xl text-olive-700 dark:text-olive-300">
+                {c.name}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              c.rows.map((r) => (
+                <tr class="border-b border-olive-950/8 dark:border-white/8 align-top">
+                  <th
+                    scope="row"
+                    class="py-3 pr-4 text-left font-medium text-olive-950 dark:text-white"
+                  >
+                    {r.feature}
+                  </th>
+                  <td
+                    class:list={[
+                      "bg-sage-600/10 px-4 py-3",
+                      r.advantage === "lector" ? cellStrong : cellMuted,
+                    ]}
+                  >
+                    {r.lector}
+                  </td>
+                  <td
+                    class:list={[
+                      "px-4 py-3",
+                      r.advantage === "them" ? cellStrong : cellMuted,
+                    ]}
+                  >
+                    {r.them}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        {c.name} pricing and features as of {c.asOf}; check <a
+          href={c.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline underline-offset-2">{c.name}</a
+        > for the latest. Comparison reflects our understanding at that date.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Where the competitor is better (honest) -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Where {c.name} wins</Eyebrow>
+        <Subheading>What {c.name} does better.</Subheading>
+        <Text class="text-pretty">
+          No tool is best at everything. Here's where {c.name} genuinely has the
+          edge — worth knowing before you choose.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          c.theirStrengths.map((p) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {p.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- Where Lector is better -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Where Lector wins</Eyebrow>
+        <Subheading>What Lector does better.</Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          c.ourStrengths.map((p) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {p.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- Who should pick which -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The short version</Eyebrow>
+        <Subheading>Who should pick which.</Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+        <div class="flex flex-col gap-3 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5">
+          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+            Choose {c.name}
+          </h3>
+          <p class="text-base/7 text-olive-700 dark:text-olive-400">{c.pickThem}</p>
+        </div>
+        <div class="flex flex-col gap-3 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10">
+          <h3 class="font-display text-2xl/8 text-white">Choose Lector</h3>
+          <p class="text-base/7 text-olive-200">{c.pickLector}</p>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Questions</Eyebrow>
+        <Subheading>Lector vs {c.name}, answered.</Subheading>
+        <Text class="text-pretty">
+          See the <a
+            href="/methodology/"
+            class="font-medium underline underline-offset-4">method</a
+          > behind Lector, or browse the <a
+            href="/languages/"
+            class="font-medium underline underline-offset-4">language guides</a
+          >.
+        </Text>
+      </div>
+      <Faqs items={c.faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+          Own your <span class="italic">reading</span>.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Open source to self-host for free, or on our cloud in a click. No
+          subscription to keep your own library.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg" color="light">Start on the cloud</Button>
+          <Button href="/docs/installation/" variant="plain" size="lg" color="light">
+            Self-host, free
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>
