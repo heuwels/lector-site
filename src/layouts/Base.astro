@@ -6,12 +6,46 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title: string;
   description?: string;
+  /** OG/Twitter preview image (root-relative or absolute). Defaults to the reader shot. */
+  image?: string;
+  /** OpenGraph type — "website" (default) or "article". */
+  ogType?: "website" | "article";
+  /** Page-specific JSON-LD (object or array). Organization + WebSite are always emitted. */
+  schema?: object | object[];
 }
 
 const {
   title,
   description = "A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data.",
+  image = "/images/reader.png",
+  ogType = "website",
+  schema,
 } = Astro.props;
+
+// Absolute URLs for canonical + social tags (site = https://lector.dev).
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+
+// Sitewide identity graph; any page-specific schema is appended.
+const schemaGraph = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Lector",
+    url: Astro.site?.href,
+    logo: new URL("/logo.svg", Astro.site).href,
+    sameAs: ["https://github.com/heuwels/lector"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Lector",
+    url: Astro.site?.href,
+  },
+  ...(Array.isArray(schema) ? schema : schema ? [schema] : []),
+];
+// Guard against "</script>" breaking out of the JSON-LD block.
+const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -21,6 +55,23 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- OpenGraph / Twitter -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Lector" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Structured data (Organization + WebSite sitewide, plus any page schema) -->
+    {schemaGraph.map((s) => <script type="application/ld+json" set:html={ldJson(s)} />)}
+
     <link rel="icon" href="/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/logo.svg" />
 

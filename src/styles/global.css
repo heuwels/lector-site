@@ -203,7 +203,6 @@
 .docs-header {
   background: var(--hero-bg);
   padding: 3.5rem 0 2.5rem;
-  border-bottom: 1px solid var(--border);
 }
 .docs-header h1 {
   font-family: var(--font-display);
@@ -366,6 +365,10 @@
     position: sticky;
     top: 6rem;
     align-self: start;
+    /* Lift the rail up so it starts aligned with the H1 in the header band,
+       then sticky `top` takes over as you scroll. Offset ≈ header padding-bottom
+       (2.5rem) + H1 height (~2.9rem). */
+    margin-top: -5.4rem;
   }
   .docs-toc h4 {
     font-size: 0.75rem;

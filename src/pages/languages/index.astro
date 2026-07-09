@@ -1,0 +1,111 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import { languages } from "../../data/languages";
+import { languageGuides } from "../../data/languageGuides";
+import { GITHUB } from "../../data/links";
+import { breadcrumbSchema } from "../../lib/schema";
+
+const guided = languages
+  .filter((l) => l.status === "complete" && languageGuides[l.slug])
+  .map((l) => ({
+    ...l,
+    guide: languageGuides[l.slug],
+    langName: l.name.split("→")[0].trim(),
+  }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Languages", url: "/languages/" },
+  ]),
+];
+---
+
+<Base
+  title="Learn a language by reading | Lector"
+  description="Guides to learning Afrikaans, Dutch, French, Spanish, and German by reading real texts — how hard each is, how long it takes, and how to start for free."
+  schema={schema}
+>
+  <!-- Hero -->
+  <section class="pt-14 pb-12 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Language guides</Eyebrow>
+      <Heading class="max-w-3xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Learn a language by <span class="italic">reading</span>.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        Pick a language to see why it's worth learning, how hard it really is for
+        English speakers, and how to start reading it today — free. Every guide is
+        built on the same method: read real texts, learn the common words first,
+        and remember them with spaced repetition.
+      </Text>
+    </Container>
+  </section>
+
+  <!-- Language grid -->
+  <section class="pb-16">
+    <Container>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          guided.map((l) => (
+            <a
+              href={`/languages/${l.slug}/`}
+              class="group flex flex-col gap-3 rounded-2xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <span class="text-3xl">{l.flag}</span>
+              <div class="flex flex-col gap-1">
+                <h2 class="font-display text-2xl/7 text-olive-950 dark:text-white">
+                  Learn {l.langName}
+                </h2>
+                <p class="text-sm/6 text-olive-600 dark:text-olive-400">
+                  {l.endonym} &middot; {l.guide.fsiCategory} &middot;{" "}
+                  {l.guide.approxHours}
+                </p>
+              </div>
+              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                Learn {l.langName}
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="size-4 transition-transform group-hover:translate-x-0.5"
+                >
+                  <path
+                    d="M6.5 3.5 11 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+
+      <div
+        class="mt-2 flex flex-col gap-3 rounded-2xl border border-olive-950/10 p-6 sm:flex-row sm:items-center sm:justify-between dark:border-white/10"
+      >
+        <div class="flex flex-col gap-1">
+          <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
+            Don't see your language?
+          </p>
+          <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+            The reader works with any language — packs add the cloze bank and
+            dictionary. Italian and Portuguese slot straight in; more are on the
+            way.
+          </p>
+        </div>
+        <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">
+          Add your language
+        </Button>
+      </div>
+    </Container>
+  </section>
+</Base>

@@ -8,7 +8,7 @@ const isActive = (href: string) =>
   href === "/" ? path === "/" : path === href || path.startsWith(href);
 
 const linkBase =
-  "text-sm/7 font-medium transition-colors max-lg:text-2xl/10";
+  "text-sm/7 font-medium whitespace-nowrap transition-colors max-lg:text-2xl/10";
 const linkIdle =
   "text-olive-700 hover:text-olive-950 dark:text-olive-400 dark:hover:text-white";
 const linkActive = "text-olive-950 dark:text-white";
@@ -29,7 +29,7 @@ const linkActive = "text-olive-950 dark:text-white";
             >lector</span
           >
         </a>
-        <div class="flex gap-8 max-lg:hidden">
+        <div class="flex gap-6 max-lg:hidden">
           {
             SITE_PAGES.map((link) => (
               <a
@@ -44,7 +44,7 @@ const linkActive = "text-olive-950 dark:text-white";
         </div>
       </div>
 
-      <div class="flex flex-1 items-center justify-end gap-2">
+      <div class="flex items-center justify-end gap-2">
         <a
           href={GITHUB}
           target="_blank"

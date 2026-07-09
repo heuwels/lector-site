@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
 
 // Static site (default), built to dist/ and deployed to Cloudflare Pages.
 // Tailwind CSS v4 is wired in via the official Vite plugin; the theme lives in
@@ -12,6 +13,8 @@ export default defineConfig({
   redirects: {
     "/eval": "/blog/local-llm-translation-eval/",
   },
+  // Emits /sitemap-index.xml (+ /sitemap-0.xml); referenced from public/robots.txt.
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

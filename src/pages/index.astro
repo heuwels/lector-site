@@ -9,7 +9,8 @@ import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
 import { languages } from "../data/languages";
-import { GITHUB, SIGNUP_URL } from "../data/links";
+import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
+import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
 
 // Feature "moments" — each pairs a real screenshot with a capability. Rendered
 // as alternating rows; screenshots live in /public/images.
@@ -102,6 +103,7 @@ const faqs = [
 <Base
   title="Lector | self-hosted language learning reader"
   description="A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data."
+  schema={[softwareApplicationSchema(), faqPageSchema(faqs)]}
 >
   <!-- Hero -->
   <section class="pt-14 pb-20 sm:pt-20">
@@ -208,7 +210,7 @@ const faqs = [
         {
           completeLanguages.map((lang) => (
             <a
-              href={`/reference-data/${lang.slug}/`}
+              href={`/languages/${lang.slug}/`}
               class="group flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
             >
               <span class="text-3xl">{lang.flag}</span>
@@ -221,7 +223,7 @@ const faqs = [
                 </p>
               </div>
               <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
-                Reference data
+                Learn {lang.name.split("→")[0].trim()}
                 <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
                   <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -387,6 +389,25 @@ docker compose up -d</code></pre>
         </Text>
       </div>
       <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Community -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-6 rounded-2xl bg-olive-950/2.5 px-6 py-12 text-center dark:bg-white/5"
+      >
+        <Eyebrow>Get involved</Eyebrow>
+        <Subheading class="max-w-2xl">Learn alongside other readers.</Subheading>
+        <Text class="max-w-xl text-pretty">
+          Join our Discord to swap resources, compare progress, request new
+          languages, and help shape where Lector goes next.
+        </Text>
+        <Button href={DISCORD} variant="soft" target="_blank" rel="noopener">
+          Join the Discord
+        </Button>
+      </div>
     </Container>
   </section>
 
