@@ -1,0 +1,294 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import ActionLink from "../../components/ActionLink.astro";
+import { DISCORD } from "../../data/links";
+
+const appIssue = (issue: number) => `https://github.com/heuwels/lector/issues/${issue}`;
+const siteIssue = "https://github.com/heuwels/lector-site/issues/23";
+
+const statusStyles = {
+  Available:
+    "bg-sage-600/15 text-sage-700 ring-sage-600/20 dark:text-sage-300 dark:ring-sage-300/20",
+  "In progress":
+    "bg-olive-950/10 text-olive-800 ring-olive-950/10 dark:bg-white/10 dark:text-olive-200 dark:ring-white/15",
+  Exploring:
+    "bg-white text-olive-700 ring-olive-950/10 dark:bg-white/5 dark:text-olive-300 dark:ring-white/10",
+};
+
+const phases = [
+  {
+    number: "01",
+    title: "Aha",
+    summary: "Get reading immediately.",
+    status: "In progress",
+    outcome: "Complete a real reading and a short personalized review on day one.",
+    items: [
+      { label: "First 1,000 Words starter library", href: appIssue(314), state: "In progress" },
+      { label: "Guided first-session journey", state: "Exploring" },
+      { label: "Text comprehensibility and useful unknown-word preview", href: appIssue(121), state: "In progress" },
+      { label: "Clear reader onboarding", state: "In progress" },
+    ],
+  },
+  {
+    number: "02",
+    title: "It knows me",
+    summary: "Let Lector choose the next useful step.",
+    status: "In progress",
+    outcome: "Lector chooses useful next steps from the learner's actual history.",
+    items: [
+      { label: "Unified learner model", href: appIssue(125), state: "In progress" },
+      { label: "Better memory scheduling and reading-as-review", href: appIssue(126), state: "In progress" },
+      { label: "Journal mistakes converted into practice", href: appIssue(38), state: "In progress" },
+      { label: "Daily session composer", href: appIssue(130), state: "Exploring" },
+      { label: "Weekly learning review", state: "Exploring" },
+    ],
+  },
+  {
+    number: "03",
+    title: "Learn from anything",
+    summary: "Turn native material into comprehensible immersion.",
+    status: "Exploring",
+    outcome: "Turn personally interesting native content into comprehensible immersion.",
+    items: [
+      { label: "Browser and mobile capture", state: "Exploring" },
+      { label: "Import enrichment and adaptable texts", state: "Exploring" },
+      { label: "Ambient no-click unknown-word assistance", state: "Exploring" },
+      { label: "Podcasts and YouTube transcripts", href: appIssue(185), state: "Exploring" },
+      { label: "Read/listen-along", href: appIssue(120), state: "Exploring" },
+    ],
+  },
+  {
+    number: "04",
+    title: "Use the language",
+    summary: "Convert comprehension into confident production.",
+    status: "Exploring",
+    outcome: "Convert comprehension into confident production.",
+    items: [
+      { label: "Shadowing and spoken practice", href: appIssue(39), state: "Exploring" },
+      { label: "One error model across writing and speech", href: appIssue(38), state: "Exploring" },
+      { label: "Conversation preparation", state: "Exploring" },
+      { label: "Progress evidence tied to real-world goals", state: "Exploring" },
+    ],
+  },
+];
+
+const currentlyAvailable = [
+  { label: "Self-hosted reader", href: "/docs/installation/" },
+  { label: "Language packs", href: "/languages/" },
+  { label: "Reference decks and word lists", href: "/reference-data/" },
+  { label: "Anki export", href: "/docs/anki/" },
+  { label: "Reading methodology", href: "/methodology/" },
+];
+---
+
+<Base
+  title="Roadmap | Lector"
+  description="A concise public roadmap for where Lector is going: from first-session reading to learner memory, richer imports, listening, and production practice."
+>
+  <section class="pt-14 pb-12 sm:pt-20 sm:pb-16">
+    <Container class="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
+      <div class="flex max-w-4xl flex-col gap-6">
+        <Eyebrow>Public roadmap</Eyebrow>
+        <Heading class="text-5xl/[1.05] sm:text-7xl/[1.05]">
+          Where Lector is <span class="italic">going next</span>.
+        </Heading>
+        <Text size="lg" class="max-w-2xl text-pretty">
+          Lector turns content you genuinely want to consume into a personalized
+          curriculum, and remembers what you need next. This roadmap is
+          directional, not a delivery schedule.
+        </Text>
+      </div>
+
+      <div class="rounded-xl border border-olive-950/10 bg-olive-950/2.5 p-5 dark:border-white/10 dark:bg-white/5">
+        <p class="text-sm/7 font-semibold text-olive-950 dark:text-white">
+          Status key
+        </p>
+        <dl class="mt-3 flex flex-col gap-3 text-sm/6">
+          <div>
+            <dt class="font-medium text-olive-950 dark:text-white">Available</dt>
+            <dd class="text-olive-700 dark:text-olive-400">Shipped or documented on lector.dev today.</dd>
+          </div>
+          <div>
+            <dt class="font-medium text-olive-950 dark:text-white">In progress</dt>
+            <dd class="text-olive-700 dark:text-olive-400">Actively being shaped or built in public issues.</dd>
+          </div>
+          <div>
+            <dt class="font-medium text-olive-950 dark:text-white">Exploring</dt>
+            <dd class="text-olive-700 dark:text-olive-400">Likely direction, still subject to product learning.</dd>
+          </div>
+        </dl>
+      </div>
+    </Container>
+  </section>
+
+  <section class="py-10">
+    <Container class="flex flex-col gap-6">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Available now</Eyebrow>
+        <Subheading class="text-3xl/9 sm:text-4xl/12">
+          The roadmap builds on the reader that already exists.
+        </Subheading>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          currentlyAvailable.map((item) => (
+            <a
+              href={item.href}
+              class="group flex min-h-28 flex-col justify-between rounded-xl bg-olive-950/2.5 p-5 ring-1 ring-olive-950/5 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:ring-white/10 dark:hover:bg-white/10"
+            >
+              <span class:list={["w-fit rounded-full px-2 py-0.5 text-xs/5 font-medium ring-1", statusStyles.Available]}>
+                Available
+              </span>
+              <span class="text-sm/6 font-semibold text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                {item.label}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="py-12 sm:py-16">
+    <Container class="flex flex-col gap-4">
+      {
+        phases.map((phase) => (
+          <article class="grid grid-cols-1 gap-6 rounded-2xl bg-olive-950/2.5 p-6 ring-1 ring-olive-950/5 sm:p-8 lg:grid-cols-[12rem_minmax(0,1fr)_18rem] lg:gap-8 dark:bg-white/5 dark:ring-white/10">
+            <div class="flex flex-row items-start justify-between gap-4 lg:flex-col lg:justify-start">
+              <div>
+                <p class="font-display text-5xl/none text-olive-300 dark:text-olive-700">
+                  {phase.number}
+                </p>
+                <h2 class="mt-3 font-display text-3xl/9 text-olive-950 dark:text-white">
+                  {phase.title}
+                </h2>
+              </div>
+              <span class:list={["rounded-full px-2.5 py-1 text-xs/5 font-medium ring-1", statusStyles[phase.status]]}>
+                {phase.status}
+              </span>
+            </div>
+
+            <div class="flex flex-col gap-5">
+              <div>
+                <p class="text-lg/8 font-semibold text-olive-950 dark:text-white">
+                  {phase.summary}
+                </p>
+                <p class="mt-2 max-w-2xl text-sm/7 text-olive-700 dark:text-olive-400">
+                  User outcome: {phase.outcome}
+                </p>
+              </div>
+              <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2" role="list">
+                {phase.items.map((item) => (
+                  <li class="flex min-h-20 flex-col gap-2 rounded-lg bg-white/60 p-4 ring-1 ring-olive-950/5 dark:bg-olive-950/40 dark:ring-white/10">
+                    <span class:list={["w-fit rounded-full px-2 py-0.5 text-xs/5 font-medium ring-1", statusStyles[item.state]]}>
+                      {item.state}
+                    </span>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener"
+                        class="text-sm/6 font-medium text-olive-950 hover:text-sage-700 dark:text-white dark:hover:text-sage-300"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span class="text-sm/6 font-medium text-olive-950 dark:text-white">
+                        {item.label}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="flex flex-col justify-between gap-5 border-t border-olive-950/10 pt-5 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0 dark:border-white/10">
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                This phase stays on the public roadmap while it represents a
+                learner outcome, not an internal operations backlog.
+              </p>
+              <ActionLink href="#feedback">Tell us what matters</ActionLink>
+            </div>
+          </article>
+        ))
+      }
+    </Container>
+  </section>
+
+  <section id="feedback" class="py-12 sm:py-16">
+    <Container>
+      <div class="grid grid-cols-1 gap-8 rounded-2xl bg-olive-950 p-6 text-white sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center dark:bg-white/10 dark:ring-1 dark:ring-white/10">
+        <div class="flex max-w-2xl flex-col gap-3">
+          <Eyebrow class="text-olive-300 dark:text-olive-300">Feedback</Eyebrow>
+          <Subheading class="text-3xl/9 text-white sm:text-4xl/12">
+            Which outcome matters most to you?
+          </Subheading>
+          <p class="text-base/7 text-olive-200">
+            Share the outcome you care about, the language you are learning, and
+            what you were trying to read or listen to when Lector fell short.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <Button
+            href={`${DISCORD}`}
+            color="light"
+            target="_blank"
+            rel="noopener"
+            data-roadmap-feedback
+          >
+            Share feedback
+          </Button>
+          <Button
+            href={siteIssue}
+            variant="plain"
+            color="light"
+            target="_blank"
+            rel="noopener"
+          >
+            View source issue
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <section class="py-12 sm:py-16">
+    <Container class="grid grid-cols-1 gap-8 border-t border-olive-950/10 pt-10 lg:grid-cols-[minmax(0,1fr)_22rem] dark:border-white/10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Maintenance</Eyebrow>
+        <Subheading class="text-3xl/9 sm:text-4xl/12">
+          Directional, public, and deliberately selective.
+        </Subheading>
+        <Text>
+          Luke owns this page and keeps it aligned with the linked GitHub
+          issues. Roadmap changes should update this page and the relevant
+          issue labels together, so available, in-progress, and exploring items
+          stay meaningful.
+        </Text>
+      </div>
+      <div class="rounded-xl border border-olive-950/10 p-5 dark:border-white/10">
+        <p class="text-sm/7 font-semibold text-olive-950 dark:text-white">
+          Not shown here
+        </p>
+        <p class="mt-2 text-sm/7 text-olive-700 dark:text-olive-400">
+          Operational, security, admin, and maintenance backlog items stay in
+          GitHub. This page only tracks learner-facing outcomes.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <script is:inline>
+    document
+      .querySelector("[data-roadmap-feedback]")
+      ?.addEventListener("click", function () {
+        window.plausible?.("Roadmap feedback CTA");
+      });
+  </script>
+</Base>
