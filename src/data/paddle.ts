@@ -8,6 +8,12 @@
 
 export const PADDLE_CLIENT_TOKEN = "live_a3a63d5d54f8af501effa61bbc9";
 
+// Built into the same static artifact as the live token. Paddle client-side
+// tokens are public credentials; /checkout selects this one only on the
+// dedicated staging hostname and switches Paddle.js to its sandbox API.
+export const PADDLE_SANDBOX_CLIENT_TOKEN =
+  import.meta.env.PADDLE_SANDBOX_CLIENT_TOKEN || "";
+
 // Live sponsorship prices (created in Paddle 2026-07-08).
 export const SPONSOR_PRICES = {
   supporter: "pri_01kx03wgpjztp9714sybybzawp", // Lector Supporter — $3/mo
