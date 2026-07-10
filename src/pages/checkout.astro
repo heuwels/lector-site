@@ -74,7 +74,7 @@ const PRODUCTION_SUBSCRIBE_URL = `${APP_URL}/subscribe`;
       // environment boundary: staging selects the sandbox token/API and sends
       // the user back to the staging app; every other hostname stays live.
       var isSandbox =
-        window.location.hostname === "sandbox.lector.dev" ||
+        window.location.hostname === "site.sandbox.lector.dev" ||
         window.location.hostname.endsWith(".lector-site-staging.pages.dev") ||
         window.location.hostname === "lector-site-staging.pages.dev";
       var token = isSandbox ? sandboxToken : liveToken;

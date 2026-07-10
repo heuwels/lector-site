@@ -3,7 +3,7 @@
 // (src/app/(auth)/{login,register}) at app.lector.dev.
 
 export const APP_URL = "https://app.lector.dev";
-export const STAGING_APP_URL = "https://staging.lector.dev";
+export const STAGING_APP_URL = "https://sandbox.lector.dev";
 export const SIGNUP_URL = `${APP_URL}/register`;
 export const LOGIN_URL = `${APP_URL}/login`;
 
