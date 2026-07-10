@@ -1,7 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
-import { PADDLE_CLIENT_TOKEN } from "../data/paddle";
-import { APP_URL } from "../data/links";
+import {
+  PADDLE_CLIENT_TOKEN,
+  PADDLE_SANDBOX_CLIENT_TOKEN,
+} from "../data/paddle";
+import { APP_URL, STAGING_APP_URL } from "../data/links";
 
 // The app (app.lector.dev) creates a Paddle transaction server-side and sends a
 // locked account here with ?_ptxn=<txn>&theme=<light|dark>. This page — on
@@ -9,7 +12,7 @@ import { APP_URL } from "../data/links";
 // transaction; app.lector.dev is NOT an approved checkout domain, which is the
 // whole reason checkout is deferred here. Nothing identifying rides the URL:
 // the account is stamped into the transaction (custom_data) back on the app.
-const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
+const PRODUCTION_SUBSCRIBE_URL = `${APP_URL}/subscribe`;
 ---
 
 <Base
@@ -43,7 +46,8 @@ const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
         >
         </p>
         <a
-          href={SUBSCRIBE_URL}
+          id="checkout-return"
+          href={PRODUCTION_SUBSCRIBE_URL}
           class="inline-flex items-center justify-center rounded-full bg-olive-950 px-5 py-2 text-sm/7 font-medium text-white transition-colors hover:bg-olive-800 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
         >
           Return to Lector
@@ -58,9 +62,25 @@ const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
   <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
   <script
     is:inline
-    define:vars={{ token: PADDLE_CLIENT_TOKEN, subscribeUrl: SUBSCRIBE_URL }}
+    define:vars={{
+      liveToken: PADDLE_CLIENT_TOKEN,
+      sandboxToken: PADDLE_SANDBOX_CLIENT_TOKEN,
+      productionSubscribeUrl: PRODUCTION_SUBSCRIBE_URL,
+      stagingSubscribeUrl: `${STAGING_APP_URL}/subscribe`,
+    }}
   >
     (function () {
+      // Both Pages projects receive this exact artifact. The hostname is the
+      // environment boundary: staging selects the sandbox token/API and sends
+      // the user back to the staging app; every other hostname stays live.
+      var isSandbox =
+        window.location.hostname === "sandbox.lector.dev" ||
+        window.location.hostname.endsWith(".lector-site-staging.pages.dev") ||
+        window.location.hostname === "lector-site-staging.pages.dev";
+      var token = isSandbox ? sandboxToken : liveToken;
+      var subscribeUrl = isSandbox
+        ? stagingSubscribeUrl
+        : productionSubscribeUrl;
       var params = new URLSearchParams(window.location.search);
       var ptxn = params.get("_ptxn");
       var themeParam = params.get("theme");
@@ -73,6 +93,8 @@ const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
       var message = document.getElementById("checkout-message");
       var messageTitle = document.getElementById("checkout-message-title");
       var messageBody = document.getElementById("checkout-message-body");
+      var returnLink = document.getElementById("checkout-return");
+      if (returnLink) returnLink.href = subscribeUrl;
 
       function showMessage(title, body) {
         if (loading) loading.hidden = true;
@@ -96,6 +118,16 @@ const SUBSCRIBE_URL = `${APP_URL}/subscribe`;
         );
         return;
       }
+
+      if (!token) {
+        showMessage(
+          "Checkout isn't configured",
+          "This checkout environment is missing its Paddle client token.",
+        );
+        return;
+      }
+
+      if (isSandbox) window.Paddle.Environment.set("sandbox");
 
       window.Paddle.Initialize({
         token: token,

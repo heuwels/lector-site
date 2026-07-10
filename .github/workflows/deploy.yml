@@ -1,17 +1,27 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
     branches: [master]
+    types: [completed]
+
+concurrency:
+  group: lector-site-promotion
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
 
 jobs:
-  deploy:
+  build-artifact:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: pnpm/action-setup@v4
         with:
@@ -25,12 +35,95 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build site
+      - name: Build promotion artifact
         run: pnpm build
+        env:
+          # Paddle client tokens are public credentials, but keeping the
+          # sandbox token in Actions avoids hard-coding environment config.
+          PADDLE_SANDBOX_CLIENT_TOKEN: ${{ secrets.PADDLE_SANDBOX_CLIENT_TOKEN }}
 
-      - name: Deploy to Cloudflare Pages
+      - name: Upload immutable site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lector-site-${{ github.event.workflow_run.head_sha }}
+          path: dist
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-staging:
+    needs: build-artifact
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://sandbox.lector.dev
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lector-site-${{ github.event.workflow_run.head_sha }}
+          path: dist
+
+      - name: Ensure isolated staging Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          endpoint="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/lector-site-staging"
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "$endpoint")"
+          if [ "$status" = 404 ]; then
+            curl --fail --silent --show-error \
+              --request POST \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              --header 'Content-Type: application/json' \
+              --data '{"name":"lector-site-staging","production_branch":"master"}' \
+              "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects" \
+              >/dev/null
+          elif [ "$status" != 200 ]; then
+            echo "Unexpected Cloudflare project lookup status: $status" >&2
+            exit 1
+          fi
+
+      - name: Deploy exact artifact to staging
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=lector-site
+          command: >-
+            pages deploy dist
+            --project-name=lector-site-staging
+            --branch=master
+            --commit-hash=${{ github.event.workflow_run.head_sha }}
+
+      - name: Verify staging checkout surface
+        run: |
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error https://lector-site-staging.pages.dev/checkout >/dev/null; then
+              exit 0
+            fi
+            sleep 3
+          done
+          exit 1
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://lector.dev
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lector-site-${{ github.event.workflow_run.head_sha }}
+          path: dist
+
+      - name: Promote staging-tested artifact to production
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy dist
+            --project-name=lector-site
+            --branch=master
+            --commit-hash=${{ github.event.workflow_run.head_sha }}
