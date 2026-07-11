@@ -21,7 +21,7 @@ export function getStaticPaths() {
 const { c } = Astro.props;
 const url = `/vs/${c.slug}/`;
 const title = `Lector vs ${c.name}: a free, self-hosted alternative | Lector`;
-const description = `An honest ${c.name} comparison: how the self-hosted, open-source Lector stacks up on price, reading, cloze practice, Anki export, and data ownership — with a feature table and FAQ.`;
+const description = `An honest ${c.name} comparison: how the self-hosted, open-source Lector stacks up on price, reading, cloze practice, Anki sync, and data ownership — with a feature table and FAQ.`;
 
 const schema = [
   faqPageSchema(c.faqs),

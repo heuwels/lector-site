@@ -23,7 +23,7 @@ import DocsPage from "../../layouts/DocsPage.astro";
     <li><strong>Mobile (optional)</strong> &mdash; <a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" rel="noreferrer noopener">AnkiDroid</a> on Android is free; AnkiMobile on iOS is a paid app that funds the project. Handy for reviewing on the go once your deck is set up.</li>
   </ul>
   <div class="callout">
-    <p><strong>For use with Lector you only need the desktop app.</strong> Lector's export talks to <a href="/docs/features/#ankiconnect">AnkiConnect</a>, an add-on that runs inside Anki Desktop, so Anki has to be open on the same machine as your browser when you push cards.</p>
+    <p><strong>For use with Lector you only need the desktop app.</strong> Lector's push talks to <a href="/docs/features/#ankiconnect">AnkiConnect</a>, an add-on that runs inside Anki Desktop, so Anki has to be open on the same machine as your browser when you push cards. On Lector Cloud (or any remote server) the <a href="/docs/features/#anki-addon">Lector add-on (beta)</a> is used instead &mdash; it syncs two-way and doesn't need Anki on the same machine as your browser.</p>
   </div>
 
   <h2 id="core-concepts">Cards, decks, and reviews</h2>
@@ -48,7 +48,7 @@ import DocsPage from "../../layouts/DocsPage.astro";
   <p>Community decks linked from AnkiWeb open with an <strong>Get</strong> button that adds them to your account directly &mdash; no file to download.</p>
 
   <h3 id="mine-from-lector">2. Mine your own cards from Lector</h3>
-  <p>As you read in Lector, save the words you look up and push them into Anki with a click over <a href="/docs/features/#ankiconnect">AnkiConnect</a>. These cards come straight from what you're actually reading, so they're relevant and stickier than a generic list. Many people do both: a ready-made deck for the high-frequency core, and mined cards for the long tail of words specific to their books.</p>
+  <p>As you read in Lector, save the words you look up and push them into Anki with a click over <a href="/docs/features/#ankiconnect">AnkiConnect</a>, or through the <a href="/docs/features/#anki-addon">Lector add-on (beta)</a>, which also sends your Anki review grades back to Lector. These cards come straight from what you're actually reading, so they're relevant and stickier than a generic list. Many people do both: a ready-made deck for the high-frequency core, and mined cards for the long tail of words specific to their books.</p>
 
   <h2 id="daily-habit">Building the habit</h2>
   <p>Spaced repetition only works if you turn up. A few pointers:</p>
