@@ -108,7 +108,16 @@ import DocsPage from "../../layouts/DocsPage.astro";
     <li><strong>It's two-way</strong> &mdash; words and cloze phrases arrive as <em>Lector</em> and <em>Lector Cloze</em> notes, keyed by a stable id, so pushing again updates the existing card instead of creating a duplicate. When you review in Anki, the grades come back: the word's mastery in Lector updates on the next sync.</li>
     <li><strong>It works remotely</strong> &mdash; the add-on talks to the server itself, not through your browser, so Anki doesn't have to be on the same machine. This is how Anki works on Lector Cloud; self-hosters can pick either connection under <strong>Settings &rarr; Anki Integration</strong>.</li>
   </ul>
+  <h3 id="anki-addon-install">Installing the beta</h3>
+  <p>The add-on isn't on AnkiWeb yet, but you can install the beta today:</p>
+  <ol>
+    <li>Download the <code>.ankiaddon</code> file from the <a href="https://github.com/heuwels/lector/releases/tag/anki-addon-v1.1.0" target="_blank" rel="noreferrer noopener">latest release</a>.</li>
+    <li>In Anki Desktop: <strong>Tools &rarr; Add-ons &rarr; Install from file&hellip;</strong>, pick the file, restart Anki.</li>
+    <li>In Lector: <strong>Settings &rarr; API Tokens</strong>, mint a token with the <strong>anki</strong> scopes.</li>
+    <li>In Anki: <strong>Tools &rarr; Add-ons &rarr; Lector Sync &rarr; Config</strong>, set <code>api_url</code> (e.g. <code>https://app.lector.dev</code>, or your self-hosted API origin) and <code>api_token</code>.</li>
+    <li>Run <strong>Tools &rarr; Lector: Sync now</strong> &mdash; it also syncs when your profile opens.</li>
+  </ol>
   <div class="callout">
-    <p><strong>Beta:</strong> the add-on isn't on AnkiWeb yet &mdash; install instructions will land here with the public release.</p>
+    <p><strong>Beta:</strong> please report anything odd &mdash; duplicate notes, deck weirdness, sync errors &mdash; on <a href="https://github.com/heuwels/lector/issues" target="_blank" rel="noreferrer noopener">GitHub</a> or Discord, ideally with the sync tooltip text. The AnkiWeb listing will replace this section when the beta has soaked.</p>
   </div>
 </DocsPage>
