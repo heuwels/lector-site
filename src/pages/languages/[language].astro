@@ -29,7 +29,7 @@ const langName = lang.name.split("→")[0].trim();
 const url = `/languages/${lang.slug}/`;
 
 const title = `Learn ${langName} — the best way for English speakers | Lector`;
-const description = `How to learn ${langName} by reading real texts: ${guide.fsiCategory} (${guide.approxHours}) for English speakers. Free and self-hosted, with frequency-based practice and Anki export.`;
+const description = `How to learn ${langName} by reading real texts: ${guide.fsiCategory} (${guide.approxHours}) for English speakers. Free and self-hosted, with frequency-based practice and Anki sync.`;
 
 const stats = [
   { label: "Native speakers", value: guide.nativeSpeakers },
@@ -41,7 +41,7 @@ const schema = [
   faqPageSchema(guide.faqs),
   courseSchema({
     name: `Learn ${langName} with Lector`,
-    description: `Learn ${langName} by reading real texts with click-to-translate, frequency-based cloze practice, and Anki export.`,
+    description: `Learn ${langName} by reading real texts with click-to-translate, frequency-based cloze practice, and Anki sync.`,
     url,
     weeks: guide.approxWeeks,
   }),

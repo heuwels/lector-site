@@ -3,7 +3,7 @@ import DocsPage from "../../layouts/DocsPage.astro";
 ---
 <DocsPage
   title="Reading & practice | Lector Docs"
-  description="Reading formats, click-to-translate, word states, cloze practice with SRS, AI providers, and AnkiConnect."
+  description="Reading formats, click-to-translate, word states, cloze practice with SRS, AI providers, and two-way Anki sync."
   heading="Reading & practice"
 >
   <h2 id="reading">Reading</h2>
@@ -100,5 +100,15 @@ import DocsPage from "../../layouts/DocsPage.astro";
 
   <div class="callout">
     <p><strong>Note:</strong> AnkiConnect runs on <code>localhost:8765</code> by default. The connection is browser-to-localhost, so Anki Desktop must be running on the same machine as your browser.</p>
+  </div>
+
+  <h2 id="anki-addon">Lector add-on for Anki (beta) &mdash; two-way sync</h2>
+  <p>The Lector add-on runs inside Anki Desktop and syncs with your Lector server &mdash; cloud or self-hosted &mdash; using a personal API token from <strong>Settings</strong>. It differs from AnkiConnect in two ways:</p>
+  <ul>
+    <li><strong>It's two-way</strong> &mdash; words and cloze phrases arrive as <em>Lector</em> and <em>Lector Cloze</em> notes, keyed by a stable id, so pushing again updates the existing card instead of creating a duplicate. When you review in Anki, the grades come back: the word's mastery in Lector updates on the next sync.</li>
+    <li><strong>It works remotely</strong> &mdash; the add-on talks to the server itself, not through your browser, so Anki doesn't have to be on the same machine. This is how Anki works on Lector Cloud; self-hosters can pick either connection under <strong>Settings &rarr; Anki Integration</strong>.</li>
+  </ul>
+  <div class="callout">
+    <p><strong>Beta:</strong> the add-on isn't on AnkiWeb yet &mdash; install instructions will land here with the public release.</p>
   </div>
 </DocsPage>
