@@ -301,4 +301,56 @@ export const languageGuides: Record<string, LanguageGuide> = {
     clozeImg: "/images/languages/german-cloze.png",
     clozeAlt: "German cloze practice in Lector with multiple-choice options",
   },
+
+  portuguese: {
+    slug: "portuguese",
+    answer:
+      "The best way to learn Portuguese is to read authentic Portuguese daily with instant tap-to-translate, learning the most frequent words first and reinforcing them with spaced repetition. Portuguese spelling is largely regular, so reading real texts quickly builds vocabulary — and Lector defaults to Brazilian Portuguese (pt-BR), the largest variety.",
+    nativeSpeakers: "~260 million",
+    totalSpeakers: "~265 million (incl. second-language)",
+    fsiCategory: "Category I",
+    approxHours: "~600–750 hours",
+    approxWeeks: 27,
+    whyLearn: [
+      "Around 260 million native speakers — the most-spoken language in South America and the Southern Hemisphere, and official on four continents (Brazil, Portugal, Angola, Mozambique, and more).",
+      "Brazil is one of the world's largest economies, so Portuguese opens up travel, business, music, and culture for a huge and growing community.",
+      "Largely regular spelling and Latin-derived cognates with English make reading approachable early — and Lector ships Brazilian Portuguese by default.",
+    ],
+    mutualIntelligibility:
+      "Very closely related to Spanish — Portuguese speakers can often read and follow Spanish — and to Italian; it shares a large stock of Latin-derived cognates with English, so knowing one Romance language makes the others far easier.",
+    difficultyNote:
+      "FSI Category I (~600–750 hours), among the easiest languages for English speakers. Spelling is largely regular and there are many cognates; the nasal vowels (ão, õe), verb conjugations, and the distinctive personal infinitive are the main learning curve.",
+    faqs: [
+      {
+        question: "Is Portuguese hard to learn?",
+        answer:
+          "Portuguese is one of the easier languages for English speakers. Spelling is mostly regular and there are many shared cognates; the main challenges are nasal vowels, verb conjugations, and the personal infinitive.",
+      },
+      {
+        question: "How long does it take to learn Portuguese?",
+        answer:
+          "The US Foreign Service Institute places Portuguese in Category I — roughly 600–750 class hours (about 24–30 weeks of intensive study) to reach professional working proficiency. Reading consistently brings everyday comprehension much sooner.",
+      },
+      {
+        question: "What is the best way to learn Portuguese?",
+        answer:
+          "Read authentic Portuguese daily, learn the most frequent words first, and reinforce them with spaced repetition. Because spelling is largely regular, reading real texts quickly builds vocabulary and pronunciation.",
+      },
+      {
+        question: "Can I learn Portuguese for free?",
+        answer:
+          "Yes. Portuguese has abundant free material — public-domain books, open courses, podcasts, and free or self-hosted reading and flashcard tools — so no paid course is required.",
+      },
+    ],
+    sample: {
+      text: "No fim da tarde, a família se reúne na varanda para tomar café, conversar sobre o dia e ver as crianças brincarem no quintal.",
+      translation:
+        "In the late afternoon, the family gathers on the porch to drink coffee, talk about the day, and watch the children play in the backyard.",
+    },
+    readerImg: "/images/languages/portuguese-reader.png",
+    readerAlt:
+      "Lector reading a Portuguese passage with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/portuguese-cloze.png",
+    clozeAlt: "Portuguese cloze practice in Lector with multiple-choice options",
+  },
 };
