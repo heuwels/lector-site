@@ -237,4 +237,36 @@ export const languages: Language[] = [
       },
     ],
   },
+  {
+    slug: "portuguese",
+    name: "Portuguese → English",
+    endonym: "Português",
+    flag: "🇧🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Portuguese, at Afrikaans parity. Brazilian Portuguese (pt-BR) by default, with a Tatoeba sentence bank and an on-device dictionary covering rich Portuguese inflection (nasal vowels, conjugations, the personal infinitive).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "411,782 entries" },
+      { label: "English senses", value: "566,136" },
+      { label: "Inflections", value: "424,236" },
+      { label: "Cloze bank", value: "8,363 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Portuguese Wiktionary entries extracted through Kaikki.org, including form-of records for conjugations and plurals.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Portuguese/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Portuguese–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
 ];
