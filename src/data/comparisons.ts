@@ -59,7 +59,7 @@ const LECTOR = {
   data: "Your server (one SQLite file)",
   offline: "Reader, cloze & vocab work offline",
   open: "Open source (AGPL-3.0)",
-  languages: "5 packs; reader works with any language",
+  languages: "6 packs; reader works with any language",
   audio: "Text-to-speech (Google, optional)",
 };
 
@@ -91,7 +91,7 @@ export const comparisons: Record<string, Comparison> = {
     theirStrengths: [
       { title: "A huge content library + one-click import", body: "LingQ ships thousands of graded lessons with audio, and its browser extension imports from YouTube, Netflix, podcasts, ebooks, and any web page — you can start reading immediately without sourcing material." },
       { title: "Mature native apps", body: "Well-rated iOS and Android apps (LingQ advertises ~4.7 stars) with offline lesson downloads and sync. Lector is a self-hostable web app (installable as a PWA) rather than a native app." },
-      { title: "50+ languages", body: "LingQ supports far more languages out of the box, including many beta ones. Lector's reader works with any language, but its frequency cloze packs currently cover five." },
+      { title: "50+ languages", body: "LingQ supports far more languages out of the box, including many beta ones. Lector's reader works with any language, but its frequency cloze packs currently cover six." },
       { title: "An established community", body: "A large user base (LingQ claims 5M+ learners), shared user-imported lessons, and busy forums — a network a newer self-hosted tool can't match yet." },
     ],
     ourStrengths: [
