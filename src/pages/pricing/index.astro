@@ -4,12 +4,68 @@ import Container from "../../components/Container.astro";
 import PageHeader from "../../components/PageHeader.astro";
 import Button from "../../components/Button.astro";
 
-import { GITHUB, SIGNUP_URL } from "../../data/links";
+import {
+  CLOUD_CHECKOUT_URL,
+  CLOUD_PLUS_CHECKOUT_URL,
+  GITHUB,
+  SIGNUP_URL,
+} from "../../data/links";
 
-// Self-hosted is free and open source. The cloud tiers are the managed option
-// (heuwels/lector#224); billing runs through Paddle. Cloud is in beta — sign-up
-// is live at app.lector.dev, checkout is still being wired.
+// Cloud Free is a complete, bounded reading loop. Paid links carry the selected
+// plan through account creation into the app's server-created Paddle checkout.
+// Self-hosted remains free, open source, and unlimited.
 const tiers = [
+  {
+    name: "Free",
+    price: "$0",
+    period: "forever",
+    badge: "No card required",
+    tagline: "A complete reading loop on our cloud, with sensible limits.",
+    features: [
+      "Read starter lessons and texts you import yourself",
+      "Save vocabulary, practise it, and sync with Anki",
+      "On-device dictionary plus a managed translation allowance",
+      "Free browser voices for reading and dictation",
+      "Bring your own AI key when you want more",
+      "Export your learner data at any time",
+    ],
+    cta: { label: "Get started free", href: SIGNUP_URL },
+    featured: true,
+  },
+  {
+    name: "Cloud",
+    price: "$5",
+    period: "/month",
+    badge: "Beta",
+    tagline:
+      "We host it for you — no Docker, no setup. For when you'd rather just read.",
+    features: [
+      "Fully managed — nothing to install or maintain",
+      "Larger managed translation allowance and rich AI entries",
+      "Managed high-quality voices, with browser voice fallback",
+      "More room for texts, vocabulary, and journal writing",
+      "Automatic backups and updates",
+      "Email support",
+    ],
+    note: "or $50/year — two months free",
+    cta: { label: "Choose Cloud", href: CLOUD_CHECKOUT_URL },
+    featured: false,
+  },
+  {
+    name: "Cloud Plus",
+    price: "$12",
+    period: "/month",
+    tagline: "For heavy readers who want the whole thing handled.",
+    features: [
+      "Everything in Cloud",
+      "A much larger managed AI and voice allowance",
+      "Priority support",
+      "Early access to new language packs",
+    ],
+    note: "or ~$120/year — two months free",
+    cta: { label: "Choose Cloud Plus", href: CLOUD_PLUS_CHECKOUT_URL },
+    featured: false,
+  },
   {
     name: "Self-hosted",
     price: "$0",
@@ -23,51 +79,19 @@ const tiers = [
       "Bring your own LLM keys, or run a fully local model",
       "Community support on GitHub & Discord",
     ],
-    cta: { label: "Get started", href: "/docs/installation/" },
+    cta: { label: "View install guide", href: "/docs/installation/" },
     featured: false,
-  },
-  {
-    name: "Cloud",
-    price: "$5",
-    period: "/month",
-    badge: "Beta",
-    tagline:
-      "We host it for you — no Docker, no setup. For when you'd rather just read.",
-    features: [
-      "Fully managed — nothing to install or maintain",
-      "Managed translation with a monthly allowance",
-      "Automatic backups and updates",
-      "Bring-your-own-key toggle lifts caps at the same price",
-      "Email support",
-    ],
-    note: "or $50/year — two months free",
-    cta: { label: "Start free", href: SIGNUP_URL },
-    featured: true,
-  },
-  {
-    name: "Cloud Plus",
-    price: "$12",
-    period: "/month",
-    tagline: "For heavy readers who want the whole thing handled.",
-    features: [
-      "Everything in Cloud",
-      "A much larger monthly translation allowance",
-      "Priority support",
-      "Early access to new language packs",
-    ],
-    note: "or ~$120/year — two months free",
-    cta: { label: "Start free", href: SIGNUP_URL },
   },
 ];
 ---
 
 <Base
   title="Pricing | Lector"
-  description="Lector is self-hosted and free forever. Or let us run it for you with Lector Cloud, from $5/month."
+  description="Start free on Lector Cloud, upgrade for larger managed allowances, or self-host the open-source app for free."
 >
   <PageHeader
     title="Pricing"
-    description="Self-host Lector for free, forever. Or let us run it for you — Lector Cloud is in beta, from $5/month."
+    description="Start on our cloud for free, upgrade when you want larger managed allowances, or self-host the open-source app forever."
   >
     <Fragment slot="breadcrumb">
       <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
@@ -77,7 +101,7 @@ const tiers = [
 
   <section class="py-16">
     <Container class="flex flex-col gap-10">
-      <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
         {
           tiers.map((tier) => (
             <div
@@ -220,10 +244,13 @@ const tiers = [
         <p>
           <span class="font-semibold text-olive-950 dark:text-white"
             >Self-hosting is free and always will be.</span
-          > The cloud plans exist to cover the server for people who'd rather not
-          run Docker and it helps fund future development. If you're running self-hosted
-          but you'd like to support, you can send a one-time tip or sign up as a supporter
-          on an ongoing basis. Support <a href="/support">here</a>.
+          > Cloud Free gives you the complete reading loop with bounded managed
+          usage. The paid cloud plans add larger allowances and managed voices for
+          people who'd rather not run Docker, while helping fund future development.
+          If you're running self-hosted but you'd like to support, you can send a
+          one-time tip or sign up as a supporter on an ongoing basis. Support <a
+            href="/support">here</a
+          >.
         </p>
         <p>
           No lock-in: export your data whenever you like. Prefer your own LLM
