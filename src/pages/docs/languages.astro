@@ -7,6 +7,9 @@ const statusLabel: Record<string, string> = {
   partial: "Partial",
   "coming-soon": "Coming soon",
 };
+
+const appIssue = (issue: number) =>
+  `https://github.com/heuwels/lector/issues/${issue}`;
 ---
 <DocsPage
   title="Supported languages | Lector Docs"
@@ -27,9 +30,19 @@ const statusLabel: Record<string, string> = {
         languages.map((lang) => (
           <tr>
             <td>
-              <a href={`/reference-data/${lang.slug}/`}>
-                {lang.flag} {lang.name}
-              </a>
+              {lang.status === "coming-soon" ? (
+                <a
+                  href={lang.roadmapIssue ? appIssue(lang.roadmapIssue) : "https://github.com/heuwels/lector/issues"}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {lang.flag} {lang.name}
+                </a>
+              ) : (
+                <a href={`/reference-data/${lang.slug}/`}>
+                  {lang.flag} {lang.name}
+                </a>
+              )}
             </td>
             <td>{statusLabel[lang.status] ?? lang.status}</td>
           </tr>
