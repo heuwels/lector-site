@@ -9,6 +9,7 @@ import Button from "../../../components/Button.astro";
 import Faqs from "../../../components/Faqs.astro";
 import { DISCORD, GITHUB } from "../../../data/links";
 import { faqPageSchema, breadcrumbSchema } from "../../../lib/schema";
+import { languages } from "../../../data/languages";
 
 // Founding-cohort landing page for the biblical-languages vertical.
 // Honesty rules for this page (do not edit these away): the Koine/Hebrew packs
@@ -47,8 +48,7 @@ const faqs = [
   },
   {
     question: "What exists today, and what is still being built?",
-    answer:
-      'Lector itself is real and shipping: an open-source reading workspace with tap-to-look-up, spaced-repetition cloze review, and first-party Anki export, currently covering six modern languages. The <strong>biblical packs are not shipped yet</strong> — morphology-aware lookup, corpus-frequency vocabulary, and verse-aligned texts for Koine Greek are what the founding cohort is helping design and test. We would rather tell you that plainly than sell you a screenshot.',
+    answer: `Lector itself is real and shipping: an open-source reading workspace with tap-to-look-up, spaced-repetition cloze review, and first-party Anki export, currently covering ${languages.filter((lang) => lang.status === "complete").length} modern languages. The <strong>biblical packs are not shipped yet</strong> — morphology-aware lookup, corpus-frequency vocabulary, and verse-aligned texts for Koine Greek are what the founding cohort is helping design and test. We would rather tell you that plainly than sell you a screenshot.`,
   },
   {
     question: "Which texts and lexica will it use?",
@@ -151,8 +151,7 @@ const cohort = {
     <Container class="flex flex-col items-center gap-6 text-center">
       <Eyebrow>Founding cohort &middot; in development</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
-        Keep your Greek and Hebrew by <span class="italic">reading</span> the
-        text.
+        Keep your Greek and Hebrew by <span class="italic">reading</span> the text.
       </Heading>
       <Text size="lg" class="max-w-3xl text-pretty">
         A reading-first workspace for the Greek New Testament — and the Hebrew
@@ -219,7 +218,9 @@ const cohort = {
     <Container class="flex flex-col gap-10">
       <div class="flex max-w-2xl flex-col gap-4">
         <Eyebrow>What we&rsquo;re building</Eyebrow>
-        <Subheading>The reading-to-retention loop, for the biblical text.</Subheading>
+        <Subheading
+          >The reading-to-retention loop, for the biblical text.</Subheading
+        >
         <Text class="text-pretty">
           Lector already does this for six modern languages: an open-source
           reader with tap-to-look-up, spaced cloze review, and first-party Anki
@@ -336,13 +337,15 @@ const cohort = {
       <div
         class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
       >
-        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+        <Heading
+          color="light"
+          class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
+        >
           Don&rsquo;t let it <span class="italic">fade</span>.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
           One email is enough — tell us who you are and what you're trying to
-          keep. We read every reply, and the first cohort is deliberately
-          small.
+          keep. We read every reply, and the first cohort is deliberately small.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
           <Button href={JOIN_MAILTO} size="lg" color="light">
