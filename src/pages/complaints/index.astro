@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const DMCA = "dmca@lector.dev";
+const SUPPORT = "support@lector.dev";
+---
+
+<Base
+  title="Complaints & copyright | Lector"
+  description="How to report a copyright or DMCA takedown, or any other complaint, about content on Lector — reach our designated agent at dmca@lector.dev."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb"><a href="/">lector</a> / complaints</p>
+      <h1>Complaints & copyright</h1>
+      <p class="post-meta">Last updated 14 July 2026</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-body">
+      <p>
+        Lector lets people import and store their own books, articles, and
+        podcasts to read and study. That content is private to each account —
+        it isn't published or shared — but if you believe something on Lector
+        infringes your rights, or you need to report abuse, here's how to reach
+        us.
+      </p>
+
+      <div class="callout">
+        <p>
+          <strong>Short version.</strong> For a copyright / DMCA takedown, email
+          our designated agent at <a href={`mailto:${DMCA}`}>{DMCA}</a>. For
+          anything else, email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>.
+        </p>
+      </div>
+
+      <h2>Copyright &amp; DMCA takedowns</h2>
+      <p>
+        If you're the rights holder (or authorised to act for one) and believe
+        material on Lector infringes your copyright, email our designated agent
+        at <a href={`mailto:${DMCA}`}>{DMCA}</a>. So we can act quickly, please
+        include:
+      </p>
+      <ul>
+        <li>identification of the copyrighted work you say has been infringed;</li>
+        <li>
+          identification of the material in question and enough information for
+          us to locate it (for example, the account email it relates to);
+        </li>
+        <li>your contact details — name, email, and address;</li>
+        <li>
+          a statement that you have a good-faith belief the use isn't authorised
+          by the rights holder, its agent, or the law;
+        </li>
+        <li>
+          a statement that the information in your notice is accurate and, under
+          penalty of perjury, that you're authorised to act for the rights
+          holder; and
+        </li>
+        <li>your physical or electronic signature.</li>
+      </ul>
+      <p>
+        We review every notice and remove or disable access to infringing
+        material where a report is valid. Because content on Lector is private
+        per user rather than publicly hosted, we'll weigh that context when we
+        respond.
+      </p>
+
+      <h2>Counter-notice</h2>
+      <p>
+        If your content was removed and you believe that was a mistake or
+        misidentification, email <a href={`mailto:${DMCA}`}>{DMCA}</a> with a
+        counter-notice that identifies the material, your contact details, and a
+        statement — under penalty of perjury — that you have a good-faith belief
+        it was removed in error.
+      </p>
+
+      <h2>Other complaints &amp; abuse</h2>
+      <p>
+        For acceptable-use violations, abuse of the service, or any other
+        concern, email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>. Our
+        acceptable-use rules are in the <a href="/terms/">Terms of Service</a>.
+        Lector is operated by Luke Boyle.
+      </p>
+    </div>
+  </div>
+</Base>
