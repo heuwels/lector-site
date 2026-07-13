@@ -55,12 +55,30 @@ const moments = [
 
 // The remaining capabilities, kept as a compact list so nothing's lost.
 const extras = [
-  ["Text-to-speech", "Optional Google Cloud TTS to hear words and sentences pronounced correctly."],
-  ["Web & paste import", "Pull an article from any URL via Readability, or paste text directly."],
-  ["Offline-first storage", "SQLite server-side, IndexedDB client-side. No cloud accounts, no sync."],
-  ["Statistics dashboard", "CEFR fluency, vocabulary growth, reading streaks, activity heatmaps, cloze mastery."],
-  ["AI translation with a fallback", "Claude or a local LLM on demand, dropping to a 2,000-word offline dictionary."],
-  ["Any language reads", "The reader works with any language; packs add cloze banks and dictionaries."],
+  [
+    "Text-to-speech",
+    "Optional Google Cloud TTS to hear words and sentences pronounced correctly.",
+  ],
+  [
+    "Web & paste import",
+    "Pull an article from any URL via Readability, or paste text directly.",
+  ],
+  [
+    "Offline-first storage",
+    "SQLite server-side, IndexedDB client-side. No cloud accounts, no sync.",
+  ],
+  [
+    "Statistics dashboard",
+    "CEFR fluency, vocabulary growth, reading streaks, activity heatmaps, cloze mastery.",
+  ],
+  [
+    "AI translation with a fallback",
+    "Claude or a local LLM on demand, dropping to a 2,000-word offline dictionary.",
+  ],
+  [
+    "Any language reads",
+    "The reader works with any language; packs add cloze banks and dictionaries.",
+  ],
 ];
 
 const completeLanguages = languages
@@ -78,38 +96,50 @@ const completeLanguages = languages
     };
   });
 
+const appIssue = (issue: number) =>
+  `https://github.com/heuwels/lector/issues/${issue}`;
+
+const roadmapLanguages = languages
+  .filter((language) => language.status === "coming-soon")
+  .map((language) => ({
+    ...language,
+    href: language.roadmapIssue ? appIssue(language.roadmapIssue) : "#",
+    action: "Bump the issue",
+  }));
+
 const faqs = [
   {
     question: "Is it really free?",
     answer:
-      "Self-hosting is free forever — deploy it once and use it with no subscription or feature gates (your only optional cost is your own LLM API usage if you don't run a local model). Prefer not to run a server? Lector Cloud starts at $5/mo and we host it for you. Either way it's the same app. For comparison, LingQ runs about $15/mo and Clozemaster Pro about $13/mo.",
+      "Lector is free and open-source for those who want to self-host. Deploy it on your own machine with optional auth and use it with no subscription or feature gates (your only optional cost is your own LLM API usage if you don't run a local model). Prefer not to run a server? Lector Cloud starts at $5/mo and we host it for you. For comparison, LingQ runs about $15/mo and Clozemaster Pro about $13/mo.",
   },
   {
     question: "Self-host or cloud — which should I choose?",
     answer:
-      "If you're comfortable running a Docker container, self-host: it's free, your data never leaves your hardware, and you bring your own LLM keys. If you'd rather just read and let someone else handle servers, backups, and updates, Lector Cloud (in beta) does exactly that from $5/mo. You can move between them — export any time, no lock-in.",
+      "If you're comfortable running a Docker container, self-host: it's free, your data never leaves your hardware, and you bring your own LLM keys. If you'd rather just read and let someone else handle servers, backups, and updates, Lector Cloud does exactly that from $5/mo. You can move between them — export any time, no lock-in.",
   },
   {
     question: "Where does my data live?",
     answer:
-      "It depends how you run it. Self-hosted, everything lives on your hardware — reading history, vocabulary, and progress in a single SQLite file inside a Docker volume, with no third-party databases, analytics, or telemetry, and backups are one file copy. On Lector Cloud, we host it for you in AWS (us-east-1); you can export your data any time, with no lock-in.",
+      "It depends how you run it. Self-hosted, everything lives on your hardware inside a Docker volume, with no third-party databases, analytics, or telemetry (though you may opt-in to send a ping so we can track how many self-host installs are active), and backups are one file copy. On Lector Cloud, we host it for you in AWS (us-east-1); you can export your data any time, with no lock-in.",
   },
   {
     question: "Do I need an API key or a GPU?",
     answer:
-      "No. The reader, cloze practice, and vocabulary tracking all work offline against a built-in dictionary. AI translation, the tutor, and writing correction are the only features that call out — and you can point those at a local model (Ollama, Llama, Gemma) instead of the Claude API.",
+      "No. The reader, cloze practice, and vocabulary tracking all work offline against a built-in dictionary. AI translation, the tutor, and writing correction are the only features that call out — and you can point those at a local model (Ollama, Llama, Gemma) or any OpenAI-compatible API.",
   },
   {
     question: "Which languages are supported?",
-    answer:
-      `The reader works with any language. Language packs — which add frequency-banded cloze banks and on-device dictionaries — currently cover ${completeLanguages
-        .map((l) => l.endonym)
-        .join(", ")}, with more on the way. Adding a pair is a straightforward pull request.`,
+    answer: `The reader works with any language. Language packs — which add frequency-banded cloze banks and on-device dictionaries — currently cover ${completeLanguages
+      .map((l) => l.endonym)
+      .join(
+        ", ",
+      )}, with more on the way. Adding a pair is a straightforward pull request.`,
   },
   {
     question: "How is this different from LingQ, Clozemaster, or Anki?",
     answer:
-      "It's all three, self-hosted and joined up: LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, and two-way Anki sync — plus an LLM tutor and a writing journal. One app, your server, your data. See the full breakdowns: <a href='/vs/lingq/'>Lector vs LingQ</a> and <a href='/vs/clozemaster/'>Lector vs Clozemaster</a>.",
+      "It packages the LingQ and Clozemaster offering, but enables a single-point of tracking your known words, rather than having them spread across different services. Lector will keep track of your known words, but you get to continue owning your vocab in Anki. Lector features LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, and two-way Anki sync — plus an LLM tutor and a writing journal. One app, your server, your data. See the full breakdowns: <a href='/vs/lingq/'>Lector vs LingQ</a> and <a href='/vs/clozemaster/'>Lector vs Clozemaster</a>.",
   },
 ];
 ---
@@ -167,9 +197,13 @@ const faqs = [
       {
         moments.map((m, i) => (
           <div class="grid grid-cols-1 items-center gap-8 rounded-2xl bg-olive-950/2.5 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 dark:bg-white/5">
-            <div class:list={["flex flex-col gap-4", i % 2 === 1 && "lg:order-2"]}>
+            <div
+              class:list={["flex flex-col gap-4", i % 2 === 1 && "lg:order-2"]}
+            >
               <Eyebrow>{m.eyebrow}</Eyebrow>
-              <Subheading class="text-3xl/9 sm:text-4xl/12">{m.title}</Subheading>
+              <Subheading class="text-3xl/9 sm:text-4xl/12">
+                {m.title}
+              </Subheading>
               <Text class="text-pretty">{m.body}</Text>
             </div>
             <div class:list={[i % 2 === 1 && "lg:order-1"]}>
@@ -194,7 +228,9 @@ const faqs = [
         <Eyebrow>In the box</Eyebrow>
         <Subheading>Everything else, without the sprawl.</Subheading>
       </div>
-      <div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {
           extras.map(([title, body]) => (
             <div class="flex flex-col gap-2 border-t border-olive-950/10 pt-4 dark:border-white/10">
@@ -217,8 +253,7 @@ const faqs = [
         <Subheading>Languages, ready to read.</Subheading>
         <Text class="text-pretty">
           Each pack ships a frequency-banded cloze bank and an on-device
-          dictionary, at the same depth. The reader itself works with any
-          language.
+          dictionary, at the same depth.
         </Text>
       </div>
 
@@ -240,8 +275,57 @@ const faqs = [
               </div>
               <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
                 {lang.action}
-                <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
-                  <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="size-4 transition-transform group-hover:translate-x-0.5"
+                >
+                  <path
+                    d="M6.5 3.5 11 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+      <Subheading>On the roadmap.</Subheading>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          roadmapLanguages.map((lang) => (
+            <a
+              href={lang.href}
+              rel="noreferrer noopener"
+              target="_blank"
+              class="group flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
+            >
+              <span class="text-3xl">{lang.flag}</span>
+              <div class="flex flex-col gap-1">
+                <h3 class="font-display text-2xl/7 text-olive-950 dark:text-white">
+                  {lang.name}
+                </h3>
+                <p class="text-sm/6 text-olive-600 dark:text-olive-400">
+                  {lang.endonym}
+                </p>
+              </div>
+              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
+                {lang.action}
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  class="size-4 transition-transform group-hover:translate-x-0.5"
+                >
+                  <path
+                    d="M6.5 3.5 11 8l-4.5 4.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               </span>
             </a>
@@ -254,11 +338,10 @@ const faqs = [
       >
         <div class="flex flex-col gap-1">
           <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
-            <span class="mr-2">🇵🇹 🇷🇺 🇨🇳 🇯🇵</span> On the roadmap
+            Adding a new language is relatively simple
           </p>
           <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-            Portuguese slots straight in. Russian is next; Mandarin and Japanese
-            follow as a pair (word-segmentation + a reading layer).
+            Check out the Github repo to contribute
           </p>
         </div>
         <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">
@@ -280,12 +363,16 @@ const faqs = [
         </Text>
       </div>
       <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
-        <div class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5">
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5"
+        >
           <div class="flex items-center gap-3">
             <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
               Self-host
             </h3>
-            <span class="inline-flex rounded-full bg-sage-600/15 px-2.5 py-0.5 text-xs font-medium text-sage-700 dark:text-sage-300">
+            <span
+              class="inline-flex rounded-full bg-sage-600/15 px-2.5 py-0.5 text-xs font-medium text-sage-700 dark:text-sage-300"
+            >
               Free
             </span>
           </div>
@@ -294,13 +381,18 @@ const faqs = [
             your server, you bring your own LLM keys (or run a local model), and
             it's free forever.
           </Text>
-          <ActionLink href="/docs/installation/">Read the setup docs</ActionLink>
+          <ActionLink href="/docs/installation/">Read the setup docs</ActionLink
+          >
         </div>
 
-        <div class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10">
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+        >
           <div class="flex items-center gap-3">
             <h3 class="font-display text-2xl/8 text-white">Lector Cloud</h3>
-            <span class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white">
+            <span
+              class="inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-medium text-white"
+            >
               Beta &middot; from $5/mo
             </span>
           </div>
@@ -314,8 +406,17 @@ const faqs = [
             class="group inline-flex items-center gap-2 text-sm/7 font-medium text-white"
           >
             Start on the cloud
-            <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
-              <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              class="size-4 transition-transform group-hover:translate-x-0.5"
+            >
+              <path
+                d="M6.5 3.5 11 8l-4.5 4.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
             </svg>
           </a>
         </div>
@@ -328,15 +429,29 @@ const faqs = [
     <Container class="flex flex-col gap-10">
       <div class="flex max-w-2xl flex-col gap-4">
         <Eyebrow>Why self-host</Eyebrow>
-        <Subheading>Your course shouldn't rent your progress back to you.</Subheading>
+        <Subheading
+          >Your course shouldn't rent your progress back to you.</Subheading
+        >
       </div>
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {
           [
-            ["Your data, your server", "Reading history, vocabulary, and progress live in a SQLite file on your hardware. No third parties, no telemetry."],
-            ["No subscriptions", "Deploy once, learn forever. No monthly fees, no premium tiers, no feature gates."],
-            ["Works offline", "Reading, cloze, and vocabulary all run without a connection. Only AI features need the internet."],
-            ["Simple backup", "One SQLite file, one Docker volume. rsync it, borg it, or copy it to a USB drive."],
+            [
+              "Your data, your server",
+              "Reading history, vocabulary, and progress live in a SQLite file on your hardware. No third parties, no telemetry.",
+            ],
+            [
+              "No subscriptions",
+              "Deploy once, learn forever. No monthly fees, no premium tiers, no feature gates.",
+            ],
+            [
+              "Works offline",
+              "Reading, cloze, and vocabulary all run without a connection. Only AI features need the internet.",
+            ],
+            [
+              "Simple backup",
+              "One SQLite file, one Docker volume. rsync it, borg it, or copy it to a USB drive.",
+            ],
           ].map(([title, body]) => (
             <div class="flex flex-col gap-2 rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5">
               <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
@@ -358,12 +473,17 @@ const faqs = [
         <Subheading>Running in about a minute.</Subheading>
         <Text class="text-pretty">
           One Docker container, one volume. Drop this into a
-          <code class="rounded bg-olive-950/10 px-1.5 py-0.5 font-mono text-[0.85em] dark:bg-white/10">docker-compose.yml</code>
+          <code
+            class="rounded bg-olive-950/10 px-1.5 py-0.5 font-mono text-[0.85em] dark:bg-white/10"
+            >docker-compose.yml</code
+          >
           and bring it up.
         </Text>
         <div class="flex flex-wrap gap-3">
           <Button href="/docs/installation/" size="lg">Read the docs</Button>
-          <ActionLink href="/docs/configuration/">Configuration &amp; env vars</ActionLink>
+          <ActionLink href="/docs/configuration/"
+            >Configuration &amp; env vars</ActionLink
+          >
         </div>
       </div>
       <div
@@ -400,8 +520,12 @@ docker compose up -d</code></pre>
         <Eyebrow>Questions</Eyebrow>
         <Subheading>Good to know.</Subheading>
         <Text class="text-pretty">
-          Still curious? The <a href="/docs/" class="font-medium underline underline-offset-4">docs</a>
-          cover installation, reverse proxies, AnkiConnect, and every environment variable.
+          Still curious? The <a
+            href="/docs/"
+            class="font-medium underline underline-offset-4">docs</a
+          >
+          cover installation, reverse proxies, AnkiConnect, and every environment
+          variable.
         </Text>
       </div>
       <Faqs items={faqs} />
@@ -415,7 +539,8 @@ docker compose up -d</code></pre>
         class="flex flex-col items-center gap-6 rounded-2xl bg-olive-950/2.5 px-6 py-12 text-center dark:bg-white/5"
       >
         <Eyebrow>Get involved</Eyebrow>
-        <Subheading class="max-w-2xl">Learn alongside other readers.</Subheading>
+        <Subheading class="max-w-2xl">Learn alongside other readers.</Subheading
+        >
         <Text class="max-w-xl text-pretty">
           Join our Discord to swap resources, compare progress, request new
           languages, and help shape where Lector goes next.
@@ -433,15 +558,25 @@ docker compose up -d</code></pre>
       <div
         class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
       >
-        <Heading color="light" class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]">
+        <Heading
+          color="light"
+          class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
+        >
           Start reading in your <span class="italic">target language</span> today.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
           Open source to self-host for free, or on our cloud in a click.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={SIGNUP_URL} size="lg" color="light">Start on the cloud</Button>
-          <Button href="/docs/installation/" variant="plain" size="lg" color="light">
+          <Button href={SIGNUP_URL} size="lg" color="light"
+            >Start on the cloud</Button
+          >
+          <Button
+            href="/docs/installation/"
+            variant="plain"
+            size="lg"
+            color="light"
+          >
             Self-host, free
           </Button>
         </div>
