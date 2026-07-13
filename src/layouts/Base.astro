@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import ImageZoom from "../components/ImageZoom.astro";
 
 interface Props {
   title: string;
@@ -127,6 +128,9 @@ const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
     </main>
 
     <Footer />
+
+    <!-- Click-to-zoom lightbox for screenshots (delegated; renders on demand). -->
+    <ImageZoom />
 
     <!-- Floating dark-mode toggle (bottom-right). -->
     <button

@@ -1,0 +1,145 @@
+---
+// Click-to-zoom lightbox for screenshots. Rendered once from Base.astro.
+//
+// Opt in per image with `data-zoomable`; article figures (`.docs-body figure
+// img`, i.e. blog/docs screenshots) are enrolled automatically. A single shared
+// overlay is built lazily on first open and reused. Keyboard + a11y aware:
+// images become role="button", Enter/Space open, Escape/backdrop/close button
+// dismiss, focus is restored on close, and body scroll is locked while open.
+---
+
+<script>
+  const SELECTOR = "img[data-zoomable], .docs-body figure img";
+
+  let overlay: HTMLDivElement | null = null;
+  let lastFocused: Element | null = null;
+
+  function buildOverlay() {
+    const el = document.createElement("div");
+    el.className = "zoom-overlay";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-label", "Zoomed image");
+    el.innerHTML =
+      '<button type="button" class="zoom-overlay__close" aria-label="Close">×</button>' +
+      '<figure class="zoom-overlay__fig">' +
+      '<img alt="" />' +
+      '<figcaption class="zoom-overlay__caption"></figcaption>' +
+      "</figure>";
+    // Any click within the overlay (backdrop, image, or close button) dismisses.
+    el.addEventListener("click", close);
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function open(img: HTMLImageElement) {
+    if (!overlay) overlay = buildOverlay();
+    const cloneImg = overlay.querySelector("img") as HTMLImageElement;
+    const cap = overlay.querySelector(
+      ".zoom-overlay__caption",
+    ) as HTMLElement;
+
+    cloneImg.src = img.currentSrc || img.src;
+    cloneImg.alt = img.alt || "";
+    if (img.alt) {
+      cap.textContent = img.alt;
+      cap.hidden = false;
+    } else {
+      cap.hidden = true;
+    }
+
+    lastFocused = document.activeElement;
+    lockScroll();
+    // Keep the overlay last in the DOM so it stacks above late-added nodes.
+    document.body.appendChild(overlay);
+    void overlay.offsetWidth; // reflow so the fade/scale transition runs
+    overlay.classList.add("zoom-overlay--active");
+    document.addEventListener("keydown", onKey);
+    // Move focus into the dialog on the next frame — deferring past the current
+    // event dispatch lets the newly-visible button actually take focus (focusing
+    // it synchronously, while still `visibility:hidden`, is silently ignored).
+    requestAnimationFrame(() => {
+      (overlay?.querySelector(".zoom-overlay__close") as HTMLElement | null)?.focus({
+        preventScroll: true,
+      });
+    });
+  }
+
+  function close() {
+    if (!overlay || !overlay.classList.contains("zoom-overlay--active")) return;
+    overlay.classList.remove("zoom-overlay--active");
+    document.removeEventListener("keydown", onKey);
+
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      unlockScroll();
+      if (lastFocused instanceof HTMLElement)
+        lastFocused.focus({ preventScroll: true });
+    };
+    // Wait for the fade-out, with a timeout fallback if transitionend is
+    // skipped (e.g. reduced motion, or the tab was backgrounded).
+    overlay.addEventListener("transitionend", finish, { once: true });
+    setTimeout(finish, 350);
+  }
+
+  function onKey(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      close();
+    }
+  }
+
+  function lockScroll() {
+    const gap = window.innerWidth - document.documentElement.clientWidth;
+    if (gap > 0) document.body.style.paddingRight = gap + "px";
+    document.body.style.overflow = "hidden";
+  }
+  function unlockScroll() {
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+  }
+
+  function enroll(img: HTMLImageElement) {
+    if (img.dataset.zoomBound) return;
+    if (img.closest("a")) return; // don't hijack images that are links
+    img.dataset.zoomBound = "1";
+    img.classList.add("zoomable");
+    img.tabIndex = 0;
+    img.setAttribute("role", "button");
+    if (!img.getAttribute("aria-label"))
+      img.setAttribute(
+        "aria-label",
+        (img.alt ? img.alt + " — " : "") + "click to zoom",
+      );
+  }
+
+  function init() {
+    document
+      .querySelectorAll<HTMLImageElement>(SELECTOR)
+      .forEach(enroll);
+  }
+
+  // Delegated activation so it works regardless of when images enroll.
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+    const img = t.closest(SELECTOR) as HTMLImageElement | null;
+    if (img && !img.closest("a")) {
+      e.preventDefault();
+      open(img);
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const el = document.activeElement;
+    if (el instanceof HTMLImageElement && el.matches(SELECTOR) && !el.closest("a")) {
+      e.preventDefault();
+      open(el);
+    }
+  });
+
+  if (document.readyState !== "loading") init();
+  else document.addEventListener("DOMContentLoaded", init);
+</script>
