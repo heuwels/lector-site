@@ -9,6 +9,7 @@ import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
 import { languages } from "../data/languages";
+import { languageGuides } from "../data/languageGuides";
 import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
 import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
 
@@ -62,7 +63,20 @@ const extras = [
   ["Any language reads", "The reader works with any language; packs add cloze banks and dictionaries."],
 ];
 
-const completeLanguages = languages.filter((l) => l.status === "complete");
+const completeLanguages = languages
+  .filter((language) => language.status === "complete")
+  .map((language) => {
+    const hasGuide = Boolean(languageGuides[language.slug]);
+    return {
+      ...language,
+      href: hasGuide
+        ? `/languages/${language.slug}/`
+        : `/reference-data/${language.slug}/`,
+      action: hasGuide
+        ? `Learn ${language.name.split("→")[0].trim()}`
+        : "View reference data",
+    };
+  });
 
 const faqs = [
   {
@@ -212,7 +226,7 @@ const faqs = [
         {
           completeLanguages.map((lang) => (
             <a
-              href={`/languages/${lang.slug}/`}
+              href={lang.href}
               class="group flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
             >
               <span class="text-3xl">{lang.flag}</span>
@@ -225,7 +239,7 @@ const faqs = [
                 </p>
               </div>
               <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
-                Learn {lang.name.split("→")[0].trim()}
+                {lang.action}
                 <svg viewBox="0 0 16 16" fill="none" class="size-4 transition-transform group-hover:translate-x-0.5">
                   <path d="M6.5 3.5 11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -240,11 +254,11 @@ const faqs = [
       >
         <div class="flex flex-col gap-1">
           <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
-            <span class="mr-2">🇮🇹 🇵🇹 🇷🇺 🇨🇳 🇯🇵</span> On the roadmap
+            <span class="mr-2">🇵🇹 🇷🇺 🇨🇳 🇯🇵</span> On the roadmap
           </p>
           <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-            Italian and Portuguese slot straight in. Russian is next; Mandarin
-            and Japanese follow as a pair (word-segmentation + a reading layer).
+            Portuguese slots straight in. Russian is next; Mandarin and Japanese
+            follow as a pair (word-segmentation + a reading layer).
           </p>
         </div>
         <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">

@@ -1,6 +1,5 @@
-// Registry of supported languages. Drives the /reference-data/ pages (the index
-// and one page per entry below). NOTE: the homepage "Supported languages"
-// section in src/pages/index.astro is hardcoded separately — keep it in sync.
+// Registry of supported languages. Drives the homepage, docs, and
+// /reference-data/ pages (the index and one page per entry below).
 
 export interface Download {
   label: string;
@@ -203,6 +202,70 @@ export const languages: Language[] = [
           "The 5,000 most frequent Dutch words in frequency order, from A Frequency Dictionary of Dutch (Routledge), with English equivalents and example sentences — a solid frequency-first vocabulary foundation.",
         url: "https://ankiweb.net/shared/info/1002891444",
         meta: "~5,000 cards · free",
+      },
+    ],
+  },
+  {
+    slug: "italian",
+    name: "Italian → English",
+    endonym: "Italiano",
+    flag: "🇮🇹",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Italian, at Afrikaans parity. The on-device dictionary covers rich Italian inflection, while the Tatoeba sentence bank keeps elisions such as l'acqua and un'amica intact in practice.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "584,882 entries" },
+      { label: "English senses", value: "767,887" },
+      { label: "Inflections", value: "658,019" },
+      { label: "Cloze bank", value: "11,783 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Italian Wiktionary entries extracted through Kaikki.org, including form-of records for conjugations and plurals.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Italian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Italian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "portuguese",
+    name: "Portuguese → English",
+    endonym: "Português",
+    flag: "🇧🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Portuguese, at Afrikaans parity. Brazilian Portuguese (pt-BR) by default, with a Tatoeba sentence bank and an on-device dictionary covering rich Portuguese inflection (nasal vowels, conjugations, the personal infinitive).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "411,782 entries" },
+      { label: "English senses", value: "566,136" },
+      { label: "Inflections", value: "424,236" },
+      { label: "Cloze bank", value: "8,363 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Portuguese Wiktionary entries extracted through Kaikki.org, including form-of records for conjugations and plurals.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Portuguese/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Portuguese–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
       },
     ],
   },
