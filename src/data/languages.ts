@@ -273,6 +273,47 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "esperanto",
+    name: "Esperanto → English",
+    endonym: "Esperanto",
+    // Unicode has no Esperanto flag emoji (the verda stelo) — the green
+    // square stands in, matching the app's language picker.
+    flag: "🟩",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Esperanto. Because the orthography is fully phonemic, every lookup carries a rule-generated IPA pronunciation, and audio is spoken by eSpeak NG — the only text-to-speech engine that exists for Esperanto — hosted by Lector on every plan. Lookups understand Esperanto's regular word-building (malsanulejo → mal- + san + -ul- + -ej-) and accept x-system typing (gxardeno → ĝardeno).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "134,042 entries" },
+      { label: "English senses", value: "136,926" },
+      { label: "Inflections", value: "230,825" },
+      { label: "Cloze bank", value: "8,019 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Esperanto Wiktionary entries extracted through Kaikki.org, including form-of records for plurals, accusatives, and verb tenses.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Esperanto/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Esperanto–English sentence pairs from Tatoeba (Esperanto is its fourth-largest language), ranked by a custom Esperanto Wikipedia + OpenSubtitles frequency blend and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+      {
+        label: "Speech synthesis",
+        detail:
+          "eSpeak NG formant synthesizer, self-hosted server-side. Phonemically exact for Esperanto's one-letter-one-phoneme orthography.",
+        license: "GPL-3.0-or-later (invoked as a separate program)",
+        url: "https://github.com/espeak-ng/espeak-ng",
+      },
+    ],
+  },
+  {
     slug: "mandarin",
     name: "Mandarin → English",
     endonym: "中文",
