@@ -1,6 +1,6 @@
 # Lector
 
-> Lector is a self-hosted (or cloud-hosted) language-learning reader. Read the EPUBs and articles you actually want to read in your target language: click any word for an instant translation, mine vocabulary as you go, drill it with frequency-ordered cloze practice and spaced repetition, and export cards straight to Anki over AnkiConnect. It's open source — self-host it for free and your reading history, vocabulary, and progress stay in a SQLite file on your own hardware, or use Lector Cloud from $5/mo. Language packs (frequency-banded cloze banks + on-device dictionaries) currently cover Afrikaans, Dutch, French, Spanish, and German, with more on the way.
+> Lector is a self-hosted (or cloud-hosted) language-learning reader. Read the EPUBs and articles you actually want to read in your target language: click any word for an instant translation, mine vocabulary as you go, drill it with frequency-ordered cloze practice and spaced repetition, and export cards straight to Anki over AnkiConnect. It's open source — self-host it for free and your reading history, vocabulary, and progress stay in a SQLite file on your own hardware, or use Lector Cloud from $5/mo. Language packs (frequency-banded cloze banks + on-device dictionaries) currently cover Afrikaans, Dutch, French, German, Italian, Portuguese, and Spanish, with more on the way.
 
 ## Learn a language (guides for English speakers)
 
