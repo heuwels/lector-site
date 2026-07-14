@@ -377,4 +377,24 @@ export const freeResources: Record<string, FreeResource> = {
     size: "47 MB",
     releaseTag: "dict-nl-2026-07-07",
   }),
+
+  "italian-dictionary": wiktionaryDict({
+    languageSlug: "italian",
+    language: "Italian",
+    langCode: "it",
+    entries: "584,882",
+    senses: "767,887",
+    size: "160 MB",
+    releaseTag: "dict-it-2026-07-12",
+  }),
+
+  "portuguese-dictionary": wiktionaryDict({
+    languageSlug: "portuguese",
+    language: "Portuguese",
+    langCode: "pt",
+    entries: "411,782",
+    senses: "566,136",
+    size: "114 MB",
+    releaseTag: "dict-pt-2026-07-12",
+  }),
 };
