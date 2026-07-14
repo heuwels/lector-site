@@ -7,6 +7,14 @@
 // were verified against official pricing pages + reputable reviews (July 2026);
 // re-confirm live prices before editing, and keep claims fair.
 
+import { languages } from "./languages";
+
+// Shipped language packs — computed so comparison copy never goes stale when
+// a new pack lands (matches the homepage's status filter).
+const completeLanguageCount = languages.filter(
+  (language) => language.status === "complete",
+).length;
+
 export interface CompareRow {
   feature: string;
   /** Lector's value. */
@@ -91,7 +99,7 @@ export const comparisons: Record<string, Comparison> = {
     theirStrengths: [
       { title: "A huge content library + one-click import", body: "LingQ ships thousands of graded lessons with audio, and its browser extension imports from YouTube, Netflix, podcasts, ebooks, and any web page — you can start reading immediately without sourcing material." },
       { title: "Mature native apps", body: "Well-rated iOS and Android apps (LingQ advertises ~4.7 stars) with offline lesson downloads and sync. Lector is a self-hostable web app (installable as a PWA) rather than a native app." },
-      { title: "50+ languages", body: "LingQ supports far more languages out of the box, including many beta ones. Lector's reader works with any language, but its frequency cloze packs currently cover six." },
+      { title: "50+ languages", body: `LingQ supports far more languages out of the box, including many beta ones. Lector's reader works with any language, but its frequency cloze packs currently cover ${completeLanguageCount}.` },
       { title: "An established community", body: "A large user base (LingQ claims 5M+ learners), shared user-imported lessons, and busy forums — a network a newer self-hosted tool can't match yet." },
     ],
     ourStrengths: [
