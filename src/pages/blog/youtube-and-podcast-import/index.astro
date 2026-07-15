@@ -1,0 +1,97 @@
+---
+import Base from "../../../layouts/Base.astro";
+---
+<Base title="Import YouTube transcripts and podcasts | Lector" description="Two new ways to bring native audio and video into Lector: import a YouTube video's transcript with clickable timestamps, or upload a podcast and read along as it plays.">
+
+<header class="docs-header">
+  <div class="container">
+    <p class="breadcrumb"><a href="/">lector</a> / <a href="/blog/">blog</a> / youtube &amp; podcast import</p>
+    <h1>Import YouTube transcripts and podcasts</h1>
+    <p class="post-meta">15 July 2026 &middot; 4 min read &middot; Feature</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="docs-layout">
+    <main class="docs-body">
+
+      <p>The best input is the stuff you'd watch or listen to anyway. Two new
+        import types bring it into Lector, where every word carries your
+        known/unknown state, the translation drawer, and vocabulary mining:
+        <strong>YouTube transcripts</strong> and <strong>podcast audio</strong>.
+        Both live under the same <strong>Import</strong> menu.</p>
+
+      <figure>
+        <img src="/images/import-dropdown.png" alt="Lector's Import dropdown showing Import File, Import Audio, Import from URL, YouTube Transcript, and Paste Text.">
+        <figcaption>Two new entries: <strong>Import Audio</strong> and <strong>YouTube Transcript</strong>.</figcaption>
+      </figure>
+
+      <h2 id="youtube">YouTube transcripts</h2>
+      <p>Paste a video URL and pick a caption track — creator captions and
+        auto-generated captions are labelled separately, so you know what you're
+        getting. Lector imports the transcript as a normal lesson.</p>
+
+      <figure>
+        <img src="/images/youtube-caption-picker.png" alt="Lector's YouTube import dialog listing available caption tracks: English (creator), German (creator), and German (auto-generated).">
+        <figcaption>Choose a language and caption source.</figcaption>
+      </figure>
+
+      <p>Every line keeps its timestamp. Click one and the embedded player jumps
+        to that moment, so you can hear the sentence you're reading. The video is
+        never downloaded or hosted — Lector reads the public transcript and links
+        back to YouTube for playback.</p>
+
+      <figure>
+        <img src="/images/youtube-transcript-reader.png" alt="A YouTube transcript open in Lector: the embedded player at the top, then timestamped lines of German words, each clickable.">
+        <figcaption>Read at your own pace; click a timestamp to jump the player there.</figcaption>
+      </figure>
+
+      <h2 id="podcasts">Podcast audio</h2>
+      <p>Choose <strong>Import Audio</strong> and upload an episode (or any audio
+        file). Lector transcribes it in the background with a Whisper model —
+        local, or a hosted transcription backend if you've configured one — and
+        turns it into a lesson.</p>
+
+      <figure>
+        <img src="/images/podcast-audio-import.png" alt="A library card in Lector for an imported audio file, labelled 'Audio import'.">
+        <figcaption>The upload becomes a normal lesson once transcription finishes.</figcaption>
+      </figure>
+
+      <p>Then read along: press play and the current sentence highlights as the
+        audio moves through it. <strong>Continuous</strong> plays straight
+        through; <strong>Shadow</strong> is for shadowing practice. There's a
+        speed control and sentence skip, and — as everywhere in Lector — every
+        word is tappable for a translation or to save to your vocabulary.</p>
+
+      <figure>
+        <img src="/images/podcast-listen-along.png" alt="Lector's listen-along reader: Afrikaans transcript with the currently-playing sentence highlighted, and an audio player bar with a Continuous/Shadow toggle, speed control, and scrubber.">
+        <figcaption>Listen-along: the sentence being spoken stays highlighted as you read.</figcaption>
+      </figure>
+
+      <h2 id="notes">Notes</h2>
+      <ul>
+        <li>YouTube: not every video has captions; auto-generated ones can
+          contain recognition errors (you can edit the transcript after import).
+          The video is never downloaded or hosted.</li>
+        <li>Podcasts: transcription accuracy depends on the audio and the model;
+          the transcript is editable, and the audio stays on your own instance.</li>
+        <li>A YouTube transcript is still useful even if the embedded player
+          isn't available — the text stands on its own.</li>
+        <li>Mining a sentence from a video carries a link back to its timestamp
+          into your Anki export.</li>
+      </ul>
+
+      <p style="margin-top:2rem;"><a href="/blog/">&larr; Back to the blog</a></p>
+
+    </main>
+
+    <nav class="docs-toc">
+      <h4>On this page</h4>
+      <a href="#youtube">YouTube transcripts</a>
+      <a href="#podcasts">Podcast audio</a>
+      <a href="#notes">Notes</a>
+    </nav>
+  </div>
+</div>
+
+</Base>
