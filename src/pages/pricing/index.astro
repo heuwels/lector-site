@@ -47,6 +47,7 @@ const tiers = [
       "5,000 managed AI requests a month — tap-to-translate, chat tutor & journal correction",
       "10,000 AI dictionary glosses a month",
       "300,000 characters a month of high-quality managed voices",
+      "Import podcasts: 5 hours of audio transcribed a month, with a listen-along & shadowing player",
       "Room for 1,000 texts and 5,000 journal words a month",
       "Automatic backups & updates, and email support",
     ],
@@ -63,6 +64,7 @@ const tiers = [
       "Everything in Cloud",
       "20,000 managed AI requests and 50,000 AI glosses a month",
       "1,500,000 characters a month of managed voices",
+      "15 hours of podcast transcription a month",
       "Unlimited journal writing, library, and phrase length",
       "Priority support",
       "Early access to new language packs",
@@ -133,6 +135,15 @@ const comparison: CompareGroup[] = [
     rows: [
       { label: "Free browser voices", free: true, cloud: true, plus: true, self: true },
       { label: "Managed premium voices", free: false, cloud: "300,000 chars / mo", plus: "1,500,000 chars / mo", self: "Your own key" },
+    ],
+  },
+  {
+    title: "Podcasts & listening",
+    rows: [
+      { label: "YouTube transcript import", free: true, cloud: true, plus: true, self: true },
+      { label: "Podcast import with listen-along & shadowing player", free: false, cloud: true, plus: true, self: true },
+      { label: "Audio transcription", free: false, cloud: "5 hours / mo", plus: "15 hours / mo", self: "Your own Whisper" },
+      { label: "Audio storage", free: false, cloud: "2 GB", plus: "10 GB", self: "Unlimited" },
     ],
   },
   {
