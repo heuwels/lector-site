@@ -346,6 +346,47 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "koine-greek",
+    name: "Koine Greek → English",
+    endonym: "Κοινή",
+    // No country flag for a historical language — the Classical building
+    // matches the app's language picker.
+    flag: "🏛️",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in polytonic Koine. Built for the Greek New Testament: frequency ranks come from the GNT itself (the ~300 most frequent lemmas cover most of the running text), cloze sentences are verse-aligned with their references kept, lookups forgive accent variance (τὸν finds τόν) and typed practice accepts unaccented answers. No synthesized audio on principle: Koine pronunciation is reconstructed and disputed, so the speaker stays silent rather than guessing.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "63,963 entries" },
+      { label: "English senses", value: "93,508" },
+      { label: "Inflections", value: "1,895,013" },
+      { label: "Cloze bank", value: "7,329 verse segments" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Ancient Greek Wiktionary entries extracted through Kaikki.org, supplemented with per-word lemma data from MorphGNT/SBLGNT for the Koine forms Classical-leaning tables miss.",
+        license: "CC BY-SA 4.0 / CC BY-SA 3.0",
+        url: "https://kaikki.org/dictionary/Ancient%20Greek/",
+      },
+      {
+        label: "Glosses and frequency",
+        detail:
+          "Dodson Greek-English lexicon glosses for New Testament vocabulary, ranked by lemma frequency over the Greek NT via MorphGNT.",
+        license: "CC0 / public domain",
+        url: "https://github.com/biblicalhumanities/Dodson-Greek-Lexicon",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Greek NT verses (SBLGNT) aligned to the World English Bible by verse reference — every practice sentence keeps its verse ref as provenance.",
+        license: "CC BY 4.0 / public domain",
+        url: "https://ebible.org/web/",
+      },
+    ],
+  },
+  {
     slug: "mandarin",
     name: "Mandarin → English",
     endonym: "中文",
@@ -388,18 +429,6 @@ export const languages: Language[] = [
     flag: "🇸🇦",
     status: "coming-soon",
     roadmapIssue: 253,
-    blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "koine-greek",
-    name: "Koine Greek → English",
-    endonym: "Κοινή",
-    flag: "🇬🇷",
-    status: "coming-soon",
-    roadmapIssue: 254,
     blurb: "On the roadmap — pending reader support for its script.",
     downloads: [],
     stats: [],
