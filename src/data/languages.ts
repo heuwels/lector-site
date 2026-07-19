@@ -314,24 +314,44 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "russian",
+    name: "Russian → English",
+    endonym: "Русский",
+    flag: "🇷🇺",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Russian: the first Cyrillic language pack. The on-device dictionary covers Russian's rich inflection (six cases, verb aspect pairs, suppletive forms like шёл → идти), understands the everyday е-for-ё spelling (теплое finds тёплый), and shows lexical stress in definitions.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "426,510 entries" },
+      { label: "English senses", value: "507,187" },
+      { label: "Inflections", value: "992,704" },
+      { label: "Cloze bank", value: "11,604 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Russian Wiktionary entries extracted through Kaikki.org, including form-of records for declensions, conjugations, and aspect pairs.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Russian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Russian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "mandarin",
     name: "Mandarin → English",
     endonym: "中文",
     flag: "🇨🇳",
     status: "coming-soon",
     roadmapIssue: 213,
-    blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "russian",
-    name: "Russian → English",
-    endonym: "Русский",
-    flag: "🇷🇺",
-    status: "coming-soon",
-    roadmapIssue: 212,
     blurb: "On the roadmap — pending reader support for its script.",
     downloads: [],
     stats: [],
