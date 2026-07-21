@@ -482,16 +482,4 @@ export const languages: Language[] = [
     stats: [],
     sources: [],
   },
-  {
-    slug: "esperanto",
-    name: "Esperanto → English",
-    endonym: "Esperanto",
-    flag: "🌍",
-    status: "coming-soon",
-    roadmapIssue: 307,
-    blurb: "On the roadmap — pending a language pack.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
 ];
