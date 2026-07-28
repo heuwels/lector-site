@@ -19,9 +19,16 @@ const moments = [
   {
     eyebrow: "Read",
     title: "Turn any book into a lesson.",
-    body: "Lector imports an EPUB file, an article you paste, or a page from a URL. It shows the text in clean Literata typography. It colours every word by how well you know it: new, learning, or known. For an instant translation on your device, click any word. For rare words, a large language model (LLM) does the translation.",
+    body: "Lector imports an EPUB file, an article you paste, or a page from a URL. It colours every word by how well you know it: new, learning, or known. For an instant translation on your device, click any word. For rare words, a large language model (LLM) does the translation.",
     img: "/images/reader.png",
     alt: "The Lector reader with a novel, colour-coded word states, and click-to-translate",
+  },
+  {
+    eyebrow: "Listen",
+    title: "Read along with video and audio.",
+    body: "Paste a YouTube URL and choose a caption track. Lector imports the transcript, and every line keeps its timestamp. Click a line to move the player to that moment. Lector never downloads or hosts the video. You can also upload a podcast episode. A Whisper model transcribes it, and the current sentence highlights as the audio plays.",
+    img: "/images/youtube-transcript-reader.png",
+    alt: "A YouTube transcript in Lector with the embedded player and timestamped lines",
   },
   {
     eyebrow: "Practice",
@@ -157,8 +164,8 @@ const faqs = [
         Read your way into a <span class="italic">new language</span>.
       </Heading>
       <Text size="lg" class="max-w-2xl text-pretty">
-        Lector turns the books and articles you want to read into a complete
-        course. Click any word to translate it. Mine vocabulary as you read.
+        Lector turns the books, articles, videos, and podcasts you choose into a
+        complete course. Click any word to translate it. Mine vocabulary as you read.
         Practise it with frequency-ordered cloze. Send it to Anki. Run Lector on
         your own hardware, or on Lector Cloud.
       </Text>
