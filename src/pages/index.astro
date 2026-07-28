@@ -19,35 +19,42 @@ const moments = [
   {
     eyebrow: "Read",
     title: "Turn any book into a lesson.",
-    body: "Import an EPUB, paste an article, or pull one from a URL. Lector renders it in clean Literata typography and colours every word by how well you know it — new, learning, known. Click any word for an instant on-device translation, and an LLM fills in for the rare ones.",
+    body: "Lector imports an EPUB file, an article you paste, or a page from a URL. It colours every word by how well you know it: new, learning, or known. For an instant translation on your device, click any word. For rare words, a large language model (LLM) does the translation.",
     img: "/images/reader.png",
-    alt: "Lector reader showing a novel with colour-coded word states and click-to-translate",
+    alt: "The Lector reader with a novel, colour-coded word states, and click-to-translate",
+  },
+  {
+    eyebrow: "Listen",
+    title: "Read along with video and audio.",
+    body: "Paste a YouTube URL and choose a caption track. Lector imports the transcript, and every line keeps its timestamp. Click a line to move the player to that moment. Lector never downloads or hosts the video. You can also upload a podcast episode. A Whisper model transcribes it, and the current sentence highlights as the audio plays.",
+    img: "/images/youtube-transcript-reader.png",
+    alt: "A YouTube transcript in Lector with the embedded player and timestamped lines",
   },
   {
     eyebrow: "Practice",
-    title: "Drill the words that matter first.",
-    body: "Thousands of Tatoeba sentence pairs, ordered by frequency so you learn the words you'll actually meet. Multiple-choice and typing modes, scheduled by a spaced-repetition system that brings each sentence back exactly when you're about to forget it.",
+    title: "Practise the words that matter first.",
+    body: "Lector holds thousands of Tatoeba sentence pairs. It orders them by frequency, so you learn the words you meet most often. You practise with multiple-choice questions or by typing the answer. A spaced-repetition system returns each sentence to you just before you forget it.",
     img: "/images/cloze.png",
     alt: "Cloze practice with multiple-choice options and mastery tracking",
   },
   {
     eyebrow: "Remember",
-    title: "Mine vocabulary. Close the loop with Anki.",
-    body: "Save words as you read and Lector builds your personal vocabulary database, tracking known and learning states. Push mined words and phrases into Anki as Basic or Cloze cards — and with the Lector add-on (beta), reviews sync back: grading a card in Anki updates the word's mastery in Lector.",
+    title: "Mine vocabulary. Sync it with Anki.",
+    body: "Save words as you read. Lector adds them to your vocabulary database and records the known and learning states. Send mined words and phrases to Anki as Basic or Cloze cards. The Lector add-on also syncs reviews back. The add-on is in beta. When you grade a card in Anki, Lector updates the mastery of that word.",
     img: "/images/anki.png",
-    alt: "Export-to-Anki dialog choosing Basic or Cloze card type",
+    alt: "The export-to-Anki dialog with the Basic and Cloze card types",
   },
   {
     eyebrow: "Understand",
-    title: "A tutor on call, and an editor for your writing.",
-    body: "Ask the built-in LLM tutor grammar questions in plain language. Keep a journal in your target language and get inline corrections with explanations and before/after comparisons. Works with the Claude API or a local model — your choice.",
+    title: "A tutor for your questions, and an editor for your writing.",
+    body: "Ask the built-in tutor your grammar questions in plain language. Keep a journal in your target language. The tutor gives you inline corrections with explanations. It also shows the text before and after each correction. The tutor works with the Claude API or with a local model.",
     img: "/images/chat.png",
-    alt: "LLM tutor chat showing a grammar conversation",
+    alt: "The tutor chat with a grammar conversation",
   },
   {
     eyebrow: "Organise",
     title: "A library that stays tidy.",
-    body: "Group your collections however you think about them, drag to reorder, and drop new books straight into a group. Reading progress follows each collection so you always know where you left off.",
+    body: "Group your collections in the way you think about them. Drag a collection to reorder it. Drop new books straight into a group. Lector records the reading progress of each collection, so you always know your position.",
     img: "/images/library-groups.png",
     alt: "Library organised into collapsible groups with drag-to-reorder and reading progress",
   },
@@ -57,27 +64,27 @@ const moments = [
 const extras = [
   [
     "Text-to-speech",
-    "Optional Google Cloud TTS to hear words and sentences pronounced correctly.",
+    "Lector can use Google Cloud to pronounce words and sentences correctly. This feature is optional.",
   ],
   [
-    "Web & paste import",
-    "Pull an article from any URL via Readability, or paste text directly.",
+    "Web and paste import",
+    "Lector reads an article from any URL with Readability. You can also paste text directly.",
   ],
   [
     "Offline-first storage",
-    "SQLite server-side, IndexedDB client-side. No cloud accounts, no sync.",
+    "Lector stores data in SQLite on the server and in IndexedDB in the browser. It needs no cloud account and no sync.",
   ],
   [
     "Statistics dashboard",
-    "CEFR fluency, vocabulary growth, reading streaks, activity heatmaps, cloze mastery.",
+    "The dashboard shows your vocabulary growth, your reading streaks, your activity heatmaps, and your cloze mastery. It also rates your fluency on the Common European Framework of Reference (CEFR) scale.",
   ],
   [
-    "AI translation with a fallback",
-    "Claude or a local LLM on demand, dropping to a 2,000-word offline dictionary.",
+    "AI translation, with an offline backup",
+    "When you need a translation, Lector calls Claude or a local LLM. If neither is available, it uses a 2,000-word offline dictionary.",
   ],
   [
-    "Any language reads",
-    "The reader works with any language; packs add cloze banks and dictionaries.",
+    "Any language",
+    "The reader works with any language. A language pack adds a cloze bank and a dictionary.",
   ],
 ];
 
@@ -111,66 +118,66 @@ const faqs = [
   {
     question: "Is it really free?",
     answer:
-      "Lector is free and open-source for those who want to self-host. Deploy it on your own machine with optional auth and use it with no subscription or feature gates (your only optional cost is your own LLM API usage if you don't run a local model). Prefer not to run a server? Lector Cloud starts at $5/mo and we host it for you. For comparison, LingQ runs about $15/mo and Clozemaster Pro about $13/mo.",
+      "If you host it yourself, Lector is free and open-source. Deploy it on your own machine, with optional authentication. There is no subscription and there are no feature gates. If you do not run a local model, your only cost is your own use of an LLM API. If you prefer not to run a server, Lector Cloud starts at $5/mo and we host it for you. For comparison, LingQ costs about $15/mo and Clozemaster Pro about $13/mo.",
   },
   {
-    question: "Self-host or cloud — which should I choose?",
+    question: "Self-host or Lector Cloud. Which is right for me?",
     answer:
-      "If you're comfortable running a Docker container, self-host: it's free, your data never leaves your hardware, and you bring your own LLM keys. If you'd rather just read and let someone else handle servers, backups, and updates, Lector Cloud does exactly that from $5/mo. You can move between them — export any time, no lock-in.",
+      "If you can run a Docker container, host Lector yourself. It costs nothing, your data never leaves your hardware, and you bring your own LLM keys. If you prefer to read and let someone else handle the servers, Lector Cloud does that from $5/mo. We also handle the backups and the updates. You can move between the two at any time. Export your data whenever you want to, because you always own it.",
   },
   {
     question: "Where does my data live?",
     answer:
-      "It depends how you run it. Self-hosted, everything lives on your hardware inside a Docker volume, with no third-party databases, analytics, or telemetry (though you may opt-in to send a ping so we can track how many self-host installs are active), and backups are one file copy. On Lector Cloud, we host it for you in AWS (us-east-1); you can export your data any time, with no lock-in.",
+      "The answer depends on how you run Lector. If you host it yourself, all your data stays on your hardware in a Docker volume, and a backup is one file copy. There are no third-party databases, no analytics, and no telemetry. To let us count the active self-hosted installations, you may opt in and send us a signal. On Lector Cloud, we host your data in AWS (us-east-1). You can export it at any time, and you always own it.",
   },
   {
     question: "Do I need an API key or a GPU?",
     answer:
-      "No. The reader, cloze practice, and vocabulary tracking all work offline against a built-in dictionary. AI translation, the tutor, and writing correction are the only features that call out — and you can point those at a local model (Ollama, Llama, Gemma) or any OpenAI-compatible API.",
+      "No. The reader, the cloze practice, and the vocabulary tracking all work offline against a built-in dictionary. Only three features use the network: AI translation, the tutor, and writing correction. You can point those three at a local model or at any OpenAI-compatible API. Ollama, Llama, and Gemma all work.",
   },
   {
-    question: "Which languages are supported?",
-    answer: `The reader works with any language. Language packs — which add frequency-banded cloze banks and on-device dictionaries — currently cover ${completeLanguages
+    question: "Which languages does Lector support?",
+    answer: `The reader works with any language. A language pack adds a frequency-ordered cloze bank and an on-device dictionary. The packs now cover ${completeLanguages
       .map((l) => l.endonym)
       .join(
         ", ",
-      )}, with more on the way. Adding a pair is a straightforward pull request.`,
+      )}. We add more packs over time. To add a new pair, send a simple pull request.`,
   },
   {
     question: "How is this different from LingQ, Clozemaster, or Anki?",
     answer:
-      "It packages the LingQ and Clozemaster offering, but enables a single-point of tracking your known words, rather than having them spread across different services. Lector will keep track of your known words, but you get to continue owning your vocab in Anki. Lector features LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, and two-way Anki sync — plus an LLM tutor and a writing journal. One app, your server, your data. See the full breakdowns: <a href='/vs/lingq/'>Lector vs LingQ</a> and <a href='/vs/clozemaster/'>Lector vs Clozemaster</a>.",
+      "Lector does the work of both LingQ and Clozemaster in one place. It keeps all your known words in one vocabulary database, and not spread across separate services. You still own your cards in Anki. Lector gives you LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, two-way Anki sync, an LLM tutor, and a writing journal. You run one app on your own server, and you own your data. See the full comparisons: <a href='/vs/lingq/'>Lector vs LingQ</a> and <a href='/vs/clozemaster/'>Lector vs Clozemaster</a>.",
   },
 ];
 ---
 
 <Base
-  title="Lector | self-hosted language learning reader"
-  description="A self-hosted language learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Your books, your data."
+  title="Lector | a self-hosted reader for language learners"
+  description="A self-hosted reader for language learners, with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. You keep your books and your data."
   schema={[softwareApplicationSchema(), faqPageSchema(faqs)]}
 >
   <!-- Hero -->
   <section class="pt-14 pb-20 sm:pt-20">
     <Container class="flex flex-col items-center gap-6 text-center">
-      <Eyebrow>Open source &middot; self-host or cloud</Eyebrow>
+      <Eyebrow>Open source &middot; self-host or Lector Cloud</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
         Read your way into a <span class="italic">new language</span>.
       </Heading>
       <Text size="lg" class="max-w-2xl text-pretty">
-        Lector turns the books and articles you actually want to read into a
-        complete course. Click any word to translate, mine vocabulary as you go,
-        drill it with frequency-ordered cloze, and push it to Anki — on our
-        cloud, or your own hardware.
+        Lector turns the books, articles, videos, and podcasts you choose into a
+        complete course. Click any word to translate it. Mine vocabulary as you read.
+        Practise it with frequency-ordered cloze. Send it to Anki. Run Lector on
+        your own hardware, or on Lector Cloud.
       </Text>
       <div class="mt-2 flex flex-col items-center gap-3">
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={SIGNUP_URL} size="lg">Start on the cloud</Button>
+          <Button href={SIGNUP_URL} size="lg">Start on Lector Cloud</Button>
           <Button href="/docs/installation/" variant="soft" size="lg">
             Self-host, free
           </Button>
         </div>
         <p class="text-xs/6 text-olive-500">
-          Cloud is in beta &middot; self-hosting is free forever
+          Lector Cloud is in beta &middot; you host it yourself for free, forever
         </p>
       </div>
     </Container>
@@ -225,7 +232,7 @@ const faqs = [
   <section class="py-16">
     <Container class="flex flex-col gap-10">
       <div class="flex max-w-2xl flex-col gap-4">
-        <Eyebrow>In the box</Eyebrow>
+        <Eyebrow>Also included</Eyebrow>
         <Subheading>Everything else, without the sprawl.</Subheading>
       </div>
       <div
@@ -252,8 +259,8 @@ const faqs = [
         <Eyebrow>Language packs</Eyebrow>
         <Subheading>Languages, ready to read.</Subheading>
         <Text class="text-pretty">
-          Each pack ships a frequency-banded cloze bank and an on-device
-          dictionary, at the same depth.
+          Each language pack contains a frequency-ordered cloze bank and an
+          on-device dictionary. Every pack has the same depth.
         </Text>
       </div>
 
@@ -338,10 +345,10 @@ const faqs = [
       >
         <div class="flex flex-col gap-1">
           <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
-            Adding a new language is relatively simple
+            A new language is simple to add
           </p>
           <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-            Check out the Github repo to contribute
+            Open the GitHub repository to contribute
           </p>
         </div>
         <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">
@@ -358,8 +365,8 @@ const faqs = [
         <Eyebrow>Two ways to run it</Eyebrow>
         <Subheading>Open source. Your way.</Subheading>
         <Text class="text-pretty">
-          The same app, whichever way you run it. Host it yourself for free, or
-          let us run it for you.
+          You get the same app in both cases. Host it yourself for free, or let
+          us run it for you.
         </Text>
       </div>
       <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
@@ -378,8 +385,8 @@ const faqs = [
           </div>
           <Text class="flex-1 text-pretty">
             Run the Docker image on your own hardware. Your data never leaves
-            your server, you bring your own LLM keys (or run a local model), and
-            it's free forever.
+            your server. You bring your own LLM keys, or you run a local model.
+            Lector is free forever.
           </Text>
           <ActionLink href="/docs/installation/">Read the setup docs</ActionLink
           >
@@ -397,15 +404,15 @@ const faqs = [
             </span>
           </div>
           <p class="flex-1 text-pretty text-base/7 text-olive-200">
-            We host it, back it up, and keep it updated. No Docker, no setup —
-            just sign in and start reading. For when you'd rather not run a
-            server.
+            We host it, back it up, and keep it updated. You need no Docker and
+            no setup. Just sign in and start to read. If you prefer not to run a
+            server, choose Lector Cloud.
           </p>
           <a
             href={SIGNUP_URL}
             class="group inline-flex items-center gap-2 text-sm/7 font-medium text-white"
           >
-            Start on the cloud
+            Start on Lector Cloud
             <svg
               viewBox="0 0 16 16"
               fill="none"
@@ -430,7 +437,7 @@ const faqs = [
       <div class="flex max-w-2xl flex-col gap-4">
         <Eyebrow>Why self-host</Eyebrow>
         <Subheading
-          >Your course shouldn't rent your progress back to you.</Subheading
+          >Your course should not rent your progress back to you.</Subheading
         >
       </div>
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -438,11 +445,11 @@ const faqs = [
           [
             [
               "Your data, your server",
-              "Reading history, vocabulary, and progress live in a SQLite file on your hardware. No third parties, no telemetry.",
+              "Reading history, vocabulary, and progress live in a SQLite file on your hardware. There are no third parties and no telemetry.",
             ],
             [
               "No subscriptions",
-              "Deploy once, learn forever. No monthly fees, no premium tiers, no feature gates.",
+              "Deploy Lector once. Then learn forever. There are no monthly fees, no premium tiers, and no feature gates.",
             ],
             [
               "Works offline",
@@ -450,7 +457,7 @@ const faqs = [
             ],
             [
               "Simple backup",
-              "One SQLite file, one Docker volume. rsync it, borg it, or copy it to a USB drive.",
+              "Your data is one SQLite file in one Docker volume. Copy it with rsync or borg, or copy it to a USB drive.",
             ],
           ].map(([title, body]) => (
             <div class="flex flex-col gap-2 rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5">
@@ -470,19 +477,19 @@ const faqs = [
     <Container class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
       <div class="flex flex-col gap-6">
         <Eyebrow>Get started</Eyebrow>
-        <Subheading>Running in about a minute.</Subheading>
+        <Subheading>Ready in about a minute.</Subheading>
         <Text class="text-pretty">
-          One Docker container, one volume. Drop this into a
+          Lector needs one Docker container and one volume. Copy this into a
           <code
             class="rounded bg-olive-950/10 px-1.5 py-0.5 font-mono text-[0.85em] dark:bg-white/10"
             >docker-compose.yml</code
           >
-          and bring it up.
+          file. Then start the container.
         </Text>
         <div class="flex flex-wrap gap-3">
           <Button href="/docs/installation/" size="lg">Read the docs</Button>
           <ActionLink href="/docs/configuration/"
-            >Configuration &amp; env vars</ActionLink
+            >Configuration and environment variables</ActionLink
           >
         </div>
       </div>
@@ -542,11 +549,11 @@ docker compose up -d</code></pre>
         <Subheading class="max-w-2xl">Learn alongside other readers.</Subheading
         >
         <Text class="max-w-xl text-pretty">
-          Join our Discord to swap resources, compare progress, request new
-          languages, and help shape where Lector goes next.
+          Join our Discord server. There you can share resources, compare
+          progress, ask for new languages, and tell us what to build next.
         </Text>
         <Button href={DISCORD} variant="soft" target="_blank" rel="noopener">
-          Join the Discord
+          Join the Discord server
         </Button>
       </div>
     </Container>
@@ -562,14 +569,15 @@ docker compose up -d</code></pre>
           color="light"
           class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
         >
-          Start reading in your <span class="italic">target language</span> today.
+          Start to read in your <span class="italic">target language</span> today.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
-          Open source to self-host for free, or on our cloud in a click.
+          Host the open-source app yourself for free, or sign in to Lector Cloud
+          and start.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
           <Button href={SIGNUP_URL} size="lg" color="light"
-            >Start on the cloud</Button
+            >Start on Lector Cloud</Button
           >
           <Button
             href="/docs/installation/"
