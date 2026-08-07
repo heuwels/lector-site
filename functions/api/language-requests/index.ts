@@ -133,7 +133,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
     if ((existing?.n ?? 0) >= MAX_LANGUAGES_PER_EMAIL) {
       return json(
-        { error: "That address already follows enough languages." },
+        { error: "That address is on the list for too many languages." },
         429,
       );
     }

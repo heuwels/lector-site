@@ -22,7 +22,7 @@ const {
   id = "notify",
   options,
   heading = "Which language do you want next?",
-  blurb = "Choose a language and we email you once, on the day it is ready. No newsletter.",
+  blurb = "Choose a language and we will email you once, on the day it is ready. No newsletter.",
   class: className,
 } = Astro.props;
 
@@ -47,7 +47,7 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
         {blurb}
       </p>
       <p class="max-w-lg text-sm/6 text-olive-600 dark:text-olive-500">
-        Your build order comes from this list. Do you want to discuss it? Join
+        Your build order comes from this list. Want to talk it over? Join
         the <a
           href={DISCORD}
           target="_blank"
@@ -56,6 +56,7 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
           >Discord</a
         >.
       </p>
+      <slot />
     </div>
 
     <form class="flex flex-col gap-4" data-notify-form novalidate>
@@ -260,12 +261,17 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
             ? otherInput.value.trim()
             : (select.options[select.selectedIndex]?.text ?? "that language");
         const tail = data.count
-          ? ` ${data.count.toLocaleString()} people wait for it.`
+          ? ` ${data.count.toLocaleString()} ${
+              data.count === 1 ? "person wants" : "people want"
+            } it too.`
           : "";
         form.reset();
         syncOther();
         window.turnstile?.reset();
-        say(`Thank you. We email you when ${chosen} is ready.${tail}`, false);
+        say(
+          `Thank you. We will email you when ${chosen} is ready.${tail}`,
+          false,
+        );
         window.plausible?.("Language interest", {
           props: { language: chosen },
         });
