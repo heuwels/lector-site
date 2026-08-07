@@ -19,7 +19,7 @@
 
 - [Documentation](https://lector.dev/docs/): Installation, configuration, self-hosting, and features.
 - [Installation](https://lector.dev/docs/installation/): Run Lector with Docker Compose in about a minute.
-- [Reading & practice](https://lector.dev/docs/features/): The reader, click-to-translate, word states, cloze SRS, AI providers, and AnkiConnect.
+- [Reading & practice](https://lector.dev/docs/features/): The reader, click-to-translate, word states, cloze SRS, AI providers, AnkiConnect, and the Lector Sync add-on for Anki (AnkiWeb code 1098736891).
 - [Supported languages](https://lector.dev/docs/languages/): Language packs and how the frequency data is built.
 
 ## Reference data (free, open)
