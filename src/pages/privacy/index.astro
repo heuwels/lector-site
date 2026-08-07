@@ -2,6 +2,38 @@
 import Base from "../../layouts/Base.astro";
 
 const SUPPORT = "support@lector.dev";
+
+// Revision history for this policy. Add a new entry at the TOP whenever the
+// policy changes what we collect, why we collect it, or who receives it. The
+// header and the "What changed" section both read from this list, so the
+// version number and the date stay correct on their own.
+interface Revision {
+  version: number;
+  date: string; // Human-readable, e.g. "8 August 2026".
+  isoDate: string; // For the <time datetime> attribute.
+  changes: string[];
+}
+
+const revisions: Revision[] = [
+  {
+    version: 2,
+    date: "8 August 2026",
+    isoDate: "2026-08-08",
+    changes: [
+      "Added a section about the language interest list. The site now asks for your email address on the reference data page and on the roadmap.",
+      "Corrected the summary. It said that this website collects no personal data. The language interest list made that statement wrong.",
+      "Named Cloudflare Turnstile as the bot check on that form.",
+    ],
+  },
+  {
+    version: 1,
+    date: "8 July 2026",
+    isoDate: "2026-07-08",
+    changes: ["The first published policy."],
+  },
+];
+
+const current = revisions[0];
 ---
 
 <Base
@@ -12,7 +44,11 @@ const SUPPORT = "support@lector.dev";
     <div class="container">
       <p class="breadcrumb"><a href="/">lector</a> / privacy</p>
       <h1>Privacy Policy</h1>
-      <p class="post-meta">Last updated 8 July 2026</p>
+      <p class="post-meta">
+        Version {current.version} · Last updated <time datetime={current.isoDate}
+          >{current.date}</time
+        > · <a href="#what-changed">What changed</a>
+      </p>
     </div>
   </header>
 
@@ -20,17 +56,19 @@ const SUPPORT = "support@lector.dev";
     <div class="docs-body">
       <p>
         Lector is built privacy-first. The self-hosted app keeps everything on
-        your own hardware, and this website collects no personal data. Here's the
-        full picture.
+        your own hardware, and this website asks for your email address in only
+        one place. Here's the full picture.
       </p>
 
       <div class="callout">
         <p>
           <strong>Short version.</strong> Self-host and we see nothing — your
           reading, vocabulary, and progress never leave your server. This site
-          uses cookieless, privacy-friendly analytics. The cloud service (coming
-          soon) will store only what's needed to run your account, with payments
-          handled by Paddle.
+          uses cookieless, privacy-friendly analytics. The one form that asks
+          for your email address is the language interest list, and that address
+          receives one announcement. The cloud service (coming soon) will store
+          only what's needed to run your account, with payments handled by
+          Paddle.
         </p>
       </div>
 
@@ -51,6 +89,28 @@ const SUPPORT = "support@lector.dev";
         views, referrers, rough country). It sets <strong>no cookies</strong>,
         collects <strong>no personal data</strong>, and doesn't track you across
         sites. We don't run advertising or third-party trackers.
+      </p>
+
+      <h2>The language interest list</h2>
+      <p>
+        The <a href="/reference-data/">reference data</a> page and the
+        <a href="/roadmap/">roadmap</a> carry one form. It asks which language
+        you want and where to reach you. We store your email address, the
+        language, your optional note, your country code, and the user agent
+        string from your browser. We do not store your IP address.
+      </p>
+      <p>
+        That address has one purpose. We email you one time, on the day the
+        language you asked for is ready. It is not a newsletter, and we never
+        sell it or pass it to another company. Counts of people per language
+        appear in public on those pages. Individual addresses never do.
+      </p>
+      <p>
+        To come off the list, email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>
+        and we remove you. The form uses
+        <a href="https://www.cloudflare.com/products/turnstile/" target="_blank" rel="noopener noreferrer">Cloudflare Turnstile</a>
+        to block bots. Turnstile sets no cookies that track you, and it does
+        not profile you across sites.
       </p>
 
       <h2>The cloud service</h2>
@@ -95,6 +155,28 @@ const SUPPORT = "support@lector.dev";
         <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>. Lector is operated by Luke
         Boyle.
       </p>
+
+      <h2 id="what-changed">What changed</h2>
+      <p>
+        Every version of this policy appears below, with the newest at the top.
+        We update this page when the policy changes. We do not email you about
+        a change, because we keep no general mailing list.
+      </p>
+      {
+        revisions.map((revision) => (
+          <>
+            <h3>
+              Version {revision.version} —{" "}
+              <time datetime={revision.isoDate}>{revision.date}</time>
+            </h3>
+            <ul>
+              {revision.changes.map((change) => (
+                <li>{change}</li>
+              ))}
+            </ul>
+          </>
+        ))
+      }
     </div>
   </div>
 </Base>
