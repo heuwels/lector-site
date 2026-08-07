@@ -67,7 +67,7 @@ const LECTOR = {
   data: "Your server (one SQLite file)",
   offline: "Reader, cloze & vocab work offline",
   open: "Open source (AGPL-3.0)",
-  languages: "6 packs; reader works with any language",
+  languages: `${completeLanguageCount} packs; reader works with any language`,
   audio: "Text-to-speech (Google, optional)",
 };
 

@@ -346,6 +346,70 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "turkish",
+    name: "Turkish → English",
+    endonym: "Türkçe",
+    flag: "🇹🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Turkish. Agglutination is the whole problem here: a single word stacks plural, possessive and case endings (evlerimizden, “from our houses”), and the on-device dictionary unstacks them back to the lemma. Lookups also handle the dotted and dotless i correctly, so a sentence-initial İyi finds iyi and ILIK (“lukewarm”) never collapses onto İLİK (“marrow”).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "40,714 entries" },
+      { label: "English senses", value: "60,257" },
+      { label: "Inflections", value: "2,281,087" },
+      { label: "Cloze bank", value: "11,765 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Turkish Wiktionary entries extracted through Kaikki.org, including the very large paradigm tables that make agglutinated forms resolvable.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Turkish/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Turkish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "ukrainian",
+    name: "Ukrainian → English",
+    endonym: "Українська",
+    flag: "🇺🇦",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Ukrainian, as its own language rather than an approximation of Russian. Ukrainian spelling treats the apostrophe as a letter (п'ять, м'ясо, з'їзд), so the reader keeps those words whole and tappable instead of splitting them in half, and a lookup finds the entry whichever apostrophe your source typed. The alphabet includes ґ, є, і and ї, and definitions are Ukrainian ones — так is “yes” here, not the Russian “like that”.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "54,563 entries" },
+      { label: "English senses", value: "83,546" },
+      { label: "Inflections", value: "346,122" },
+      { label: "Cloze bank", value: "9,663 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Ukrainian Wiktionary entries extracted through Kaikki.org, including form-of records for the seven cases, verb conjugations and aspect pairs. Headword stress marks are stripped so unstressed running text still matches.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Ukrainian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Ukrainian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "koine-greek",
     name: "Koine Greek → English",
     endonym: "Κοινή",
