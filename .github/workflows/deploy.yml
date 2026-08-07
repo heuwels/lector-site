@@ -42,11 +42,16 @@ jobs:
           # sandbox token in Actions avoids hard-coding environment config.
           PADDLE_SANDBOX_CLIENT_TOKEN: ${{ secrets.PADDLE_SANDBOX_CLIENT_TOKEN }}
 
+      # `functions/` must travel with `dist/`. Pages compiles the Functions from
+      # `./functions` at the repo root at deploy time, so an artifact that only
+      # carries `dist` deploys the site with no /api/* routes at all.
       - name: Upload immutable site artifact
         uses: actions/upload-artifact@v4
         with:
           name: lector-site-${{ github.event.workflow_run.head_sha }}
-          path: dist
+          path: |
+            dist
+            functions
           if-no-files-found: error
           retention-days: 7
 
@@ -57,10 +62,12 @@ jobs:
       name: staging
       url: https://site.sandbox.lector.dev
     steps:
+      # Extract at the workspace root, so the artifact restores both `dist/`
+      # and its sibling `functions/`.
       - uses: actions/download-artifact@v4
         with:
           name: lector-site-${{ github.event.workflow_run.head_sha }}
-          path: dist
+          path: .
 
       - name: Ensure isolated staging Pages project exists
         env:
@@ -105,6 +112,20 @@ jobs:
           done
           exit 1
 
+      # Proves the Pages Functions deployed and reached D1. A static-only
+      # deployment answers this path with the 404 page, not JSON.
+      - name: Verify staging API surface
+        run: |
+          url=https://lector-site-staging.pages.dev/api/language-requests/counts
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error "$url" | grep -q '"counts"'; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "The language-requests API did not answer on staging." >&2
+          exit 1
+
   deploy-production:
     needs: deploy-staging
     runs-on: ubuntu-latest
@@ -112,10 +133,12 @@ jobs:
       name: production
       url: https://lector.dev
     steps:
+      # Extract at the workspace root, so the artifact restores both `dist/`
+      # and its sibling `functions/`.
       - uses: actions/download-artifact@v4
         with:
           name: lector-site-${{ github.event.workflow_run.head_sha }}
-          path: dist
+          path: .
 
       - name: Promote staging-tested artifact to production
         uses: cloudflare/wrangler-action@v3

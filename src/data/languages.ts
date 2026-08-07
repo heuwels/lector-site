@@ -42,8 +42,13 @@ export interface Language {
   endonym: string;
   flag: string;
   status: "complete" | "partial" | "coming-soon";
-  // For "coming-soon" entries: the lector GitHub issue tracking the pack, e.g.
-  // 213 → github.com/heuwels/lector/issues/213. Drives the "Bump the issue" links.
+  // For "coming-soon" entries: the lector GitHub issue that tracks the pack,
+  // e.g. 213 → github.com/heuwels/lector/issues/213. Only /docs/languages/
+  // links to it, because that page has a technical audience.
+  //
+  // The marketing pages do not. A learner who wants a language uses the form
+  // in components/LanguageNotify.astro, on the home page, /reference-data/
+  // and /roadmap/. Do not send a learner to an issue tracker.
   roadmapIssue?: number;
   blurb: string;
   downloads: Download[];

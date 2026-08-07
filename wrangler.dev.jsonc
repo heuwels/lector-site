@@ -1,0 +1,30 @@
+// Local-development-only Wrangler config.
+//
+// This file is NOT auto-discovered. Wrangler only auto-loads `wrangler.json`,
+// `wrangler.jsonc` or `wrangler.toml`, so CI is unaffected. Pass it explicitly:
+//
+//   wrangler d1 execute DB --local --config wrangler.dev.jsonc --file schema.sql
+//
+// Why no root `wrangler.jsonc`: a Pages config file (one with
+// `pages_build_output_dir`) makes `wrangler pages deploy dist
+// --project-name=X` an error. CI deploys the same build to two projects
+// (`lector-site-staging` and `lector-site`) with that flag, so the D1 binding
+// lives on each Pages project instead. See README "Language interest list".
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lector-site-dev",
+  "compatibility_date": "2026-07-01",
+  // `database_id` is the literal string "DB" on purpose. `wrangler pages dev
+  // --d1 DB` keys its local database on the binding name, so this value must
+  // match for `pnpm db:local` to seed the same local file that `pnpm dev:api`
+  // reads. Commands against the real database name the database directly and
+  // do not use this file:
+  //   wrangler d1 execute lector-language-requests --remote ...
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lector-language-requests",
+      "database_id": "DB"
+    }
+  ]
+}

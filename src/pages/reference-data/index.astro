@@ -2,10 +2,18 @@
 import Base from "../../layouts/Base.astro";
 import Container from "../../components/Container.astro";
 import PageHeader from "../../components/PageHeader.astro";
+import LanguageNotify from "../../components/LanguageNotify.astro";
 import { languages } from "../../data/languages";
 
 const available = languages.filter((l) => l.status !== "coming-soon");
 const comingSoon = languages.filter((l) => l.status === "coming-soon");
+
+// The form offers every language that is not ready yet. `endonym` is a clearer
+// label than `name` here, because `name` carries the "→ English" direction.
+const notifyOptions = comingSoon.map((lang) => ({
+  slug: lang.slug,
+  name: `${lang.endonym} (${lang.name.replace(" → English", "")})`,
+}));
 ---
 
 <Base
@@ -86,23 +94,33 @@ const comingSoon = languages.filter((l) => l.status === "coming-soon");
               <p class="text-sm/7 text-olive-600 dark:text-olive-500">
                 {lang.blurb}
               </p>
-              <span class="mt-auto pt-1 text-sm/7 font-medium text-olive-500">
-                Coming soon
-              </span>
+              <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-1">
+                <button
+                  type="button"
+                  class="text-sm/7 font-medium text-olive-950 underline underline-offset-4 hover:text-sage-700 dark:text-white dark:hover:text-sage-300"
+                  data-notify-language={lang.slug}
+                >
+                  Notify me
+                </button>
+                {/* Filled by LanguageNotify only above the public threshold. */}
+                <span
+                  class="text-sm/7 text-olive-500"
+                  data-language-count={lang.slug}
+                  hidden
+                ></span>
+              </div>
             </div>
           ))
         }
       </div>
 
       <p class="max-w-2xl text-sm/7 text-olive-600 dark:text-olive-500">
-        Want your language? The reader works with any language — packs add the
-        sentence banks and dictionaries.
-        <a
-          href="https://github.com/heuwels/lector"
-          class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
-          >Open a PR</a
-        >.
+        The reader works with any language. A pack adds the sentence banks and
+        the dictionaries. Ask for the language you want. We build the packs
+        that the most people ask for.
       </p>
+
+      <LanguageNotify options={notifyOptions} />
     </Container>
   </section>
 </Base>

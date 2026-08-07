@@ -9,6 +9,7 @@ import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
 import { languages } from "../data/languages";
+import LanguageNotify from "../components/LanguageNotify.astro";
 import { languageGuides } from "../data/languageGuides";
 import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
 import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
@@ -103,16 +104,16 @@ const completeLanguages = languages
     };
   });
 
-const appIssue = (issue: number) =>
-  `https://github.com/heuwels/lector/issues/${issue}`;
+const roadmapLanguages = languages.filter(
+  (language) => language.status === "coming-soon",
+);
 
-const roadmapLanguages = languages
-  .filter((language) => language.status === "coming-soon")
-  .map((language) => ({
-    ...language,
-    href: language.roadmapIssue ? appIssue(language.roadmapIssue) : "#",
-    action: "Bump the issue",
-  }));
+// Options for the interest form under the roadmap grid. `endonym` leads,
+// because `name` carries the "→ English" direction that the label does not need.
+const notifyOptions = roadmapLanguages.map((language) => ({
+  slug: language.slug,
+  name: `${language.endonym} (${language.name.replace(" → English", "")})`,
+}));
 
 const faqs = [
   {
@@ -304,13 +305,8 @@ const faqs = [
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {
           roadmapLanguages.map((lang) => (
-            <a
-              href={lang.href}
-              rel="noreferrer noopener"
-              target="_blank"
-              class="group flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 transition-colors hover:bg-olive-950/5 dark:bg-white/5 dark:hover:bg-white/10"
-            >
-              <span class="text-3xl">{lang.flag}</span>
+            <div class="flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <span class="text-3xl opacity-60">{lang.flag}</span>
               <div class="flex flex-col gap-1">
                 <h3 class="font-display text-2xl/7 text-olive-950 dark:text-white">
                   {lang.name}
@@ -319,42 +315,38 @@ const faqs = [
                   {lang.endonym}
                 </p>
               </div>
-              <span class="mt-auto inline-flex items-center gap-1 text-sm/7 font-medium text-olive-950 group-hover:text-sage-700 dark:text-white dark:group-hover:text-sage-300">
-                {lang.action}
-                <svg
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  class="size-4 transition-transform group-hover:translate-x-0.5"
+              <div class="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1">
+                <button
+                  type="button"
+                  class="text-sm/7 font-medium text-olive-950 underline underline-offset-4 hover:text-sage-700 dark:text-white dark:hover:text-sage-300"
+                  data-notify-language={lang.slug}
                 >
-                  <path
-                    d="M6.5 3.5 11 8l-4.5 4.5"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
+                  Notify me
+                </button>
+                {/* Filled by LanguageNotify only above the public threshold. */}
+                <span
+                  class="text-sm/7 text-olive-600 dark:text-olive-400"
+                  data-language-count={lang.slug}
+                  hidden
+                />
+              </div>
+            </div>
           ))
         }
       </div>
 
-      <div
-        class="flex flex-col gap-3 rounded-xl border border-olive-950/10 p-6 sm:flex-row sm:items-center sm:justify-between dark:border-white/10"
-      >
-        <div class="flex flex-col gap-1">
-          <p class="text-base/7 font-semibold text-olive-950 dark:text-white">
-            A new language is simple to add
-          </p>
-          <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-            Open the GitHub repository to contribute
-          </p>
-        </div>
-        <Button href={GITHUB} variant="soft" target="_blank" rel="noopener">
-          Add your language
-        </Button>
-      </div>
+      <LanguageNotify options={notifyOptions}>
+        <p class="max-w-lg text-sm/6 text-olive-600 dark:text-olive-500">
+          A new language is simple to add. To build a pack yourself, open the
+          <a
+            href={GITHUB}
+            target="_blank"
+            rel="noopener"
+            class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+            >GitHub repository</a
+          >.
+        </p>
+      </LanguageNotify>
     </Container>
   </section>
 

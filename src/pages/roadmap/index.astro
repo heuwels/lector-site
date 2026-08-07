@@ -7,7 +7,17 @@ import Subheading from "../../components/Subheading.astro";
 import Text from "../../components/Text.astro";
 import Button from "../../components/Button.astro";
 import ActionLink from "../../components/ActionLink.astro";
+import LanguageNotify from "../../components/LanguageNotify.astro";
 import { DISCORD } from "../../data/links";
+import { languages } from "../../data/languages";
+
+// Languages that are not ready yet, offered in the interest form below.
+const notifyOptions = languages
+  .filter((lang) => lang.status === "coming-soon")
+  .map((lang) => ({
+    slug: lang.slug,
+    name: `${lang.endonym} (${lang.name.replace(" → English", "")})`,
+  }));
 
 const appIssue = (issue: number) => `https://github.com/heuwels/lector/issues/${issue}`;
 const siteIssue = "https://github.com/heuwels/lector-site/issues/23";
@@ -256,6 +266,17 @@ const currentlyAvailable = [
           </Button>
         </div>
       </div>
+    </Container>
+  </section>
+
+  <section class="py-12 sm:py-16">
+    <Container>
+      <LanguageNotify
+        id="languages"
+        options={notifyOptions}
+        heading="Which language do you want next?"
+        blurb="Language packs ship one at a time. Choose a language and we will email you once, on the day it is ready."
+      />
     </Container>
   </section>
 
