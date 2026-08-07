@@ -241,6 +241,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "polish",
+    name: "Polish → English",
+    endonym: "Polski",
+    flag: "🇵🇱",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Polish. The on-device dictionary covers seven cases across three genders, verb aspect pairs, and the consonant alternations that defeat naive stemming: noga becomes nodze, miasto becomes mieście, pies becomes psowi. Definitions also carry IPA, so tapping a word shows how to say it as well as what it means.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "169,953 entries" },
+      { label: "English senses", value: "270,331" },
+      { label: "Inflections", value: "1,137,470" },
+      { label: "Cloze bank", value: "10,518 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Polish Wiktionary entries extracted through Kaikki.org, including form-of records for the seven cases, conjugations and aspect pairs, plus IPA transcriptions on the headwords.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Polish/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Polish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "portuguese",
     name: "Portuguese → English",
     endonym: "Português",
