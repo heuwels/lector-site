@@ -278,6 +278,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "czech",
+    name: "Czech → English",
+    endonym: "Čeština",
+    flag: "🇨🇿",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Czech. Vowel length carries meaning here, so byt (“a flat”) and být (“to be”) stay two separate words instead of collapsing onto one key. The on-device dictionary covers seven cases, verb aspect pairs, and the stem changes that defeat naive stemming: kůň becomes koňmi, pes becomes psovi, město becomes městě. Definitions also carry IPA, so tapping a word shows how to say it as well as what it means.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "68,249 entries" },
+      { label: "English senses", value: "88,200" },
+      { label: "Inflections", value: "439,882" },
+      { label: "Cloze bank", value: "9,312 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Czech Wiktionary entries extracted through Kaikki.org, including form-of records for the seven cases, conjugations and aspect pairs, plus IPA transcriptions on the headwords.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Czech/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Czech–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "portuguese",
     name: "Portuguese → English",
     endonym: "Português",
