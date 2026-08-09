@@ -1,150 +1,200 @@
 ---
 import Base from "../../../layouts/Base.astro";
 ---
+
 <!-- Whitespace note: Astro's HTML compressor trims the edges of every text
      node, so a line break next to an inline tag deletes the space there
      ("mining:<strong>"). Keep <strong>, <em> and <a> on the same source line as
      the words either side of them; only break lines mid-text. -->
-<Base title="Three new language packs: Ukrainian, Polish and Czech | Lector" description="Ukrainian, Polish and Czech language packs are live — on-device dictionaries, frequency-banded cloze banks and voices. Why Ukrainian is not a Russian preset, and what each pack measures.">
+<Base
+  title="Three new language packs: Ukrainian, Polish and Czech | Lector"
+  description="Ukrainian, Polish and Czech language packs are live — on-device dictionaries, frequency-banded cloze banks and voices. Why Ukrainian is not a Russian preset, and what each pack measures."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb">
+        <a href="/">lector</a> / <a href="/blog/">blog</a> / ukrainian, polish &amp;
+        czech
+      </p>
+      <h1>Three new language packs: Ukrainian, Polish and Czech</h1>
+      <p class="post-meta">
+        8 August 2026 &middot; 5 min read &middot; Release
+      </p>
+    </div>
+  </header>
 
-<header class="docs-header">
   <div class="container">
-    <p class="breadcrumb"><a href="/">lector</a> / <a href="/blog/">blog</a> / ukrainian, polish &amp; czech</p>
-    <h1>Three new language packs: Ukrainian, Polish and Czech</h1>
-    <p class="post-meta">8 August 2026 &middot; 5 min read &middot; Release</p>
+    <div class="docs-layout">
+      <main class="docs-body">
+        <p>
+          Three new packs are live: <strong>Ukrainian</strong>, <strong
+            >Polish</strong
+          > and <strong>Czech</strong>. Each comes complete with an on-device
+          dictionary with inflections, a frequency-banded cloze bank, and a TTS
+          voice. Lector now supports fourteen languages at that depth.
+        </p>
+
+        <h2 id="ukrainian">Ukrainian is not a Russian preset</h2>
+
+        <p>
+          My naive assumption was that Russian would be a reasonable proxy for
+          Ukrainian, but a user reported issues of mistranslations and reader
+          parser issues. I'm not sure on the exact distance between the two
+          languages, but I assume it's similar to Dutch and Afrikaans. The same
+          goes for many related languages; the same word can have a meaningful
+          difference between the two.
+        </p>
+
+        <p>
+          The reader now supports Ukrainian words that use an apostrophe as a
+          letter -- e.g. <strong>п'ять</strong> (five),
+          <strong>м'ясо</strong> (meat), <strong>з'їзд</strong> (congress). Russian
+          has no such thing, so the Russian pack treats an apostrophe as a boundary
+          and splits those words into two fragments, neither of which is in any dictionary.
+        </p>
+
+        <p>
+          The Ukrainian pack fixes both. The apostrophe joins the word rather
+          than breaking it, so п'ять stays one tappable token. Sources in the
+          wild disagree about which apostrophe character to type. It might be
+          straight, curly, or a modifier letter, so a lookup finds the same
+          entry whichever one your text used. The alphabet includes ґ, є, і and
+          ї, and the definitions are Ukrainian definitions.
+        </p>
+
+        <h2 id="polish">Polish</h2>
+
+        <p>
+          Polish relies heavily on inflection. There are seven cases across
+          three genders, verb aspect pairs, and consonant alternations that
+          change the stem rather than just the ending. <em>noga</em> becomes <em
+            >nodze</em
+          >. <em>miasto</em> becomes
+          <em>mieście</em>. <em>pies</em> becomes <em>psowi</em>. No
+          suffix-stripping rule reaches any of those, so the pack resolves them
+          through a table of 1,137,470 inflected forms instead of guessing. All
+          I can say is that I'm praying for all you Polish learners, because
+          this sounds very difficult!
+        </p>
+
+        <p>
+          Polish uses the apostrophe too, but for the opposite job: it attaches
+          a Polish case ending to a foreign name, as in <em>Joyce'a</em> or <em
+            >Kennedy'ego</em
+          >. This highlights the complexity of languages. The same character may
+          have completely opposing rules across packs.
+        </p>
+
+        <h2 id="czech">Czech</h2>
+
+        <p>
+          In Czech, vowel length carries meaning. <strong>byt</strong> is a flat.
+          <strong>být</strong> is the verb <em>to be</em>. They differ by one
+          accent, and a lookup that folded that accent away would answer the
+          wrong question every time. The pack keys them as two separate words.
+        </p>
+
+        <p>
+          The stem changes are similar to Polish's: <em>kůň</em> becomes <em
+            >koňmi</em
+          >, <em>město</em> becomes <em>městě</em>, <em>pes</em> becomes <em
+            >psovi</em
+          >. Czech also has a letter that is not a character — <em>ch</em> is a single
+          letter of the alphabet for sorting, but two characters in text, which turns
+          out to need no special handling at all.
+        </p>
+
+        <h2 id="depth">What a pack actually contains</h2>
+
+        <p>A language pack consists of four elements:</p>
+
+        <table class="env-table">
+          <thead>
+            <tr
+              ><th>&nbsp;</th><th>Ukrainian</th><th>Polish</th><th>Czech</th
+              ></tr
+            >
+          </thead>
+          <tbody>
+            <tr
+              ><td>Dictionary entries</td><td>54,563</td><td>169,953</td><td
+                >68,249</td
+              ></tr
+            >
+            <tr
+              ><td>English senses</td><td>83,546</td><td>270,331</td><td
+                >88,200</td
+              ></tr
+            >
+            <tr
+              ><td>Inflected forms</td><td>346,122</td><td>1,137,470</td><td
+                >439,882</td
+              ></tr
+            >
+            <tr
+              ><td>Cloze sentences</td><td>9,663</td><td>10,518</td><td
+                >9,312</td
+              ></tr
+            >
+            <tr
+              ><td>Dictionary coverage</td><td>96.2%</td><td>96.7%</td><td
+                >94.8%</td
+              ></tr
+            >
+          </tbody>
+        </table>
+
+        <p>
+          For self-hosters, the dictionary runs on your own instance, so no
+          lookup leaves the machine (aside from words not found on Wiktionary.
+          This is usually more pronounced on more obscure languages).
+          Definitions carry IPA on all three, which means tapping a word shows
+          how to say it as well as what it means. Each pack has a voice too.
+        </p>
+
+        <p>
+          That last row is the one worth explaining. Coverage is measured by
+          taking the 5,000 most frequent words in the language and asking how
+          many of them the dictionary can actually resolve. A score below 85%
+          indicates that further enrichment is needed from other sources
+          (related: <a href="https://lector.dev/blog/ocr-afrikaans-dictionary/"
+            >my blog post about OCRing an Afrikaans bilingual dictionary</a
+          >
+          ).
+        </p>
+
+        <h2 id="next">What's next</h2>
+
+        <p>
+          Czech, Polish and Ukrainian sit together on purpose: once one Slavic
+          pack works, the next one is mostly data. The same reasoning puts
+          Hungarian, Swedish, Finnish and modern Greek within reach.
+        </p>
+
+        <p>
+          If you would like to request a new language, there is a form on the <a
+            href="/#notify">home page</a
+          > or on <a href="/reference-data/#notify">reference data</a>. If you
+          leave your email address, we can reach out to you when it's ready. For
+          everything not on the roadmap, feel free to join the <a
+            href="https://discord.gg/PD3GAh2Rj">Discord</a
+          > and request it.
+        </p>
+
+        <p style="margin-top:2rem;">
+          <a href="/blog/">&larr; Back to the blog</a>
+        </p>
+      </main>
+
+      <nav class="docs-toc">
+        <h4>On this page</h4>
+        <a href="#ukrainian">Ukrainian is not a Russian preset</a>
+        <a href="#polish">Polish</a>
+        <a href="#czech">Czech</a>
+        <a href="#depth">What a pack contains</a>
+        <a href="#limits">Where they fall short</a>
+        <a href="#next">What's next</a>
+      </nav>
+    </div>
   </div>
-</header>
-
-<div class="container">
-  <div class="docs-layout">
-    <main class="docs-body">
-
-      <p>Three new packs are live: <strong>Ukrainian</strong>, <strong>Polish</strong> and <strong>Czech</strong>. Each one is
-        a full pack, not a preview — an on-device dictionary with inflections, a
-        frequency-banded cloze bank, and a voice. Lector now covers fourteen
-        languages at that depth.</p>
-
-      <p>The first one started with a complaint, and the complaint was correct.</p>
-
-      <h2 id="ukrainian">Ukrainian is not a Russian preset</h2>
-
-      <p>A Ukrainian learner was reading Ukrainian text under the Russian pack,
-        because that was the closest thing available. Two things went wrong, and
-        both are worth spelling out.</p>
-
-      <p>First, the definitions were quietly wrong. The word <strong>так</strong> means <em>yes</em> in Ukrainian. In Russian
-        it means <em>like that</em>. Neither reading is a typo or an edge case — they are
-        both ordinary words, and a learner has no way to tell that the drawer is
-        answering a question about a different language.</p>
-
-      <p>Second, the reader was cutting words in half. Ukrainian spelling uses the
-        apostrophe as a letter, inside the word: <strong>п'ять</strong> (five), <strong>м'ясо</strong> (meat), <strong>з'їзд</strong> (congress).
-        Russian has no such thing, so the Russian pack treats an apostrophe as a
-        boundary and splits those words into two fragments, neither of which is
-        in any dictionary.</p>
-
-      <p>The Ukrainian pack fixes both. The apostrophe joins the word rather than
-        breaking it, so п'ять stays one tappable token. Sources in the wild
-        disagree about which apostrophe character to type — straight, curly,
-        modifier letter — so a lookup finds the same entry whichever one your
-        text used. The alphabet includes ґ, є, і and ї, and the definitions are
-        Ukrainian definitions.</p>
-
-      <h2 id="polish">Polish</h2>
-
-      <p>Polish inflects hard: seven cases across three genders, verb aspect
-        pairs, and consonant alternations that change the stem rather than just
-        the ending. <em>noga</em> becomes <em>nodze</em>. <em>miasto</em> becomes <em>mieście</em>. <em>pies</em> becomes <em>psowi</em>. No
-        suffix-stripping rule reaches any of those, so the pack resolves them
-        through a table of 1,137,470 inflected forms instead of guessing.</p>
-
-      <p>Polish uses the apostrophe too, but for the opposite job: it attaches a
-        Polish case ending to a foreign name, as in <em>Joyce'a</em> or <em>Kennedy'ego</em>. There, splitting is the right
-        answer — it leaves <em>Joyce</em> on its own, where you can look it up. Same
-        character, two packs, opposite rules.</p>
-
-      <h2 id="czech">Czech</h2>
-
-      <p>In Czech, vowel length carries meaning. <strong>byt</strong> is a flat. <strong>být</strong> is the verb <em>to be</em>. They differ by
-        one accent, and a lookup that folded that accent away would answer the
-        wrong question every time. The pack keys them as two separate words.</p>
-
-      <p>The stem changes are as sharp as Polish's: <em>kůň</em> becomes <em>koňmi</em>, <em>město</em> becomes <em>městě</em>, <em>pes</em> becomes <em>psovi</em>.
-        Czech also has a letter that is not a character — <em>ch</em> is a single letter
-        of the alphabet for sorting, but two characters in text, which turns out
-        to need no special handling at all.</p>
-
-      <h2 id="depth">What a pack actually contains</h2>
-
-      <p>A language pack is four things, and every pack has all four:</p>
-
-      <table class="env-table">
-        <thead>
-          <tr><th>&nbsp;</th><th>Ukrainian</th><th>Polish</th><th>Czech</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Dictionary entries</td><td>54,563</td><td>169,953</td><td>68,249</td></tr>
-          <tr><td>English senses</td><td>83,546</td><td>270,331</td><td>88,200</td></tr>
-          <tr><td>Inflected forms</td><td>346,122</td><td>1,137,470</td><td>439,882</td></tr>
-          <tr><td>Cloze sentences</td><td>9,663</td><td>10,518</td><td>9,312</td></tr>
-          <tr><td>Dictionary coverage</td><td>96.2%</td><td>96.7%</td><td>94.8%</td></tr>
-        </tbody>
-      </table>
-
-      <p>The dictionary runs on your own instance, so no lookup leaves the
-        machine. Definitions carry IPA on all three, which means tapping a word
-        shows how to say it as well as what it means. Each pack has a voice too.</p>
-
-      <p>That last row is the one worth explaining. Coverage is measured by taking
-        the 5,000 most frequent words in the language and asking how many of them
-        the dictionary can actually resolve. It is a build-time gate, not a
-        marketing number: a pack that scores below 85% does not ship.</p>
-
-      <h2 id="limits">Where they fall short</h2>
-
-      <p>Coverage is not 100%, and it is more useful to say where the gaps are
-        than to round the number up.</p>
-
-      <p>Czech builds its superlatives with a prefix — <em>starý</em> becomes <em>nejstarší</em> — and negates verbs the same way.
-        Wiktionary lists some of those prefixed forms and not others, so a Czech
-        Wikipedia article resolved 90.3% of its distinct words for us, and the
-        misses were mostly <em>nej-</em> forms. Prefix rules would lift that, and are on
-        the list.</p>
-
-      <p>Very colloquial writing is harder again. The opening of <em>Švejk</em> is written in Prague vernacular
-        — <em>takovej</em> for <em>takový</em>, <em>svýho</em> for <em>svého</em> — and scored 88.5%. That is a deliberate literary
-        choice by Hašek rather than a defect in the pack, but it is the kind of
-        text where you will notice the gaps. Proper nouns are the other reliable
-        miss, in every language.</p>
-
-      <p>When the on-device dictionary has no answer, the lookup falls through to
-        your configured translation agent, so you still get a definition. The
-        drawer tells you which one answered.</p>
-
-      <h2 id="next">What's next</h2>
-
-      <p>Czech, Polish and Ukrainian sit together on purpose: once one Slavic pack
-        works, the next one is mostly data. The same reasoning puts Hungarian,
-        Swedish, Finnish and modern Greek within reach.</p>
-
-      <p>If you want a language that is not here yet, say so — the Ukrainian pack
-        exists because somebody did. Pick it on the <a href="/#notify">home page</a> or on <a href="/reference-data/#notify">reference data</a>,
-        and it is the most direct way to move a language up the list.</p>
-
-      <p style="margin-top:2rem;"><a href="/blog/">&larr; Back to the blog</a></p>
-
-    </main>
-
-    <nav class="docs-toc">
-      <h4>On this page</h4>
-      <a href="#ukrainian">Ukrainian is not a Russian preset</a>
-      <a href="#polish">Polish</a>
-      <a href="#czech">Czech</a>
-      <a href="#depth">What a pack contains</a>
-      <a href="#limits">Where they fall short</a>
-      <a href="#next">What's next</a>
-    </nav>
-  </div>
-</div>
-
 </Base>
