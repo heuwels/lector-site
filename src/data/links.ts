@@ -19,6 +19,6 @@ export const CLOUD_PLUS_CHECKOUT_URL = `${SIGNUP_URL}?next=${encodeURIComponent(
 )}`;
 
 export const GITHUB = "https://github.com/heuwels/lector";
-export const DISCORD = "https://discord.gg/PD3GAh2Rj";
+export const DISCORD = "https://discord.gg/XBEnx2ZWd5";
 export const SUPPORT_EMAIL = "support@lector.dev";
 // Support is handled on-site via Paddle (/support), not GitHub Sponsors.
