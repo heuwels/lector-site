@@ -3,7 +3,7 @@
 // Keeping these as plain builders means pages stay declarative and the shapes
 // are validated in one place (Google Rich Results / schema.org).
 
-import { APP_URL } from "../data/links";
+import { APP_URL, SUPPORT_EMAIL } from "../data/links";
 
 const SITE = "https://lector.dev";
 
@@ -63,6 +63,22 @@ export function courseSchema(opts: {
       "@type": "CourseInstance",
       courseMode: "online",
       courseWorkload: `P${opts.weeks}W`,
+    },
+  };
+}
+
+/** ContactPage — the public enquiry form at /contact/. */
+export function contactPageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact Lector",
+    url: `${SITE}/contact/`,
+    mainEntity: {
+      "@type": "Organization",
+      name: "Lector",
+      email: SUPPORT_EMAIL,
+      url: SITE,
     },
   };
 }

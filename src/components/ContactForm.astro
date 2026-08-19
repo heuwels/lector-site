@@ -1,0 +1,241 @@
+---
+// Contact form. Posts to /api/contact (a Pages Function). Cloudflare Turnstile
+// guards the endpoint. Resend delivers the message to support@lector.dev.
+import { TURNSTILE_SITE_KEY } from "../data/turnstile";
+import { CONTACT_TOPICS } from "../data/contact";
+import { DISCORD, GITHUB, SUPPORT_EMAIL } from "../data/links";
+
+const field =
+  "w-full rounded-lg border border-olive-950/15 bg-white px-3 py-2 text-sm/6 text-olive-950 placeholder:text-olive-500 focus:border-sage-600 focus:ring-2 focus:ring-sage-600/25 focus:outline-none dark:border-white/15 dark:bg-olive-950/40 dark:text-white dark:placeholder:text-olive-500";
+const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
+---
+
+<section
+  class="flex flex-col gap-6 rounded-2xl bg-olive-950/2.5 p-6 ring-1 ring-olive-950/5 sm:p-8 dark:bg-white/5 dark:ring-white/10 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start lg:gap-10"
+>
+  <div class="flex flex-col gap-3">
+    <h2
+      class="font-display text-3xl/9 text-olive-950 sm:text-4xl/12 dark:text-white"
+    >
+      Write to us
+    </h2>
+    <p class="max-w-lg text-base/7 text-olive-700 dark:text-olive-400">
+      We read every message. Write about cloud billing, a self-hosted install, or
+      a language pack.
+    </p>
+    <p class="max-w-lg text-sm/6 text-olive-600 dark:text-olive-500">
+      You can also email
+      <a
+        href={`mailto:${SUPPORT_EMAIL}`}
+        class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+        >{SUPPORT_EMAIL}</a
+      >. For a live chat, join the
+      <a
+        href={DISCORD}
+        target="_blank"
+        rel="noopener"
+        class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+        >Discord</a
+      >
+      server. For a bug, open a
+      <a
+        href={GITHUB}
+        target="_blank"
+        rel="noopener"
+        class="font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+        >GitHub</a
+      >
+      issue.
+    </p>
+  </div>
+
+  <form class="flex flex-col gap-4" data-contact-form novalidate>
+    <div class="flex flex-col gap-1.5">
+      <label class={label} for="contact-name">Name</label>
+      <input
+        class={field}
+        id="contact-name"
+        name="name"
+        type="text"
+        maxlength="100"
+        autocomplete="name"
+        required
+        placeholder="Your name"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class={label} for="contact-email">Email</label>
+      <input
+        class={field}
+        id="contact-email"
+        name="email"
+        type="email"
+        maxlength="254"
+        autocomplete="email"
+        required
+        placeholder="you@example.com"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class={label} for="contact-topic">Topic</label>
+      <select class={field} id="contact-topic" name="topic" required>
+        <option value="" disabled selected>Choose a topic</option>
+        {
+          CONTACT_TOPICS.map((topic) => (
+            <option value={topic.value}>{topic.label}</option>
+          ))
+        }
+      </select>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class={label} for="contact-message">Message</label>
+      <textarea
+        class={field}
+        id="contact-message"
+        name="message"
+        rows="6"
+        maxlength="5000"
+        required
+        placeholder="How can we help?"></textarea>
+    </div>
+
+    <div
+      class="cf-turnstile"
+      data-sitekey={TURNSTILE_SITE_KEY}
+      data-action="contact"></div>
+
+    <button
+      type="submit"
+      class="inline-flex shrink-0 items-center justify-center gap-1 rounded-full bg-olive-950 px-4 py-2 text-sm/7 font-medium text-white transition-colors hover:bg-olive-800 disabled:opacity-60 dark:bg-olive-300 dark:text-olive-950 dark:hover:bg-olive-200"
+      data-submit
+    >
+      Send message
+    </button>
+
+    <p
+      class="text-sm/6 text-olive-700 dark:text-olive-400"
+      role="status"
+      aria-live="polite"
+      data-status
+    >
+    </p>
+
+    <p class="text-xs/5 text-olive-600 dark:text-olive-500">
+      We use your address only to reply. Read the{" "}
+      <a href="/privacy/" class="underline underline-offset-4">privacy policy</a>.
+    </p>
+  </form>
+</section>
+
+<noscript>
+  <p class="mt-4 text-sm/7 text-olive-700 dark:text-olive-400">
+    This form needs JavaScript. Email{" "}
+    <a
+      href={`mailto:${SUPPORT_EMAIL}`}
+      class="font-medium underline underline-offset-4">{SUPPORT_EMAIL}</a
+    >
+    {" "}instead.
+  </p>
+</noscript>
+
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer></script>
+
+<script>
+  const ENDPOINT = "/api/contact";
+
+  function setUpForm(form: HTMLFormElement): void {
+    const status = form.querySelector<HTMLElement>("[data-status]");
+    const submit = form.querySelector<HTMLButtonElement>("[data-submit]");
+    const name = form.querySelector<HTMLInputElement>('[name="name"]');
+    const email = form.querySelector<HTMLInputElement>('[name="email"]');
+    const topic = form.querySelector<HTMLSelectElement>('[name="topic"]');
+    const message = form.querySelector<HTMLTextAreaElement>('[name="message"]');
+    if (!status || !submit || !name || !email || !topic || !message) return;
+
+    const say = (text: string, isError: boolean): void => {
+      status.textContent = text;
+      status.classList.toggle("text-red-700", isError);
+      status.classList.toggle("dark:text-red-400", isError);
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      say("", false);
+
+      if (!name.value.trim()) {
+        say("Enter your name.", true);
+        name.focus();
+        return;
+      }
+      if (!email.value.trim()) {
+        say("Enter your email address.", true);
+        email.focus();
+        return;
+      }
+      if (!topic.value) {
+        say("Choose a topic.", true);
+        topic.focus();
+        return;
+      }
+      if (message.value.trim().length < 20) {
+        say("Write a message of at least 20 characters.", true);
+        message.focus();
+        return;
+      }
+
+      const token =
+        form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')
+          ?.value ?? "";
+      if (!token) {
+        say("Wait for the bot check to finish. Then try again.", true);
+        return;
+      }
+
+      submit.disabled = true;
+      say("Please wait.", false);
+
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            name: name.value.trim(),
+            email: email.value.trim(),
+            topic: topic.value,
+            message: message.value.trim(),
+            turnstileToken: token,
+          }),
+        });
+        const data = (await res.json()) as { ok?: boolean; error?: string };
+
+        if (!res.ok || !data.ok) {
+          say(data.error ?? "An error occurred. Try again.", true);
+          return;
+        }
+
+        const chosenTopic = topic.value;
+        form.reset();
+        say("Thank you. We will reply to this address.", false);
+        window.plausible?.("Contact enquiry", {
+          props: { topic: chosenTopic },
+        });
+      } catch {
+        say("An error occurred. Try again.", true);
+      } finally {
+        window.turnstile?.reset();
+        submit.disabled = false;
+      }
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLFormElement>("[data-contact-form]")
+    .forEach(setUpForm);
+</script>

@@ -1,0 +1,35 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import ContactForm from "../../components/ContactForm.astro";
+import { breadcrumbSchema, contactPageSchema } from "../../lib/schema";
+---
+
+<Base
+  title="Contact | Lector"
+  description="Send a question about Lector. We reply by email."
+  schema={[
+    breadcrumbSchema([
+      { name: "Lector", url: "/" },
+      { name: "Contact", url: "/contact/" },
+    ]),
+    contactPageSchema(),
+  ]}
+>
+  <PageHeader
+    title="Contact"
+    description="Send a question about Lector, billing, or a self-hosted install. We reply by email."
+  >
+    <Fragment slot="breadcrumb">
+      <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
+      contact
+    </Fragment>
+  </PageHeader>
+
+  <section class="py-16">
+    <Container>
+      <ContactForm />
+    </Container>
+  </section>
+</Base>
