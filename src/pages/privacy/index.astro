@@ -16,6 +16,16 @@ interface Revision {
 
 const revisions: Revision[] = [
   {
+    version: 3,
+    date: "20 August 2026",
+    isoDate: "2026-08-20",
+    changes: [
+      "Added a section about the contact form. The site now asks for your name, email address, and message on the contact page.",
+      "Named Resend as the service that delivers contact emails.",
+      "Corrected the summary. Two forms now ask for an email address.",
+    ],
+  },
+  {
     version: 2,
     date: "8 August 2026",
     isoDate: "2026-08-08",
@@ -55,20 +65,22 @@ const current = revisions[0];
   <div class="container">
     <div class="docs-body">
       <p>
-        Lector is built privacy-first. The self-hosted app keeps everything on
-        your own hardware, and this website asks for your email address in only
-        one place. Here's the full picture.
+        Privacy comes first in Lector. The self-hosted app keeps everything on
+        your own hardware. This website asks for your email address in two
+        places. Here is the full picture.
       </p>
 
       <div class="callout">
         <p>
-          <strong>Short version.</strong> Self-host and we see nothing — your
-          reading, vocabulary, and progress never leave your server. This site
-          uses cookieless, privacy-friendly analytics. The one form that asks
-          for your email address is the language interest list, and that address
-          receives one announcement. The cloud service (coming soon) will store
-          only what's needed to run your account, with payments handled by
-          Paddle.
+          <strong>Short version.</strong> If you host Lector yourself, we see
+          nothing. Your reading, vocabulary, and progress never leave your
+          server. This site uses analytics that set no cookies.
+        </p>
+        <p>
+          Two forms ask for your email address. The language interest list
+          sends one announcement. The contact form sends your message to us. We
+          use that message to reply. The cloud service will store only what the
+          account needs. Paddle handles payments.
         </p>
       </div>
 
@@ -113,6 +125,24 @@ const current = revisions[0];
         not profile you across sites.
       </p>
 
+      <h2>The contact form</h2>
+      <p>
+        The <a href="/contact/">contact page</a> has a form. The form asks for
+        your name, your email address, a topic, and your message.
+      </p>
+      <p>
+        We send that message to {SUPPORT}.
+        <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Resend</a>
+        delivers the email. We do not keep a copy on this site. Resend keeps
+        the email as part of delivery. We use your address only to reply. The
+        message that we receive also includes your country code and the user
+        agent string from your browser.
+      </p>
+      <p>
+        To block bots, the form uses Cloudflare Turnstile. Turnstile sets no
+        cookies that track you, and it does not profile you across sites.
+      </p>
+
       <h2>The cloud service</h2>
       <p>
         The managed cloud service isn't available yet. When it launches, it will
@@ -152,8 +182,8 @@ const current = revisions[0];
       <h2>Contact</h2>
       <p>
         Privacy questions or requests? Email
-        <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>. Lector is operated by Luke
-        Boyle.
+        <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a>. You can also use the
+        <a href="/contact/">contact page</a>. Lector is operated by Luke Boyle.
       </p>
 
       <h2 id="what-changed">What changed</h2>

@@ -126,6 +126,22 @@ jobs:
           echo "The language-requests API did not answer on staging." >&2
           exit 1
 
+      # Proves the contact Pages Function deployed. A static-only deployment
+      # answers this path with the 404 page, not JSON.
+      - name: Verify staging contact API surface
+        run: |
+          url=https://lector-site-staging.pages.dev/api/contact
+          for attempt in {1..20}; do
+            body="$(curl --silent --show-error --request POST "$url" \
+              --header 'content-type: application/json' --data '{}')"
+            if echo "$body" | grep -q '"error"'; then
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "The contact API did not answer on staging." >&2
+          exit 1
+
   deploy-production:
     needs: deploy-staging
     runs-on: ubuntu-latest

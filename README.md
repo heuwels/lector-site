@@ -123,3 +123,46 @@ npx wrangler d1 execute lector-language-requests --remote --command \
 `/api/language-requests/counts` returns a language only at 25 people or more.
 A small number next to every language reads as an abandoned project. Both
 functions hold this threshold as `MIN_PUBLIC_COUNT`. Keep the two values equal.
+
+## Contact form
+
+A reader sends a message on `/contact/`. The site then sends that message by
+email to `support@lector.dev`.
+
+| Part | Location |
+| --- | --- |
+| Form | `src/components/ContactForm.astro` |
+| Page | `src/pages/contact/index.astro` |
+| Write endpoint | `functions/api/contact.ts` |
+| Public site key | `src/data/turnstile.ts` |
+
+Each project holds `RESEND_API_KEY` as a secret. Each project holds
+`TURNSTILE_SECRET`. Set the Resend key on both projects:
+
+```bash
+npx wrangler pages secret put RESEND_API_KEY --project-name=lector-site-staging
+npx wrangler pages secret put RESEND_API_KEY --project-name=lector-site
+```
+
+Optional bindings:
+
+| Binding | Default |
+| --- | --- |
+| `CONTACT_FROM` | `Lector <no-reply@lector.dev>` |
+| `CONTACT_TO` | `support@lector.dev` |
+| `TURNSTILE_HOSTNAMES` | `lector.dev`, `www.lector.dev`, `lector-site-staging.pages.dev`, `lector-site-avb.pages.dev` |
+
+A production `TURNSTILE_HOSTNAMES` value must not include `localhost` or
+`127.0.0.1`.
+
+`pnpm dev:api` starts without a Resend key, so the endpoint returns 503. To
+skip the send in local work, pass a dry-run flag:
+
+```bash
+pnpm build
+npx wrangler pages dev dist --d1 DB --compatibility-date=2026-04-13 \
+  -b CONTACT_DRY_RUN=1
+```
+
+To test the bot check as well, add the test secret and a local hostname list.
+Use the test site key at build time. See the Language interest list above.

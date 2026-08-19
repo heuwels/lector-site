@@ -1,8 +1,10 @@
-// Cloudflare Turnstile — public site key for the language interest form.
+// Cloudflare Turnstile — public site key for the language interest form and
+// the contact form.
 //
 // TURNSTILE_SITE_KEY is a *public* key (safe to ship), NOT the secret. The
 // secret lives on both Pages projects as the TURNSTILE_SECRET environment
-// variable, and only functions/api/language-requests/index.ts reads it.
+// variable. functions/api/language-requests/index.ts and
+// functions/api/contact.ts read it.
 //
 // Widget: "lector.dev language interest", mode "managed". Approved domains are
 // lector.dev, www.lector.dev, lector-site-staging.pages.dev,

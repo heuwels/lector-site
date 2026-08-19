@@ -30,4 +30,5 @@
 ## Run it
 
 - [Pricing](https://lector.dev/pricing/): Self-host free forever, or Lector Cloud from $5/mo.
+- [Contact](https://lector.dev/contact/): Send a support message. The address is support@lector.dev.
 - [Blog](https://lector.dev/blog/): Notes on building Lector — local-LLM translation quality, OCRing an Afrikaans dictionary, and more.
