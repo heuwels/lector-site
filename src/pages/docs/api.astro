@@ -4,6 +4,7 @@ import ApiOperation from "../../components/ApiOperation.astro";
 import SchemaFields from "../../components/SchemaFields.astro";
 import spec from "../../data/openapi.json";
 import { sections, slug, type OpenApiDocument } from "../../lib/openapi";
+import "../../styles/api.css";
 
 const doc = spec as unknown as OpenApiDocument;
 const groups = sections(doc);
@@ -30,6 +31,7 @@ const schemas = Object.entries(doc.components?.schemas ?? {}).filter(
   title="REST API | Lector Docs"
   description="The Lector REST API: personal access tokens, scopes, and every endpoint a token can reach. Includes an OpenAPI document for client generators."
   heading="REST API"
+  wide
 >
   <p>
     Lector serves an HTTP API. The web client uses it, and so does any script you write. This page
@@ -142,9 +144,11 @@ const schemas = Object.entries(doc.components?.schemas ?? {}).filter(
     schemas.map(([name, schema]) => (
       <details class="api-op" id={`object-${slug(name)}`}>
         <summary>
-          <code class="api-path">{name}</code>
-          {' '}
-          <span class="api-summary">{schema.description}</span>
+          <span class="api-head">
+            <code class="api-path">{name}</code>
+            {' '}
+            <span class="api-summary">{schema.description}</span>
+          </span>
         </summary>
         <div class="api-detail">
           <SchemaFields schema={schema} doc={doc} />

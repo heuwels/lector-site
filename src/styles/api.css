@@ -1,0 +1,161 @@
+/* ============================================================================
+   /docs/api/ endpoint and object rows.
+
+   These rules are global, not scoped to one component, because two places
+   render an `.api-op` row: ApiOperation.astro for an endpoint, and api.astro
+   for an object. A scoped style block reaches only one of them.
+   ============================================================================ */
+
+.api-op {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  background: var(--card-bg);
+}
+.api-op[open] {
+  box-shadow: var(--card-shadow);
+}
+.api-op summary {
+  cursor: pointer;
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  list-style: none;
+}
+.api-op summary::-webkit-details-marker {
+  display: none;
+}
+.api-op summary:hover .api-path {
+  text-decoration: underline;
+}
+
+/* The method, the path and the summary wrap as one block, so the scope tag
+   keeps its place at the right of the first line. */
+.api-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.api-method {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  min-width: 3.6rem;
+  text-align: center;
+  flex: 0 0 auto;
+}
+.api-method-get {
+  color: var(--accent);
+}
+.api-method-delete {
+  color: #b4462f;
+}
+:root[data-theme='dark'] .api-method-delete {
+  color: #e08a74;
+}
+.api-op .api-path {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: none;
+  padding: 0;
+  /* A long path breaks instead of pushing the scope tag off the card. */
+  overflow-wrap: anywhere;
+}
+.api-op .api-summary {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  min-width: 0;
+}
+.api-scope {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.api-scope-none {
+  opacity: 0.6;
+}
+/* A narrow card gives the whole line to the path, and drops the scope tag
+   below it. The path then breaks at a space, not inside a word. */
+@media (max-width: 640px) {
+  .api-op summary {
+    flex-wrap: wrap;
+  }
+  .api-head {
+    flex-basis: 100%;
+  }
+}
+.api-detail {
+  padding: 0 0.9rem 1rem;
+  border-top: 1px solid var(--border);
+}
+.api-op .api-detail h4 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 1.1rem 0 0.2rem;
+}
+.api-ctype {
+  font-family: var(--font-mono);
+  text-transform: none;
+  letter-spacing: 0;
+  margin-left: 0.5rem;
+  opacity: 0.8;
+}
+.api-op .api-description,
+.api-op .api-note {
+  margin: 0.9rem 0 0;
+  font-size: 0.92rem;
+}
+.api-op .api-note {
+  color: var(--text-muted);
+}
+.api-op .api-params,
+.api-op .api-responses {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  font-size: 0.9rem;
+}
+.api-op .api-responses li {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+}
+.api-op .api-responses li:last-child {
+  border-bottom: none;
+}
+.api-op .field-type {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.api-status {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--tag-bg);
+  color: var(--text-muted);
+}
+.api-status-ok {
+  color: var(--accent);
+}
+.api-status-doc {
+  margin-left: 0.5rem;
+}
+.api-op .api-detail pre {
+  margin-top: 0.4rem;
+  margin-bottom: 0;
+}
