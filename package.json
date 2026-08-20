@@ -11,6 +11,8 @@
     "preview": "astro preview",
     "deploy": "astro build && wrangler pages deploy dist --project-name=lector-site",
     "dev:api": "astro build && wrangler pages dev dist --d1 DB --compatibility-date=2026-04-13",
+    "openapi:sync": "node scripts/sync-openapi.mjs",
+    "openapi:check": "node scripts/sync-openapi.mjs --check",
     "db:local": "wrangler d1 execute DB --local --config wrangler.dev.jsonc --file=./schema.sql",
     "db:remote": "wrangler d1 execute lector-language-requests --remote --file=./schema.sql",
     "requests:list": "wrangler d1 execute lector-language-requests --remote --command \"SELECT created_at, language, requested_name, email, country, note FROM language_requests WHERE unsubscribed_at IS NULL ORDER BY created_at DESC LIMIT 200\"",

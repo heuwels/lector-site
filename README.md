@@ -24,6 +24,27 @@ The artifact holds `dist/` and `functions/`. Cloudflare Pages compiles the
 functions from `functions/` at the repository root. An artifact without that
 directory deploys the site with no `/api/*` routes.
 
+## API documentation
+
+The `/docs/api/` page renders the OpenAPI document of the Lector app. The page
+also serves the raw document at `/openapi.json`. Both read one file:
+`src/data/openapi.json`.
+
+The app repository owns that document. To refresh the copy in this repository:
+
+```bash
+cd ../lector && npm run gen:openapi   # regenerate it in the app repository
+cd ../lector-site && pnpm openapi:sync
+pnpm openapi:check                    # compare only. Exit 1 on a difference
+```
+
+Commit the copy. Cloudflare Pages builds this repository on its own, so the
+build cannot read the app repository.
+
+The document holds only the endpoints that a personal access token can reach.
+`src/lib/openapi.ts` groups them by tag and flattens each schema into a field
+list. The page needs no JavaScript.
+
 ## Language interest list
 
 A reader asks for a language on `/reference-data/` or `/roadmap/`. The site

@@ -1,0 +1,103 @@
+---
+// One field row on /docs/api/: name, type, optional required mark, description.
+// Shared by request/response schemas and path/query parameters so the styles
+// cannot drift, and so a copy of the row keeps spaces between the parts.
+import { inlineParts } from "../lib/openapi";
+
+interface Props {
+  name: string;
+  type: string;
+  required?: boolean;
+  description?: string;
+  /** Nesting depth for object properties. Omit for a parameter. */
+  depth?: number;
+  enumValues?: string[];
+}
+
+const { name, type, required = false, description, depth, enumValues } = Astro.props;
+const depthClass = depth === undefined ? undefined : `depth-${Math.min(depth, 3)}`;
+---
+
+<li class={depthClass}>
+  <code class="field-name">{name}</code>
+  {" "}
+  <span class="field-type">{type}</span>
+  {
+    required && (
+      <>
+        {" "}
+        <span class="field-required">required</span>
+      </>
+    )
+  }
+  {
+    description && (
+      <>
+        {" "}
+        <span class="field-doc">
+          {inlineParts(description).map((part) =>
+            part.code ? <code>{part.text}</code> : part.text,
+          )}
+        </span>
+      </>
+    )
+  }
+  {
+    enumValues && enumValues.length > 0 && (
+      <span class="field-enum">{enumValues.join(" · ")}</span>
+    )
+  }
+</li>
+
+<style>
+  li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+  }
+  li:last-child {
+    border-bottom: none;
+  }
+  .depth-1 {
+    padding-left: 1.1rem;
+  }
+  .depth-2 {
+    padding-left: 2.2rem;
+  }
+  .depth-3 {
+    padding-left: 3.3rem;
+  }
+  .field-name {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    background: var(--tag-bg);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+  }
+  .field-type {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .field-required {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .field-doc,
+  .field-enum {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 0.1rem;
+  }
+  .field-doc code {
+    font-size: 0.8rem;
+  }
+  .field-enum {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+</style>
