@@ -9,22 +9,28 @@ interface Props {
   description: string;
   /** Page name shown in the breadcrumb and H1, e.g. "Installation". */
   heading: string;
+  /**
+   * Widens the column past the prose measure. Use it for a page of reference
+   * rows, like the API endpoint list. Leave it off for a page of paragraphs.
+   */
+  wide?: boolean;
 }
 
-const { title, description, heading } = Astro.props;
+const { title, description, heading, wide = false } = Astro.props;
+const container = wide ? "container container--wide" : "container";
 ---
 
 <Base title={title} description={description}>
   <header class="docs-header">
-    <div class="container">
+    <div class={container}>
       <p class="breadcrumb"><a href="/">lector</a> / <a href="/docs/">docs</a> / {heading.toLowerCase()}</p>
       <h1>{heading}</h1>
     </div>
   </header>
 
-  <div class="container">
+  <div class={container}>
     <div class="docs-layout">
-      <main class="docs-body">
+      <main class={wide ? "docs-body docs-body--wide" : "docs-body"}>
         <slot />
       </main>
       <DocsNav />

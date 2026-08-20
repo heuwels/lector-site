@@ -235,6 +235,19 @@
 /* --- Docs / article body --- */
 .docs-body {
   padding: 3rem 0 4rem;
+  /* A grid item takes the min-content width of its widest child by default. A
+     wide code block then stretches the page sideways, so cap the floor here and
+     let the block scroll inside its own box. */
+  min-width: 0;
+}
+/* A wide docs page gives its reference rows the whole column, and holds the
+   prose at a readable measure. */
+.docs-body--wide > p,
+.docs-body--wide > ul,
+.docs-body--wide > ol,
+.docs-body--wide > table,
+.docs-body--wide > .callout {
+  max-width: 68ch;
 }
 .docs-body h2 {
   font-family: var(--font-display);
