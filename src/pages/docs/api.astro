@@ -1,0 +1,216 @@
+---
+import DocsPage from "../../layouts/DocsPage.astro";
+import ApiOperation from "../../components/ApiOperation.astro";
+import SchemaFields from "../../components/SchemaFields.astro";
+import spec from "../../data/openapi.json";
+import { sections, slug, type OpenApiDocument } from "../../lib/openapi";
+
+const doc = spec as unknown as OpenApiDocument;
+const groups = sections(doc);
+const endpointCount = groups.reduce((total, group) => total + group.endpoints.length, 0);
+const cloud = doc.servers?.[0]?.url ?? "https://app.lector.dev";
+const selfhost = doc.servers?.[1]?.url ?? "http://localhost:3457";
+
+// Every scope the document names, so the table below cannot drift from the spec.
+const scopes = [
+  ...new Set(
+    groups
+      .flatMap((group) => group.endpoints)
+      .map((endpoint) => endpoint.operation["x-token-scope"])
+      .filter((scope): scope is string => Boolean(scope)),
+  ),
+].sort();
+
+const schemas = Object.entries(doc.components?.schemas ?? {}).filter(
+  ([name]) => !["Error", "PlanLimitError", "Success", "CreatedId", "IdList"].includes(name),
+);
+---
+
+<DocsPage
+  title="REST API | Lector Docs"
+  description="The Lector REST API: personal access tokens, scopes, and every endpoint a token can reach. Includes an OpenAPI document for client generators."
+  heading="REST API"
+>
+  <p>
+    Lector serves an HTTP API. The web client uses it, and so does any script you write. This page
+    lists every endpoint that a personal access token can reach. There are {endpointCount} of them.
+  </p>
+  <p>
+    The machine-readable description is at <a href="/openapi.json">/openapi.json</a>. It follows
+    OpenAPI 3.1, so a client generator reads it directly.
+  </p>
+
+  <div class="callout">
+    <p>
+      The app release sets the API version. There is no version prefix in the URL. New fields
+      arrive in the responses you already read, so read the fields you need and ignore the rest.
+    </p>
+  </div>
+
+  <h2 id="base-url">Base URL</h2>
+  <ul>
+    <li>
+      <strong>Lector Cloud:</strong> <code>{cloud}</code>
+    </li>
+    <li>
+      <strong>Self-hosted:</strong> <code>{selfhost}</code>, or the host you run the API on. The
+      API answers on port 3457 by default.
+    </li>
+  </ul>
+
+  <h2 id="authentication">Authentication</h2>
+  <p>Create a token in Lector. Send it on every call.</p>
+  <ol>
+    <li>Open <strong>Settings</strong>, then <strong>API tokens</strong>.</li>
+    <li>Select the scopes that the token needs.</li>
+    <li>Copy the token. Lector shows the value once.</li>
+  </ol>
+  <pre><code>{`curl '${cloud}/api/stats/streak' \\
+  -H 'Authorization: Bearer $LECTOR_TOKEN'`}</code></pre>
+  <p>
+    A browser session works too, because the web client calls the same endpoints. A script must use
+    a token.
+  </p>
+  <div class="callout">
+    <p>
+      Keep the token secret. It reaches your library with the scopes that you gave it. To withdraw a
+      token, delete it in the same screen. A token cannot create another token.
+    </p>
+  </div>
+
+  <h3 id="scopes">Scopes</h3>
+  <p>
+    Each endpoint below names the scope it needs. A read uses the <code>:read</code> scope, and a
+    write uses the <code>:write</code> scope. A <code>:*</code> scope grants both, and <code>*</code>
+    {' '}grants everything.
+  </p>
+  <ul class="scope-list">
+    {scopes.map((scope) => <li><code>{scope}</code></li>)}
+  </ul>
+  <p>
+    Some parts of Lector accept no token at all. Token management, billing, moderation and the admin
+    console need the browser. This page leaves them out.
+  </p>
+
+  <h2 id="languages">Languages</h2>
+  <p>
+    Lector separates your data by language. Most endpoints accept a <code>language</code> query
+    parameter. Give it a language pack code, for example <code>af</code>, <code>es</code> or
+    {' '}<code>grc</code>. If you omit it, the API uses the active language of the account.
+  </p>
+
+  <h2 id="errors">Errors</h2>
+  <p>An error carries a JSON body with an <code>error</code> string. These four apply everywhere.</p>
+  <table class="env-table">
+    <thead>
+      <tr><th>Status</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>401</code></td><td>The credential is missing, invalid or expired.</td></tr>
+      <tr><td><code>403</code></td><td>The token does not carry the scope this endpoint needs.</td></tr>
+      <tr><td><code>429</code></td><td>A plan limit or a rate limit stopped the call. The body names the limit.</td></tr>
+      <tr><td><code>500</code></td><td>The API failed.</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Each endpoint lists the other statuses that it answers with. A <code>400</code> means that the
+    body is not valid. A <code>404</code> means that the record does not exist, in this account and
+    this language.
+  </p>
+
+  <h2 id="endpoints">Endpoints</h2>
+  <p>Select a row to read the parameters, the body and the responses.</p>
+  <nav class="api-index">
+    {groups.map((group) => <a href={`#${group.id}`}>{group.name}</a>)}
+  </nav>
+
+  {
+    groups.map((group) => (
+      <section class="api-group">
+        <h3 id={group.id}>{group.name}</h3>
+        {group.description && <p class="api-group-doc">{group.description}</p>}
+        {group.endpoints.map((endpoint) => (
+          <ApiOperation endpoint={endpoint} doc={doc} server={cloud} />
+        ))}
+      </section>
+    ))
+  }
+
+  <h2 id="objects">Objects</h2>
+  <p>The records that the endpoints above return and accept.</p>
+  {
+    schemas.map(([name, schema]) => (
+      <details class="api-op" id={`object-${slug(name)}`}>
+        <summary>
+          <code class="api-path">{name}</code>
+          {' '}
+          <span class="api-summary">{schema.description}</span>
+        </summary>
+        <div class="api-detail">
+          <SchemaFields schema={schema} doc={doc} />
+        </div>
+      </details>
+    ))
+  }
+
+  <h2 id="clients">Generated clients</h2>
+  <p>
+    To get a typed client, point a generator at <a href="/openapi.json">/openapi.json</a>. This
+    command writes a TypeScript client into <code>./lector-client</code>.
+  </p>
+  <pre><code>{`npx @openapitools/openapi-generator-cli generate \\
+  -i https://lector.dev/openapi.json \\
+  -g typescript-fetch \\
+  -o ./lector-client`}</code></pre>
+  <div class="callout">
+    <p>
+      Does this page disagree with the API? Tell us on
+      {' '}<a href="/support/">the support page</a>. The document comes straight out of the route table,
+      so a wrong description is a bug that we can fix.
+    </p>
+  </div>
+</DocsPage>
+
+<style>
+  .scope-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .scope-list li {
+    margin: 0;
+  }
+  .scope-list code {
+    font-size: 0.78rem;
+  }
+  .api-index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .api-index a {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+  }
+  .api-index a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .api-group {
+    margin-bottom: 2.25rem;
+  }
+  .api-group h3 {
+    margin-bottom: 0.25rem;
+  }
+  .api-group-doc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.9rem;
+  }
+</style>

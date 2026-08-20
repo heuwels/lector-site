@@ -1,0 +1,283 @@
+---
+// One endpoint on /docs/api/: a closed row that opens into parameters, the
+// request body, and the responses. Plain <details>, so it needs no JavaScript.
+import ApiField from "./ApiField.astro";
+import SchemaFields from "./SchemaFields.astro";
+import {
+  contentType,
+  curl,
+  errors,
+  inlineParts,
+  jsonSchema,
+  params,
+  successes,
+  typeLabel,
+  type Endpoint,
+  type OpenApiDocument,
+} from "../lib/openapi";
+
+interface Props {
+  endpoint: Endpoint;
+  doc: OpenApiDocument;
+  /** Server the curl example calls. */
+  server: string;
+}
+
+const { endpoint, doc, server } = Astro.props;
+const { method, path, operation, id } = endpoint;
+
+const pathParams = params(operation, doc, "path");
+const queryParams = params(operation, doc, "query");
+const body = operation.requestBody;
+const bodySchema = jsonSchema(body);
+const bodyType = contentType(body);
+const ok = successes(operation);
+const other = errors(operation);
+const scope = operation["x-token-scope"];
+---
+
+<details class="api-op" id={id}>
+  <summary>
+    <span class={`api-method api-method-${method.toLowerCase()}`}>{method}</span>
+    <code class="api-path">{path}</code>
+    <span class="api-summary">{operation.summary}</span>
+    {
+      scope ? (
+        <span class="api-scope"> {scope}</span>
+      ) : (
+        <span class="api-scope api-scope-none"> no token</span>
+      )
+    }
+  </summary>
+
+  <div class="api-detail">
+    {
+      operation.description && (
+        <p class="api-description">
+          {inlineParts(operation.description).map((part) =>
+            part.code ? <code>{part.text}</code> : part.text,
+          )}
+        </p>
+      )
+    }
+
+    {
+      pathParams.length > 0 && (
+        <>
+          <h4>Path parameters</h4>
+          <ul class="api-params">
+            {pathParams.map((param) => (
+              <ApiField
+                name={param.name ?? ""}
+                type={typeLabel(param.schema, doc)}
+                required
+                description={param.description}
+              />
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {
+      queryParams.length > 0 && (
+        <>
+          <h4>Query parameters</h4>
+          <ul class="api-params">
+            {queryParams.map((param) => (
+              <ApiField
+                name={param.name ?? ""}
+                type={typeLabel(param.schema, doc)}
+                required={param.required}
+                description={param.description}
+              />
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {
+      body && (
+        <>
+          <h4>
+            Request body
+            {bodyType && bodyType !== "application/json" && (
+              <>
+                {' '}
+                <span class="api-ctype">{bodyType}</span>
+              </>
+            )}
+          </h4>
+          {bodySchema?.description && (
+            <p class="api-note">
+              {inlineParts(bodySchema.description).map((part) =>
+                part.code ? <code>{part.text}</code> : part.text,
+              )}
+            </p>
+          )}
+          <SchemaFields schema={bodySchema} doc={doc} />
+        </>
+      )
+    }
+
+    <h4>Responses</h4>
+    <ul class="api-responses">
+      {
+        ok.map(([status, response]) => (
+          <li>
+            <span class="api-status api-status-ok">{status}</span>
+            <span class="api-status-doc"> {response.description}</span>
+            {jsonSchema(response) && (
+              <span class="field-type"> {typeLabel(jsonSchema(response), doc)}</span>
+            )}
+            <SchemaFields schema={jsonSchema(response)} doc={doc} />
+          </li>
+        ))
+      }
+      {
+        other.map(([status, response]) => (
+          <li>
+            <span class="api-status">{status}</span>
+            <span class="api-status-doc"> {response.description}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h4>Example</h4>
+    <pre><code>{curl(endpoint, doc, server)}</code></pre>
+  </div>
+</details>
+
+<style>
+  .api-op {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    background: var(--card-bg);
+  }
+  .api-op[open] {
+    box-shadow: var(--card-shadow);
+  }
+  .api-op summary {
+    cursor: pointer;
+    padding: 0.65rem 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    list-style: none;
+  }
+  .api-op summary::-webkit-details-marker {
+    display: none;
+  }
+  .api-op summary:hover .api-path {
+    text-decoration: underline;
+  }
+  .api-method {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    min-width: 3.6rem;
+    text-align: center;
+  }
+  .api-method-get {
+    color: var(--accent);
+  }
+  .api-method-delete {
+    color: #b4462f;
+  }
+  :root[data-theme='dark'] .api-method-delete {
+    color: #e08a74;
+  }
+  .api-path {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    background: none;
+    padding: 0;
+  }
+  .api-summary {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+  .api-scope {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  .api-scope-none {
+    opacity: 0.6;
+  }
+  .api-detail {
+    padding: 0 0.9rem 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .api-detail h4 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 1.1rem 0 0.2rem;
+  }
+  .api-ctype {
+    font-family: var(--font-mono);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+  }
+  .api-description,
+  .api-note {
+    margin: 0.9rem 0 0;
+    font-size: 0.92rem;
+  }
+  .api-note {
+    color: var(--text-muted);
+  }
+  .api-params,
+  .api-responses {
+    list-style: none;
+    margin: 0.35rem 0 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  .api-responses li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+  }
+  .api-responses li:last-child {
+    border-bottom: none;
+  }
+  .field-type {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .api-status {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--text-muted);
+  }
+  .api-status-ok {
+    color: var(--accent);
+  }
+  .api-status-doc {
+    margin-left: 0.5rem;
+  }
+  .api-detail pre {
+    margin-top: 0.4rem;
+    margin-bottom: 0;
+  }
+</style>
