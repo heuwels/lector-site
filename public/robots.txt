@@ -34,3 +34,6 @@ User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://lector.dev/sitemap-index.xml
+
+# Machine-readable summary for answer engines
+# https://lector.dev/llms.txt

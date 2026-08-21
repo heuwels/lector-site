@@ -57,6 +57,7 @@ const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
 
     <!-- OpenGraph / Twitter -->
     <meta property="og:type" content={ogType} />
