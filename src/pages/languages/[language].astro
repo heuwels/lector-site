@@ -37,6 +37,14 @@ const stats = [
   { label: "To proficiency", value: guide.approxHours },
 ];
 
+// Only Afrikaans ships a downloadable deck and frequency list of our own. Every
+// other pack's reference data is provenance and counts, so the card must not
+// promise a download that is not there.
+const referenceDataBlurb =
+  lang.downloads.length > 0
+    ? "Frequency lists and Anki decks built from open corpora — free to download and use."
+    : `Where the ${langName} dictionary and cloze bank come from, with counts and full licensing.`;
+
 const schema = [
   faqPageSchema(guide.faqs),
   courseSchema({
@@ -231,9 +239,9 @@ const schema = [
         <Eyebrow>Free resources</Eyebrow>
         <Subheading>Free resources to get you started.</Subheading>
         <Text class="text-pretty">
-          The {langName} reference data and Anki decks below are free to download
-          and use on their own. To turn them into a full reading course, self-host
-          Lector for free or start on the cloud from $5/mo.
+          The {langName} reference data below is free to use on its own. To turn it
+          into a full reading course, self-host Lector for free or start on the
+          cloud from $5/mo.
         </Text>
       </div>
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -245,8 +253,7 @@ const schema = [
             {langName} reference data
           </h3>
           <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-            Frequency lists and Anki decks built from open corpora — free to
-            download and use.
+            {referenceDataBlurb}
           </p>
           <ActionLink href={`/reference-data/${lang.slug}/`} class="mt-2">
             Browse the data

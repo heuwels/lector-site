@@ -18,6 +18,16 @@ const guided = languages
     langName: l.name.split("→")[0].trim(),
   }));
 
+// Built from the list, not written out, so a new guide cannot leave the meta
+// description naming five languages when the page shows fourteen. Only the first
+// few are named, because a search result truncates at about 160 characters and a
+// full list would push the sentence that matters off the end.
+const NAMED = 5;
+const description = `Guides to learning ${guided
+  .slice(0, NAMED)
+  .map((l) => l.langName)
+  .join(", ")} and ${guided.length - NAMED} more by reading real texts — how hard each is, how long it takes, and how to start for free.`;
+
 const schema = [
   breadcrumbSchema([
     { name: "Lector", url: "/" },
@@ -28,7 +38,7 @@ const schema = [
 
 <Base
   title="Learn a language by reading | Lector"
-  description="Guides to learning Afrikaans, Dutch, French, Spanish, and German by reading real texts — how hard each is, how long it takes, and how to start for free."
+  description={description}
   schema={schema}
 >
   <!-- Hero -->
