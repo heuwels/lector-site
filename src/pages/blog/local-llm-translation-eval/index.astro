@@ -1,7 +1,8 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
-<Base title="Which local LLM translates best? A reproducible eval">
+<Base title="Which local LLM translates best? A reproducible eval" description="A reproducible benchmark of 24 on-device, self-hosted, and cloud models translating into English, with Afrikaans as the low-resource case. A local 18 GB model ties frontier cloud on Afrikaans to English." ogType="article" schema={articleSchema({ headline: "Which local LLM translates best? A reproducible eval", description: "A reproducible benchmark of 24 on-device, self-hosted, and cloud models translating into English, with Afrikaans as the low-resource case. A local 18 GB model ties frontier cloud on Afrikaans to English.", url: "/blog/local-llm-translation-eval/", datePublished: "2026-06-19", dateModified: "2026-06-19" })}>
 <style is:global>
 /* palette mapped onto the site's olive / sage Tailwind theme (@theme in global.css).
    Categorical + semantic chart colours (language dots, tier dots, warn/delta reds)

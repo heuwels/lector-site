@@ -152,6 +152,8 @@ export function articleSchema(opts: {
   description: string;
   url: string;
   keywords?: string[];
+  datePublished?: string;
+  dateModified?: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -161,6 +163,8 @@ export function articleSchema(opts: {
     url: opts.url.startsWith("http") ? opts.url : `${SITE}${opts.url}`,
     author: { "@type": "Organization", name: "Lector", url: SITE },
     publisher: { "@type": "Organization", name: "Lector", url: SITE },
+    ...(opts.datePublished ? { datePublished: opts.datePublished } : {}),
+    ...(opts.dateModified ? { dateModified: opts.dateModified } : {}),
     ...(opts.keywords ? { keywords: opts.keywords.join(", ") } : {}),
   };
 }

@@ -1,7 +1,8 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
-<Base title="Run translations locally with LM Studio | Lector" description="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud.">
+<Base title="Run translations locally with LM Studio | Lector" description="Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud." ogType="article" schema={articleSchema({ headline: "Run translations locally with LM Studio", description: "Point Lector's AI translation at a local LLM running in LM Studio. A step-by-step guide using Lector's OpenAI-compatible provider. No API keys, no cloud.", url: "/blog/lm-studio-translation-agent/", datePublished: "2026-06-19", dateModified: "2026-06-19" })}>
 
 <header class="docs-header">
   <div class="container">
