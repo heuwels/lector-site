@@ -524,12 +524,39 @@ export const languages: Language[] = [
     name: "Mandarin → English",
     endonym: "中文",
     flag: "🇨🇳",
-    status: "coming-soon",
-    roadmapIssue: 213,
-    blurb: "On the roadmap — pending reader support for its script.",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Mandarin. Chinese writes no spaces, so the reader splits each sentence into words before you tap one: 我喜欢读书 reads as 我 · 喜欢 · 读书, not five loose characters. Because a character does not show how it sounds, pinyin sits above every word while you read, and each reading retires once you mark that word known. Entries are keyed on Simplified, and Traditional resolves to the same entry, so 這 and 这 both answer zhè.",
     downloads: [],
-    stats: [],
-    sources: [],
+    stats: [
+      { label: "Dictionary", value: "145,875 entries" },
+      { label: "English senses", value: "220,906" },
+      { label: "Pinyin readings", value: "145,361" },
+      { label: "Cloze bank", value: "7,967 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and pinyin",
+        detail:
+          "Chinese Wiktionary entries extracted through Kaikki.org. Every entry carries its Standard Mandarin pinyin, and Traditional headwords are filed as aliases of the Simplified form they convert to.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Chinese/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Mandarin–English sentence pairs from Tatoeba, segmented with jieba, frequency-ranked with wordfreq and filtered against the on-device dictionary. Traditional-script rows are excluded.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+      {
+        label: "Script conversion and readings",
+        detail:
+          "OpenCC decides the Traditional-to-Simplified key for every entry, and pypinyin ranks the reading a character takes when it has several. Both run at build time, so neither ships in the app.",
+        license: "Apache-2.0 (OpenCC), MIT (pypinyin)",
+        url: "https://github.com/BYVoid/OpenCC",
+      },
+    ],
   },
   {
     slug: "japanese",
