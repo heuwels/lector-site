@@ -1,0 +1,429 @@
+---
+import Base from "../../../layouts/Base.astro";
+---
+
+<!-- Whitespace note: Astro's HTML compressor trims the edges of every text
+     node, so a line break next to an inline tag deletes the space there
+     ("mining:<strong>"). Keep <strong>, <em> and <a> on the same source line as
+     the words either side of them; only break lines mid-text. -->
+<Base
+  title="Mandarin, Japanese and Korean: three scripts, three different problems | Lector"
+  description="Lector now reads Mandarin, Japanese and Korean. Each script broke the reader in a different way, and each needed a different fix: segmentation, a morphological analyser, and a postposition peel."
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb">
+        <a href="/">lector</a> / <a href="/blog/">blog</a> / mandarin, japanese &amp;
+        korean
+      </p>
+      <h1>
+        Mandarin, Japanese and Korean: three scripts, three different problems
+      </h1>
+      <p class="post-meta">
+        21 August 2026 &middot; 8 min read &middot; Release
+      </p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="docs-layout">
+      <main class="docs-body">
+        <p>
+          Lector now reads <strong>Mandarin</strong>, <strong>Japanese</strong> and
+          <strong>Korean</strong>. Between them, those three account for almost
+          every learner who studies an East Asian language.
+        </p>
+
+        <p>
+          I expected this to be simple. Add the hard one first (Mandarin), then
+          the next two would be a piece of cake. Unfortunately, I was mistaken.
+          Each language broke the reader in a unique way.
+        </p>
+
+        <h2 id="problem">
+          The shared problem, and where it stops being shared
+        </h2>
+
+        <p>
+          The core feature of the product is the reading loop. Given the text on
+          screen, find the word the reader tapped, then find that word in the
+          dictionary. English makes this easy because words are delimited by
+          spaces, and the spelling of the word matches the dictionary.
+        </p>
+
+        <p>
+          Mandarin breaks the first step, Korean breaks the second, and Japanese
+          breaks both
+        </p>
+
+        <h2 id="mandarin">Mandarin: find the words</h2>
+
+        <p>
+          Chinese writes no spaces. 我喜欢读书 is five characters and three
+          words, but a reader who taps 喜 wants 喜欢. So, the reader segments
+          each sentence before you tap anything. The words come from the
+          browser's own Unicode segmenter rather than a bundled model.
+        </p>
+
+        <p>
+          The second Mandarin problem is that a character does not tell you how
+          it sounds. So <strong
+            >pinyin sits above every word while you read</strong
+          >, and each reading retires once you mark that word known. The
+          annotation thins out as you improve, which is the whole point.
+        </p>
+
+        <p>
+          The dictionary took two rounds to get right. Entries are keyed on
+          Simplified, and the build took that key from the dump's own Simplified
+          rows. That sounds reasonable, but it's not. A row tagged <em
+            >alternative</em
+          > gives the Simplified spelling of a different character rather than of
+          the headword.
+        </p>
+
+        <p>
+          今 lists 当 as an alternative, so 今 claimed the key 当. 8,358 keys
+          were claimed that way, and the honest entries were displaced. 这
+          answered <em>chī</em>.
+        </p>
+
+        <p>
+          A second bug was subtler. A Han character carries several readings,
+          and the build kept whichever it met first, so 的 shipped as <em>di</em
+          >. 的 is the most frequent character in Chinese, which means the
+          reader printed a wrong reading above almost every sentence. Both are
+          fixed, and the build now fails if any of 26 named words comes out with
+          the wrong pronunciation. Coverage was healthy through both bugs, which
+          highlights the importance of that integrity check.
+        </p>
+
+        <h2 id="japanese">Japanese: the words are not in the dictionary</h2>
+
+        <p>
+          Japanese writes no spaces either, so I pointed the same segmenter at
+          it and most of the language held up. Nouns, adjectives, katakana and
+          numerals all stay whole. 日本語, 図書館, 毎日 and コーヒー are each
+          one token, and every particle is separate, so a tap on 日本語 does not
+          return 日本語を.
+        </p>
+
+        <p><strong>Conjugated verbs snapped.</strong></p>
+
+        <table class="env-table">
+          <thead>
+            <tr><th>Written</th><th>Segmented as</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>読んでいました</td><td>読 | んで | いま | した</td></tr>
+            <tr
+              ><td>食べられなかった</td><td>食 | べら | れ | なか | った</td
+              ></tr
+            >
+            <tr><td>飲みます</td><td>飲 | み | ます</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          The segmenter knows where a noun ends and does not model verb
+          morphology, so it cut the kanji stem away from its okurigana. Neither
+          half is a word by itself. No dictionary entry matches 読 or んで, so
+          tapping a verb answered nothing and the furigana above it was blank.
+        </p>
+
+        <p>
+          Japanese now runs through a real morphological analyser instead, with
+          the IPADIC dictionary. 読んでいました stays whole. The analyser loads
+          once per session, takes about a quarter of a second, and adds 17 MB to
+          the image.
+        </p>
+
+        <p>
+          It also solved a problem I had been about to solve badly. <strong
+            >A Japanese reading depends on the sentence around it.</strong
+          > 本 is <em>ほん</em> in 本を読む and <em>もと</em> in 本を正す. A dictionary
+          holds one reading per headword, so no dictionary can answer that question,
+          and it holds no headword for 読ん at all. The analyser reads the word in
+          place, so the furigana follows the context rather than the entry.
+        </p>
+
+        <p>
+          I tried to avoid the analyser first. I built a ranking that picked a
+          single character's most likely reading from how it behaves in
+          compounds. It was confidently wrong. It chose <em>すい</em> for 水 over
+          <em>みず</em>, and <em>こく</em> for 国 over <em>くに</em>. Both of
+          those are the Sino-Japanese reading, where a learner reading a
+          sentence wants the native one.
+        </p>
+
+        <p>
+          I threw it away. It is much easier to ship a plausible wrong answer in
+          a language you cannot read. That is the argument for measuring instead
+          of trusting your eye.
+        </p>
+
+        <h2 id="korean">
+          Korean: the words are in the dictionary, under a different spelling
+        </h2>
+
+        <p>
+          Korean looked like the hard one and was the easy one, for a reason I
+          only found by checking rather than assuming.
+        </p>
+
+        <p>
+          Korean writes spaces, so the segmenter has nothing to do. And the
+          Wiktionary dump <strong>enumerates Korean conjugation</strong>: 먹다
+          lists 먹어요, 먹습니다, 먹었어요 and 먹었습니다 as its own forms. So
+          the machinery that resolves <em>katte</em> to <em>kat</em> in Afrikaans
+          resolves 먹었어요 to 먹다 with no new code at all. Japanese needed an analyser
+          precisely because its dump does not do this.
+        </p>
+
+        <p>
+          What Korean does need is a peel. Korean attaches its grammar to the
+          word with no space, and the dump enumerates none of that:
+        </p>
+
+        <table class="env-table">
+          <thead>
+            <tr><th>Written</th><th>Holds</th><th>Dictionary key</th></tr>
+          </thead>
+          <tbody>
+            <tr
+              ><td>도서관에서</td><td>도서관 + the locative 에서</td><td
+                >도서관</td
+              ></tr
+            >
+            <tr
+              ><td>도서관에서는</td><td>도서관 + 에서 + the topic 는</td><td
+                >도서관</td
+              ></tr
+            >
+            <tr
+              ><td>학생들은</td><td>학생 + the plural 들 + 은</td><td>학생</td
+              ></tr
+            >
+            <tr><td>사람입니다</td><td>사람 + the copula</td><td>사람</td></tr>
+            <tr
+              ><td>좋아하지</td><td>the stem of 좋아하다 + 지</td><td
+                >좋아하다</td
+              ></tr
+            >
+          </tbody>
+        </table>
+
+        <p>
+          Note that the last row works differently from the others. A
+          postposition attaches to a finished word, so peeling it leaves a key
+          you can look up as it stands. A verb ending does not: 좋아하 is a stem
+          and not a word, and the dictionary form is 좋아하다, so that peel has
+          to put the 다 back.
+        </p>
+
+        <p>
+          Here is what each layer bought, measured against 5,000 real Korean
+          word-with-particles units taken from Tatoeba:
+        </p>
+
+        <table class="env-table">
+          <thead>
+            <tr><th>Resolved by</th><th>Share of the text</th></tr>
+          </thead>
+          <tbody>
+            <tr
+              ><td>The dictionary key, or the conjugation table</td><td
+                >50.3%</td
+              ></tr
+            >
+            <tr><td>&hellip; plus postpositions</td><td>83.5%</td></tr>
+            <tr
+              ><td>&hellip; plus the plural and the copula</td><td>86.2%</td
+              ></tr
+            >
+            <tr><td>&hellip; plus connective verb endings</td><td>93.5%</td></tr
+            >
+          </tbody>
+        </table>
+
+        <p>
+          That first row is the number that matters. Without the peel, half of
+          every Korean page is untappable, and it is the half carrying the
+          grammar.
+        </p>
+
+        <p>
+          The peel runs <em>last</em>. The exact spelling and the conjugation
+          table both get their turn first, because Korean is full of words that
+          are also particles. 보다 is the verb <em>to see</em> and also <em
+            >than</em
+          >. 나 is <em>I</em> and also <em>or</em>. 도 is a province and also <em
+            >too</em
+          >.
+        </p>
+
+        <p>A real word has to win before anything comes off the end of it.</p>
+
+        <p>
+          One more Korean detail, and it stays invisible until it is wrong.
+          Hangul syllables carry no break opportunity of their own, so a browser
+          breaks a Korean line anywhere it likes. 도서관에서 can land as
+          도서관에, with 서 alone on the next line. Korean has real break points
+          at its spaces, so the reader now holds each unit together and breaks
+          between them.
+        </p>
+
+        <p>
+          Korean needs no reading above the text, and that is a feature of the
+          script rather than a gap in the pack. Hangul tells you how it sounds.
+          It is the only writing system in wide use that was deliberately
+          designed, and this is what the design bought.
+        </p>
+
+        <h2 id="depth">What the three packs contain</h2>
+
+        <table class="env-table">
+          <thead>
+            <tr
+              ><th>&nbsp;</th><th>Mandarin</th><th>Japanese</th><th>Korean</th
+              ></tr
+            >
+          </thead>
+          <tbody>
+            <tr
+              ><td>Dictionary entries</td><td>145,875</td><td>91,339</td><td
+                >50,403</td
+              ></tr
+            >
+            <tr
+              ><td>English senses</td><td>220,906</td><td>146,092</td><td
+                >65,760</td
+              ></tr
+            >
+            <tr
+              ><td>Inflected forms</td><td>112,601</td><td>250,719</td><td
+                >349,497</td
+              ></tr
+            >
+            <tr
+              ><td>Reading above the text</td><td>pinyin</td><td>furigana</td
+              ><td>not needed</td></tr
+            >
+            <tr
+              ><td>Cloze sentence bank</td><td>7,967</td><td>&mdash;</td><td
+                >&mdash;</td
+              ></tr
+            >
+            <tr
+              ><td>Dictionary coverage</td><td>97.0%</td><td>90.6%</td><td
+                >93.5%</td
+              ></tr
+            >
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Do not read that last row as a ranking.</strong> Coverage asks how
+          much of a typical text the dictionary resolves. For Mandarin and Japanese
+          the sample is a frequency list of words. For Korean it cannot be. The standard
+          frequency list for Korean is a list of <em>morphemes</em>. Its most
+          common entries are 이, 는, 을 and 하, and 하 is the stem of 하다
+          rather than a word anyone taps.
+        </p>
+
+        <p>
+          So Korean is scored against whole units of running text instead,
+          particles attached. That is a harder test than the other two sit. All
+          three numbers are honest, and they are not measured the same way.
+        </p>
+
+        <p>
+          The empty cells are real. Mandarin ships a cloze bank built from
+          Tatoeba, so practice has sentences waiting on day one. Japanese and
+          Korean do not have one yet, so their practice draws on the sentences
+          in the lessons you read. That is the next job on both.
+        </p>
+
+        <h2 id="limits">Where they still fall short</h2>
+
+        <p>
+          Japanese draws furigana above a conjugated verb and cannot yet define
+          one. The analyser reports that 読んでいました is a form of 読む. The
+          lookup does not use that answer yet, so the reading is right and the
+          tap comes back empty. It is the first thing on the list.
+        </p>
+
+        <p>
+          Korean's remaining 6.5% is four separate problems rather than one long
+          list. The biggest is an ending that fuses into the syllable before it.
+          될 is 되 plus ㄹ written as one character, and no amount of trimming
+          the end of a string reaches 되다. The others are auxiliary compounds
+          (도와줄게), contractions (그걸 for 그것을), and words the writer ran
+          together without a space.
+        </p>
+
+        <p>
+          One of those four fails in a worse way than the rest, and it is worth
+          naming. A fused ending sometimes lands on a real word rather than on
+          nothing. 갈 in 밥을 먹으러 갈 때 is 가다 plus ㄹ, and the dictionary
+          holds a different 갈 that means <em>common reed</em>. So the reader
+          answers confidently and wrongly, which is worse for a learner than
+          answering nothing at all. Ranking two valid answers needs a frequency
+          signal that the Korean pack does not carry yet.
+        </p>
+
+        <p>
+          Mandarin segments with the browser's segmenter, and the cloze bank was
+          built with jieba. The two disagree on some boundaries, so a tap
+          sometimes selects the wrong word.
+        </p>
+
+        <h2 id="next">What I took away from it</h2>
+
+        <p>
+          The useful lesson was about order of operations. On Japanese I assumed
+          the problem was the dictionary. I spent a day building a ranking to
+          fix it, and the real problem was the segmentation upstream. On Korean
+          I assumed I needed the same analyser, and I checked the dump first.
+          The check took ten minutes and saved the whole job.
+        </p>
+
+        <p>
+          Every one of these packs is a filter over a public Wiktionary dump.
+          Each filter came from counting what sits in the file, and not from
+          what I know about the language. That is just as well, because I do not
+          read any of the three.
+        </p>
+
+        <p>
+          For self-hosters, all three dictionaries run on your own instance, so
+          a lookup never leaves the machine. Every pack is pinned by checksum
+          and baked into the image at build time.
+        </p>
+
+        <p>
+          To ask for a language, use the form on the <a href="/#notify"
+            >home page</a
+          >. For anything else, the <a href="https://discord.gg/XBEnx2ZWd5"
+            >Discord</a
+          > is open.
+        </p>
+
+        <p style="margin-top:2rem;">
+          <a href="/blog/">&larr; Back to the blog</a>
+        </p>
+      </main>
+
+      <nav class="docs-toc">
+        <h4>On this page</h4>
+        <a href="#problem">The shared problem</a>
+        <a href="#mandarin">Mandarin: find the words</a>
+        <a href="#japanese">Japanese: the words are not in the dictionary</a>
+        <a href="#korean">Korean: a different spelling</a>
+        <a href="#depth">What the packs contain</a>
+        <a href="#limits">Where they fall short</a>
+        <a href="#next">What I took away</a>
+      </nav>
+    </div>
+  </div>
+</Base>
