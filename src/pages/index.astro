@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Container from "../components/Container.astro";
 import Eyebrow from "../components/Eyebrow.astro";
@@ -8,11 +9,18 @@ import Text from "../components/Text.astro";
 import Button from "../components/Button.astro";
 import ActionLink from "../components/ActionLink.astro";
 import Faqs from "../components/Faqs.astro";
+import Screenshot from "../components/Screenshot.astro";
 import { languages } from "../data/languages";
 import LanguageNotify from "../components/LanguageNotify.astro";
 import { languageGuides } from "../data/languageGuides";
 import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
 import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
+import readerImg from "../../public/images/reader.png";
+import youtubeImg from "../../public/images/youtube-transcript-reader.png";
+import clozeImg from "../../public/images/cloze.png";
+import ankiImg from "../../public/images/anki.png";
+import chatImg from "../../public/images/chat.png";
+import libraryImg from "../../public/images/library-groups.png";
 
 // Feature "moments" — each pairs a real screenshot with a capability. Rendered
 // as alternating rows; screenshots live in /public/images.
@@ -21,42 +29,42 @@ const moments = [
     eyebrow: "Read",
     title: "Turn any book into a lesson.",
     body: "Lector imports an EPUB file, an article you paste, or a page from a URL. It colours every word by how well you know it: new, learning, or known. For an instant translation on your device, click any word. For rare words, a large language model (LLM) does the translation.",
-    img: "/images/reader.png",
+    img: readerImg,
     alt: "The Lector reader with a novel, colour-coded word states, and click-to-translate",
   },
   {
     eyebrow: "Listen",
     title: "Read along with video and audio.",
     body: "Paste a YouTube URL and choose a caption track. Lector imports the transcript, and every line keeps its timestamp. Click a line to move the player to that moment. Lector never downloads or hosts the video. You can also upload a podcast episode. A Whisper model transcribes it, and the current sentence highlights as the audio plays.",
-    img: "/images/youtube-transcript-reader.png",
+    img: youtubeImg,
     alt: "A YouTube transcript in Lector with the embedded player and timestamped lines",
   },
   {
     eyebrow: "Practice",
     title: "Practise the words that matter first.",
     body: "Lector holds thousands of Tatoeba sentence pairs. It orders them by frequency, so you learn the words you meet most often. You practise with multiple-choice questions or by typing the answer. A spaced-repetition system returns each sentence to you just before you forget it.",
-    img: "/images/cloze.png",
+    img: clozeImg,
     alt: "Cloze practice with multiple-choice options and mastery tracking",
   },
   {
     eyebrow: "Remember",
     title: "Mine vocabulary. Sync it with Anki.",
     body: "Save words as you read. Lector adds them to your vocabulary database and records the known and learning states. Send mined words and phrases to Anki as Basic or Cloze cards. The Lector add-on also syncs reviews back. The add-on is in beta. When you grade a card in Anki, Lector updates the mastery of that word.",
-    img: "/images/anki.png",
+    img: ankiImg,
     alt: "The export-to-Anki dialog with the Basic and Cloze card types",
   },
   {
     eyebrow: "Understand",
     title: "A tutor for your questions, and an editor for your writing.",
     body: "Ask the built-in tutor your grammar questions in plain language. Keep a journal in your target language. The tutor gives you inline corrections with explanations. It also shows the text before and after each correction. The tutor works with the Claude API or with a local model.",
-    img: "/images/chat.png",
+    img: chatImg,
     alt: "The tutor chat with a grammar conversation",
   },
   {
     eyebrow: "Organise",
     title: "A library that stays tidy.",
     body: "Group your collections in the way you think about them. Drag a collection to reorder it. Drop new books straight into a group. Lector records the reading progress of each collection, so you always know your position.",
-    img: "/images/library-groups.png",
+    img: libraryImg,
     alt: "Library organised into collapsible groups with drag-to-reorder and reading progress",
   },
 ];
@@ -155,12 +163,20 @@ const faqs = [
       "Lector does the work of both LingQ and Clozemaster in one place. It keeps all your known words in one vocabulary database, and not spread across separate services. You still own your cards in Anki. Lector gives you LingQ-style reading with click-to-translate, Clozemaster-style frequency cloze, two-way Anki sync, an LLM tutor, and a writing journal. You run one app on your own server, and you own your data. See the full comparisons: <a href='/vs/lingq/'>Lector vs LingQ</a>, <a href='/vs/clozemaster/'>Lector vs Clozemaster</a>, <a href='/vs/lute/'>Lector vs Lute</a>, <a href='/vs/linguacafe/'>Lector vs LinguaCafe</a>, and <a href='/vs/freelingo/'>Lector vs FreeLingo</a>.",
   },
 ];
+
+const lcpImage = await getImage({
+  src: readerImg,
+  width: 640,
+  format: "avif",
+  quality: 70,
+});
 ---
 
 <Base
   title="Lector | a self-hosted reader for language learners"
   description="A self-hosted reader for language learners, with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. You keep your books and your data."
   schema={[softwareApplicationSchema(), faqPageSchema(faqs)]}
+  lcpImage={lcpImage.src}
 >
   <!-- Hero -->
   <section class="pt-14 pb-20 sm:pt-20">
@@ -189,13 +205,12 @@ const faqs = [
       <div
         class="mx-auto max-w-5xl rounded-2xl bg-olive-950/2.5 p-2 ring-1 ring-olive-950/5 dark:bg-white/5 dark:ring-white/10"
       >
-        <img
-          src="/images/reader.png"
+        <Screenshot
+          src={readerImg}
           alt="Lector reader view with click-to-translate and word-state colouring"
-          width="1600"
-          height="1000"
-          data-zoomable
-          class="w-full rounded-xl ring-1 ring-black/10"
+          eager
+          sizes="(min-width: 1024px) 64rem, calc(100vw - 3rem)"
+          widths={[640, 960, 1280]}
         />
       </div>
     </Container>
@@ -217,12 +232,11 @@ const faqs = [
               <Text class="text-pretty">{m.body}</Text>
             </div>
             <div class:list={[i % 2 === 1 && "lg:order-1"]}>
-              <img
+              <Screenshot
                 src={m.img}
                 alt={m.alt}
-                loading="lazy"
-                data-zoomable
-                class="w-full rounded-xl ring-1 ring-black/10"
+                sizes="(min-width: 1024px) 32rem, calc(100vw - 4rem)"
+                widths={[640, 960, 1280]}
               />
             </div>
           </div>
