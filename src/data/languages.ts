@@ -215,6 +215,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "indonesian",
+    name: "Indonesian → English",
+    endonym: "Bahasa Indonesia",
+    flag: "🇮🇩",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Indonesian. Official spelling has no diacritics and almost no inflection. Reduplicated plurals stay one word (buku-buku), and lookups peel voice prefixes and possessive clitics (membeli → beli, namanya → nama).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "34,251 entries" },
+      { label: "English senses", value: "57,766" },
+      { label: "Inflections", value: "28,750" },
+      { label: "Cloze bank", value: "7,220 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Indonesian Wiktionary entries extracted through Kaikki.org, including form-of records for derived meN-/ber-/di-/ter- verbs. Lookups also peel those prefixes and the possessive clitics -nya/-ku/-mu when the dump has no row for the written form.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Indonesian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Indonesian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "german",
     name: "German → English",
     endonym: "Deutsch",
@@ -593,40 +625,52 @@ export const languages: Language[] = [
     sources: [],
   },
   {
-    slug: "indonesian",
-    name: "Indonesian → English",
-    endonym: "Bahasa Indonesia",
-    flag: "🇮🇩",
-    status: "coming-soon",
-    roadmapIssue: 257,
-    blurb: "On the roadmap — pending a language pack.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
     slug: "japanese",
     name: "Japanese → English",
     endonym: "日本語",
     flag: "🇯🇵",
-    status: "coming-soon",
+    status: "partial",
     roadmapIssue: 214,
-    blurb: "On the roadmap — pending reader support for its script.",
+    blurb:
+      "Reader and on-device dictionary ship today. Furigana sits above kanji, and a morphological analyser keeps conjugated verbs whole. The cloze bank is the remaining work.",
     downloads: [],
-    stats: [],
-    sources: [],
+    stats: [
+      { label: "Dictionary", value: "91,339 entries" },
+      { label: "English senses", value: "146,092" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and furigana",
+        detail:
+          "Japanese Wiktionary entries extracted through Kaikki.org. Readings come from the canonical ruby row, not from phonetic sounds[].",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Japanese/",
+      },
+    ],
   },
   {
     slug: "korean",
     name: "Korean → English",
     endonym: "한국어",
     flag: "🇰🇷",
-    status: "coming-soon",
+    status: "partial",
     roadmapIssue: 258,
-    blurb: "On the roadmap — pending reader support for its script.",
+    blurb:
+      "Reader and on-device dictionary ship today. Lookups peel postpositions and connective endings off an eojeol (도서관에서 → 도서관). The cloze bank is the remaining work.",
     downloads: [],
-    stats: [],
-    sources: [],
+    stats: [
+      { label: "Dictionary", value: "50,403 entries" },
+      { label: "English senses", value: "65,760" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Korean Wiktionary entries extracted through Kaikki.org, including the finite conjugation tables. Postpositions and connective endings resolve through a peel at lookup time.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Korean/",
+      },
+    ],
   },
   {
     slug: "biblical-hebrew",
