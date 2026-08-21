@@ -12,6 +12,7 @@ export interface NavLink {
 export const SITE_PAGES: NavLink[] = [
   { href: "/docs/", label: "Docs" },
   { href: "/languages/", label: "Languages" },
+  { href: "/vs/", label: "Compare" },
   { href: "/for/greek-hebrew/", label: "Greek & Hebrew" },
   { href: "/pricing/", label: "Pricing" },
   { href: "/blog/", label: "Blog" },
