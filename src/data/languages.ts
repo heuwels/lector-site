@@ -519,6 +519,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "swedish",
+    name: "Swedish → English",
+    endonym: "Svenska",
+    flag: "🇸🇪",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Swedish. Nouns take a definite suffix (hus → huset → husen), and two genders split the indefinite article (en bok, ett hus). The on-device dictionary carries those forms plus the å/ä/ö letters. Solid compounds stay one word (sjukhusparkering).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "301,652 entries" },
+      { label: "English senses", value: "358,170" },
+      { label: "Inflections", value: "250,209" },
+      { label: "Cloze bank", value: "8,854 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Swedish Wiktionary entries extracted through Kaikki.org, including form-of records for the definite suffix, plurals, and verb forms.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Swedish/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Swedish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "esperanto",
     name: "Esperanto → English",
     endonym: "Esperanto",
