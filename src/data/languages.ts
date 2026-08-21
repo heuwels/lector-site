@@ -1,5 +1,15 @@
-// Registry of supported languages. Drives the homepage, docs, and
+// Registry of supported languages. Drives the homepage, docs, /languages/ and
 // /reference-data/ pages (the index and one page per entry below).
+//
+// ORDER MATTERS, and it is not arbitrary: every consumer renders this array as
+// it stands, so this order decides which language a visitor sees first. Supported
+// languages come first, then the roadmap, and inside each group the order is by
+// TOTAL speakers worldwide (first language plus second language) so prominence
+// tracks how many people actually speak each one. Languages with no comparable
+// count — Esperanto, Koine Greek, Biblical Hebrew, Latin — sit at the end of
+// their group. src/data/languageGuides.ts holds the same order; keep them in
+// step, and put a new entry where its speaker count belongs rather than at the
+// bottom.
 
 export interface Download {
   label: string;
@@ -60,58 +70,41 @@ export interface Language {
 
 export const languages: Language[] = [
   {
-    slug: "afrikaans",
-    name: "Afrikaans → English",
-    endonym: "Afrikaans",
-    flag: "🇿🇦",
+    slug: "mandarin",
+    name: "Mandarin → English",
+    endonym: "中文",
+    flag: "🇨🇳",
     status: "complete",
     blurb:
-      "Frequency-banded vocabulary and a downloadable Anki deck, built from a blend of Afrikaans Wikipedia (written) and OpenSubtitles (spoken). The most complete language pack.",
-    downloads: [
-      {
-        label: "Anki deck — frequency-banded",
-        file: "/reference-data/afrikaans/afrikaans-frequency.apkg",
-        size: "2.4 MB",
-        format: "APKG",
-        license: "CC BY-SA 4.0",
-        note: "9,066 cards across six frequency sub-decks (Core → Marginal). Afrikaans → English recognition cards. Glosses from Wiktionary.",
-      },
-      {
-        label: "Word frequency list",
-        file: "/reference-data/afrikaans/afrikaans-word-frequency.csv",
-        size: "15 MB",
-        format: "CSV",
-        license: "CC BY-SA 4.0",
-        note: "443,747 words ranked by Afrikaans Wikipedia frequency, with raw counts, Zipf scores, and a proper-noun flag.",
-      },
-    ],
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Mandarin. Chinese writes no spaces, so the reader splits each sentence into words before you tap one: 我喜欢读书 reads as 我 · 喜欢 · 读书, not five loose characters. Because a character does not show how it sounds, pinyin sits above every word while you read, and each reading retires once you mark that word known. Entries are keyed on Simplified, and Traditional resolves to the same entry, so 這 and 这 both answer zhè.",
+    downloads: [],
     stats: [
-      { label: "Written corpus", value: "37.6M tokens · af.wikipedia" },
-      { label: "Spoken corpus", value: "0.83M tokens · OpenSubtitles" },
-      { label: "Anki cards", value: "9,066" },
-      { label: "Frequency list", value: "443,747 words" },
-    ],
-    bands: [
-      { name: "Core", count: 220 },
-      { name: "Very Common", count: 1175 },
-      { name: "Common", count: 2529 },
-      { name: "Mid", count: 2073 },
-      { name: "Rare", count: 1163 },
-      { name: "Marginal", count: 1906 },
+      { label: "Dictionary", value: "145,875 entries" },
+      { label: "English senses", value: "220,906" },
+      { label: "Pinyin readings", value: "145,361" },
+      { label: "Cloze bank", value: "7,967 sentences" },
     ],
     sources: [
       {
-        label: "Word frequencies",
+        label: "Dictionary and pinyin",
         detail:
-          "Afrikaans Wikipedia (37.6M tokens) blended with OpenSubtitles (0.83M tokens) — Zipf-averaged so spoken vocabulary isn't under-rated by the encyclopedic register.",
-        license: "CC BY-SA 4.0 / OPUS",
-        url: "https://dumps.wikimedia.org/afwiki/",
+          "Chinese Wiktionary entries extracted through Kaikki.org. Every entry carries its Standard Mandarin pinyin, and Traditional headwords are filed as aliases of the Simplified form they convert to.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Chinese/",
       },
       {
-        label: "Glosses (definitions)",
-        detail: "Afrikaans Wiktionary, extracted via kaikki.org.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Afrikaans/",
+        label: "Cloze sentences",
+        detail:
+          "Mandarin–English sentence pairs from Tatoeba, segmented with jieba, frequency-ranked with wordfreq and filtered against the on-device dictionary. Traditional-script rows are excluded.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+      {
+        label: "Script conversion and readings",
+        detail:
+          "OpenCC decides the Traditional-to-Simplified key for every entry, and pypinyin ranks the reading a character takes when it has several. Both run at build time, so neither ships in the app.",
+        license: "Apache-2.0 (OpenCC), MIT (pypinyin)",
+        url: "https://github.com/BYVoid/OpenCC",
       },
     ],
   },
@@ -122,7 +115,7 @@ export const languages: Language[] = [
     flag: "🇪🇸",
     status: "complete",
     blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Spanish, at Afrikaans parity. We don't ship our own Spanish Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Spanish. We don't ship our own Spanish Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
     downloads: [],
     stats: [],
     sources: [],
@@ -137,13 +130,98 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "french",
+    name: "French → English",
+    endonym: "Français",
+    flag: "🇫🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in French. We don't ship our own French Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+    downloads: [],
+    stats: [],
+    sources: [],
+    recommendedDecks: [
+      {
+        label: "5000 Most Frequent French Words",
+        detail:
+          "The 5,000 most frequent French words in frequency order — a widely-used, free core-vocabulary foundation.",
+        url: "https://ankiweb.net/shared/info/614833642",
+        meta: "~5,000 cards · free",
+      },
+    ],
+  },
+  {
+    slug: "portuguese",
+    name: "Portuguese → English",
+    endonym: "Português",
+    flag: "🇧🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Portuguese. Brazilian Portuguese (pt-BR) by default, with a Tatoeba sentence bank and an on-device dictionary covering rich Portuguese inflection (nasal vowels, conjugations, the personal infinitive).",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "411,782 entries" },
+      { label: "English senses", value: "566,136" },
+      { label: "Inflections", value: "424,236" },
+      { label: "Cloze bank", value: "8,363 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Portuguese Wiktionary entries extracted through Kaikki.org, including form-of records for conjugations and plurals.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Portuguese/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Portuguese–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "russian",
+    name: "Russian → English",
+    endonym: "Русский",
+    flag: "🇷🇺",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Russian: the first Cyrillic language pack. The on-device dictionary covers Russian's rich inflection (six cases, verb aspect pairs, suppletive forms like шёл → идти), understands the everyday е-for-ё spelling (теплое finds тёплый), and shows lexical stress in definitions.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "426,510 entries" },
+      { label: "English senses", value: "507,187" },
+      { label: "Inflections", value: "992,704" },
+      { label: "Cloze bank", value: "11,604 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Russian Wiktionary entries extracted through Kaikki.org, including form-of records for declensions, conjugations, and aspect pairs.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Russian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Russian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "german",
     name: "German → English",
     endonym: "Deutsch",
     flag: "🇩🇪",
     status: "complete",
     blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in German, at Afrikaans parity. We don't ship our own German Anki deck; the excellent free community decks below cover flashcards.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in German. We don't ship our own German Anki deck; the excellent free community decks below cover flashcards.",
     downloads: [],
     stats: [],
     sources: [],
@@ -172,44 +250,34 @@ export const languages: Language[] = [
     ],
   },
   {
-    slug: "french",
-    name: "French → English",
-    endonym: "Français",
-    flag: "🇫🇷",
+    slug: "turkish",
+    name: "Turkish → English",
+    endonym: "Türkçe",
+    flag: "🇹🇷",
     status: "complete",
     blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in French, at Afrikaans parity. We don't ship our own French Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Turkish. Agglutination is the whole problem here: a single word stacks plural, possessive and case endings (evlerimizden, “from our houses”), and the on-device dictionary unstacks them back to the lemma. Lookups also handle the dotted and dotless i correctly, so a sentence-initial İyi finds iyi and ILIK (“lukewarm”) never collapses onto İLİK (“marrow”).",
     downloads: [],
-    stats: [],
-    sources: [],
-    recommendedDecks: [
-      {
-        label: "5000 Most Frequent French Words",
-        detail:
-          "The 5,000 most frequent French words in frequency order — a widely-used, free core-vocabulary foundation.",
-        url: "https://ankiweb.net/shared/info/614833642",
-        meta: "~5,000 cards · free",
-      },
+    stats: [
+      { label: "Dictionary", value: "40,714 entries" },
+      { label: "English senses", value: "60,257" },
+      { label: "Inflections", value: "2,281,087" },
+      { label: "Cloze bank", value: "11,765 sentences" },
     ],
-  },
-  {
-    slug: "dutch",
-    name: "Dutch → English",
-    endonym: "Nederlands",
-    flag: "🇳🇱",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Dutch, at Afrikaans parity. We don't ship our own Dutch Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
-    downloads: [],
-    stats: [],
-    sources: [],
-    recommendedDecks: [
+    sources: [
       {
-        label: "A Frequency Dictionary of Dutch",
+        label: "Dictionary and inflections",
         detail:
-          "The 5,000 most frequent Dutch words in frequency order, from A Frequency Dictionary of Dutch (Routledge), with English equivalents and example sentences — a solid frequency-first vocabulary foundation.",
-        url: "https://ankiweb.net/shared/info/1002891444",
-        meta: "~5,000 cards · free",
+          "Turkish Wiktionary entries extracted through Kaikki.org, including the very large paradigm tables that make agglutinated forms resolvable.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Turkish/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Turkish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
       },
     ],
   },
@@ -220,7 +288,7 @@ export const languages: Language[] = [
     flag: "🇮🇹",
     status: "complete",
     blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Italian, at Afrikaans parity. The on-device dictionary covers rich Italian inflection, while the Tatoeba sentence bank keeps elisions such as l'acqua and un'amica intact in practice.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Italian. The on-device dictionary covers rich Italian inflection, while the Tatoeba sentence bank keeps elisions such as l'acqua and un'amica intact in practice.",
     downloads: [],
     stats: [
       { label: "Dictionary", value: "584,882 entries" },
@@ -278,6 +346,115 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "ukrainian",
+    name: "Ukrainian → English",
+    endonym: "Українська",
+    flag: "🇺🇦",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Ukrainian, as its own language rather than an approximation of Russian. Ukrainian spelling treats the apostrophe as a letter (п'ять, м'ясо, з'їзд), so the reader keeps those words whole and tappable instead of splitting them in half, and a lookup finds the entry whichever apostrophe your source typed. The alphabet includes ґ, є, і and ї, and definitions are Ukrainian ones — так is “yes” here, not the Russian “like that”.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "54,563 entries" },
+      { label: "English senses", value: "83,546" },
+      { label: "Inflections", value: "346,122" },
+      { label: "Cloze bank", value: "9,663 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Ukrainian Wiktionary entries extracted through Kaikki.org, including form-of records for the seven cases, verb conjugations and aspect pairs. Headword stress marks are stripped so unstressed running text still matches.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Ukrainian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Ukrainian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "dutch",
+    name: "Dutch → English",
+    endonym: "Nederlands",
+    flag: "🇳🇱",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Dutch. We don't ship our own Dutch Anki deck; you mine your own cards as you read, and the community deck below covers the vocabulary foundation.",
+    downloads: [],
+    stats: [],
+    sources: [],
+    recommendedDecks: [
+      {
+        label: "A Frequency Dictionary of Dutch",
+        detail:
+          "The 5,000 most frequent Dutch words in frequency order, from A Frequency Dictionary of Dutch (Routledge), with English equivalents and example sentences — a solid frequency-first vocabulary foundation.",
+        url: "https://ankiweb.net/shared/info/1002891444",
+        meta: "~5,000 cards · free",
+      },
+    ],
+  },
+  {
+    slug: "afrikaans",
+    name: "Afrikaans → English",
+    endonym: "Afrikaans",
+    flag: "🇿🇦",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Afrikaans. The only pack with its own downloadable Anki deck and published frequency list, built from a blend of Afrikaans Wikipedia (written) and OpenSubtitles (spoken).",
+    downloads: [
+      {
+        label: "Anki deck — frequency-banded",
+        file: "/reference-data/afrikaans/afrikaans-frequency.apkg",
+        size: "2.4 MB",
+        format: "APKG",
+        license: "CC BY-SA 4.0",
+        note: "9,066 cards across six frequency sub-decks (Core → Marginal). Afrikaans → English recognition cards. Glosses from Wiktionary.",
+      },
+      {
+        label: "Word frequency list",
+        file: "/reference-data/afrikaans/afrikaans-word-frequency.csv",
+        size: "15 MB",
+        format: "CSV",
+        license: "CC BY-SA 4.0",
+        note: "443,747 words ranked by Afrikaans Wikipedia frequency, with raw counts, Zipf scores, and a proper-noun flag.",
+      },
+    ],
+    stats: [
+      { label: "Written corpus", value: "37.6M tokens · af.wikipedia" },
+      { label: "Spoken corpus", value: "0.83M tokens · OpenSubtitles" },
+      { label: "Anki cards", value: "9,066" },
+      { label: "Frequency list", value: "443,747 words" },
+    ],
+    bands: [
+      { name: "Core", count: 220 },
+      { name: "Very Common", count: 1175 },
+      { name: "Common", count: 2529 },
+      { name: "Mid", count: 2073 },
+      { name: "Rare", count: 1163 },
+      { name: "Marginal", count: 1906 },
+    ],
+    sources: [
+      {
+        label: "Word frequencies",
+        detail:
+          "Afrikaans Wikipedia (37.6M tokens) blended with OpenSubtitles (0.83M tokens) — Zipf-averaged so spoken vocabulary isn't under-rated by the encyclopedic register.",
+        license: "CC BY-SA 4.0 / OPUS",
+        url: "https://dumps.wikimedia.org/afwiki/",
+      },
+      {
+        label: "Glosses (definitions)",
+        detail: "Afrikaans Wiktionary, extracted via kaikki.org.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Afrikaans/",
+      },
+    ],
+  },
+  {
     slug: "czech",
     name: "Czech → English",
     endonym: "Čeština",
@@ -304,38 +481,6 @@ export const languages: Language[] = [
         label: "Cloze sentences",
         detail:
           "Czech–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
-        license: "CC BY 2.0 FR",
-        url: "https://tatoeba.org/",
-      },
-    ],
-  },
-  {
-    slug: "portuguese",
-    name: "Portuguese → English",
-    endonym: "Português",
-    flag: "🇧🇷",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Portuguese, at Afrikaans parity. Brazilian Portuguese (pt-BR) by default, with a Tatoeba sentence bank and an on-device dictionary covering rich Portuguese inflection (nasal vowels, conjugations, the personal infinitive).",
-    downloads: [],
-    stats: [
-      { label: "Dictionary", value: "411,782 entries" },
-      { label: "English senses", value: "566,136" },
-      { label: "Inflections", value: "424,236" },
-      { label: "Cloze bank", value: "8,363 sentences" },
-    ],
-    sources: [
-      {
-        label: "Dictionary and inflections",
-        detail:
-          "Portuguese Wiktionary entries extracted through Kaikki.org, including form-of records for conjugations and plurals.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Portuguese/",
-      },
-      {
-        label: "Cloze sentences",
-        detail:
-          "Portuguese–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
         license: "CC BY 2.0 FR",
         url: "https://tatoeba.org/",
       },
@@ -383,102 +528,6 @@ export const languages: Language[] = [
     ],
   },
   {
-    slug: "russian",
-    name: "Russian → English",
-    endonym: "Русский",
-    flag: "🇷🇺",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Russian: the first Cyrillic language pack. The on-device dictionary covers Russian's rich inflection (six cases, verb aspect pairs, suppletive forms like шёл → идти), understands the everyday е-for-ё spelling (теплое finds тёплый), and shows lexical stress in definitions.",
-    downloads: [],
-    stats: [
-      { label: "Dictionary", value: "426,510 entries" },
-      { label: "English senses", value: "507,187" },
-      { label: "Inflections", value: "992,704" },
-      { label: "Cloze bank", value: "11,604 sentences" },
-    ],
-    sources: [
-      {
-        label: "Dictionary and inflections",
-        detail:
-          "Russian Wiktionary entries extracted through Kaikki.org, including form-of records for declensions, conjugations, and aspect pairs.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Russian/",
-      },
-      {
-        label: "Cloze sentences",
-        detail:
-          "Russian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
-        license: "CC BY 2.0 FR",
-        url: "https://tatoeba.org/",
-      },
-    ],
-  },
-  {
-    slug: "turkish",
-    name: "Turkish → English",
-    endonym: "Türkçe",
-    flag: "🇹🇷",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Turkish. Agglutination is the whole problem here: a single word stacks plural, possessive and case endings (evlerimizden, “from our houses”), and the on-device dictionary unstacks them back to the lemma. Lookups also handle the dotted and dotless i correctly, so a sentence-initial İyi finds iyi and ILIK (“lukewarm”) never collapses onto İLİK (“marrow”).",
-    downloads: [],
-    stats: [
-      { label: "Dictionary", value: "40,714 entries" },
-      { label: "English senses", value: "60,257" },
-      { label: "Inflections", value: "2,281,087" },
-      { label: "Cloze bank", value: "11,765 sentences" },
-    ],
-    sources: [
-      {
-        label: "Dictionary and inflections",
-        detail:
-          "Turkish Wiktionary entries extracted through Kaikki.org, including the very large paradigm tables that make agglutinated forms resolvable.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Turkish/",
-      },
-      {
-        label: "Cloze sentences",
-        detail:
-          "Turkish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
-        license: "CC BY 2.0 FR",
-        url: "https://tatoeba.org/",
-      },
-    ],
-  },
-  {
-    slug: "ukrainian",
-    name: "Ukrainian → English",
-    endonym: "Українська",
-    flag: "🇺🇦",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Ukrainian, as its own language rather than an approximation of Russian. Ukrainian spelling treats the apostrophe as a letter (п'ять, м'ясо, з'їзд), so the reader keeps those words whole and tappable instead of splitting them in half, and a lookup finds the entry whichever apostrophe your source typed. The alphabet includes ґ, є, і and ї, and definitions are Ukrainian ones — так is “yes” here, not the Russian “like that”.",
-    downloads: [],
-    stats: [
-      { label: "Dictionary", value: "54,563 entries" },
-      { label: "English senses", value: "83,546" },
-      { label: "Inflections", value: "346,122" },
-      { label: "Cloze bank", value: "9,663 sentences" },
-    ],
-    sources: [
-      {
-        label: "Dictionary and inflections",
-        detail:
-          "Ukrainian Wiktionary entries extracted through Kaikki.org, including form-of records for the seven cases, verb conjugations and aspect pairs. Headword stress marks are stripped so unstressed running text still matches.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Ukrainian/",
-      },
-      {
-        label: "Cloze sentences",
-        detail:
-          "Ukrainian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
-        license: "CC BY 2.0 FR",
-        url: "https://tatoeba.org/",
-      },
-    ],
-  },
-  {
     slug: "koine-greek",
     name: "Koine Greek → English",
     endonym: "Κοινή",
@@ -520,57 +569,6 @@ export const languages: Language[] = [
     ],
   },
   {
-    slug: "mandarin",
-    name: "Mandarin → English",
-    endonym: "中文",
-    flag: "🇨🇳",
-    status: "complete",
-    blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Mandarin. Chinese writes no spaces, so the reader splits each sentence into words before you tap one: 我喜欢读书 reads as 我 · 喜欢 · 读书, not five loose characters. Because a character does not show how it sounds, pinyin sits above every word while you read, and each reading retires once you mark that word known. Entries are keyed on Simplified, and Traditional resolves to the same entry, so 這 and 这 both answer zhè.",
-    downloads: [],
-    stats: [
-      { label: "Dictionary", value: "145,875 entries" },
-      { label: "English senses", value: "220,906" },
-      { label: "Pinyin readings", value: "145,361" },
-      { label: "Cloze bank", value: "7,967 sentences" },
-    ],
-    sources: [
-      {
-        label: "Dictionary and pinyin",
-        detail:
-          "Chinese Wiktionary entries extracted through Kaikki.org. Every entry carries its Standard Mandarin pinyin, and Traditional headwords are filed as aliases of the Simplified form they convert to.",
-        license: "CC BY-SA 4.0",
-        url: "https://kaikki.org/dictionary/Chinese/",
-      },
-      {
-        label: "Cloze sentences",
-        detail:
-          "Mandarin–English sentence pairs from Tatoeba, segmented with jieba, frequency-ranked with wordfreq and filtered against the on-device dictionary. Traditional-script rows are excluded.",
-        license: "CC BY 2.0 FR",
-        url: "https://tatoeba.org/",
-      },
-      {
-        label: "Script conversion and readings",
-        detail:
-          "OpenCC decides the Traditional-to-Simplified key for every entry, and pypinyin ranks the reading a character takes when it has several. Both run at build time, so neither ships in the app.",
-        license: "Apache-2.0 (OpenCC), MIT (pypinyin)",
-        url: "https://github.com/BYVoid/OpenCC",
-      },
-    ],
-  },
-  {
-    slug: "japanese",
-    name: "Japanese → English",
-    endonym: "日本語",
-    flag: "🇯🇵",
-    status: "coming-soon",
-    roadmapIssue: 214,
-    blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
     slug: "hindi",
     name: "Hindi → English",
     endonym: "हिन्दी",
@@ -589,6 +587,42 @@ export const languages: Language[] = [
     flag: "🇸🇦",
     status: "coming-soon",
     roadmapIssue: 253,
+    blurb: "On the roadmap — pending reader support for its script.",
+    downloads: [],
+    stats: [],
+    sources: [],
+  },
+  {
+    slug: "indonesian",
+    name: "Indonesian → English",
+    endonym: "Bahasa Indonesia",
+    flag: "🇮🇩",
+    status: "coming-soon",
+    roadmapIssue: 257,
+    blurb: "On the roadmap — pending a language pack.",
+    downloads: [],
+    stats: [],
+    sources: [],
+  },
+  {
+    slug: "japanese",
+    name: "Japanese → English",
+    endonym: "日本語",
+    flag: "🇯🇵",
+    status: "coming-soon",
+    roadmapIssue: 214,
+    blurb: "On the roadmap — pending reader support for its script.",
+    downloads: [],
+    stats: [],
+    sources: [],
+  },
+  {
+    slug: "korean",
+    name: "Korean → English",
+    endonym: "한국어",
+    flag: "🇰🇷",
+    status: "coming-soon",
+    roadmapIssue: 258,
     blurb: "On the roadmap — pending reader support for its script.",
     downloads: [],
     stats: [],
@@ -614,30 +648,6 @@ export const languages: Language[] = [
     status: "coming-soon",
     roadmapIssue: 256,
     blurb: "On the roadmap — pending a language pack.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "indonesian",
-    name: "Indonesian → English",
-    endonym: "Bahasa Indonesia",
-    flag: "🇮🇩",
-    status: "coming-soon",
-    roadmapIssue: 257,
-    blurb: "On the roadmap — pending a language pack.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "korean",
-    name: "Korean → English",
-    endonym: "한국어",
-    flag: "🇰🇷",
-    status: "coming-soon",
-    roadmapIssue: 258,
-    blurb: "On the roadmap — pending reader support for its script.",
     downloads: [],
     stats: [],
     sources: [],
