@@ -5,8 +5,9 @@
 //
 // Entries are ordered by TOTAL speakers worldwide (first language plus second
 // language), because that order decides prominence on /languages/ and it should
-// track how many people actually speak each language. Esperanto and Koine Greek
-// have no comparable count, so they sit at the end. src/data/languages.ts holds
+// track how many people actually speak each language. Mandarin leads at about
+// 1.18 billion. Esperanto and Koine Greek have no comparable count, so they sit
+// at the end. src/data/languages.ts holds
 // the same order; keep the two in step.
 //
 // Facts (speaker counts, FSI category/hours) were verified against the US Foreign
@@ -50,6 +51,63 @@ export interface LanguageGuide {
 }
 
 export const languageGuides: Record<string, LanguageGuide> = {
+  mandarin: {
+    slug: "mandarin",
+    answer:
+      "The best way to learn Mandarin is to read real Chinese with instant tap-to-translate and pinyin above every word, learning the most frequent words first and holding them with spaced repetition. Chinese writes no spaces, so a reader that splits each sentence into words is what turns a wall of characters into something you can look up.",
+    nativeSpeakers: "~990 million",
+    totalSpeakers: "~1.18 billion (incl. second-language)",
+    fsiCategory: "Category IV",
+    approxHours: "~2,200 hours",
+    approxWeeks: 88,
+    whyLearn: [
+      "Around 990 million native speakers and roughly 1.18 billion in total — more first-language speakers than any other language on earth.",
+      "One written standard across the whole Chinese-speaking world, and the same characters sit under a large share of Japanese and Korean vocabulary.",
+      "No verb conjugation, no noun cases, no grammatical gender, and no plurals. Mandarin grammar is far simpler than its reputation suggests. The script and the tones are the work.",
+    ],
+    mutualIntelligibility:
+      "Spoken Mandarin is not mutually intelligible with Cantonese, Hokkien or Shanghainese, but they share the written language, so reading carries across the Chinese-speaking world. Lector keys entries on Simplified and resolves Traditional to the same entry, so 這 and 这 both answer zhè.",
+    difficultyNote:
+      "FSI Category IV (~2,200 hours), the hardest tier for English speakers, alongside Japanese, Korean and Arabic. The grammar is not the reason. Two other things are: four tones that change meaning, and a script where a character does not tell you how it sounds. Reading is where both get solved, which is why Lector prints pinyin above every word and retires each reading once you mark that word known.",
+    faqs: [
+      {
+        question: "Is Mandarin hard to learn?",
+        answer:
+          "Mandarin sits in the FSI's hardest tier, though not because of its grammar. There is no conjugation, no case, no gender and no plural. The difficulty is the tones and the writing system, and both are learned by meeting the same words again and again in context.",
+      },
+      {
+        question: "How long does it take to learn Mandarin?",
+        answer:
+          "The US Foreign Service Institute places Mandarin in Category IV, at roughly 2,200 class hours (about 88 weeks of intensive study) to reach professional working proficiency. Reading with pinyin support and lookups a tap away brings simple texts within reach long before that.",
+      },
+      {
+        question: "How many Chinese characters do I need to read?",
+        answer:
+          "Roughly 2,500 to 3,000 characters covers most everyday text, and the most frequent 1,000 do the bulk of the work. Frequency-ordered practice is the shortest way through that list, which is exactly what a cloze bank ranked by frequency gives you.",
+      },
+      {
+        question: "What is the best way to learn Mandarin?",
+        answer:
+          "Read real Chinese with word segmentation, pinyin above each word, and a tap-to-translate dictionary. Learn the most frequent words first and let spaced repetition return them. Because the reader retires the pinyin once you know a word, the support fades on its own as you improve.",
+      },
+      {
+        question: "Can I learn Mandarin for free?",
+        answer:
+          "Yes. Mandarin has an enormous free corpus — public-domain literature, open courses, news, podcasts and video — and free or self-hosted reading and flashcard tools cover the practice side, so no paid course is required.",
+      },
+    ],
+    sample: {
+      text: "傍晚的时候，太阳落到山后面，人们坐在门口聊天，看孩子们在街上玩。",
+      translation:
+        "In the evening, when the sun drops behind the mountain, people sit in their doorways chatting and watch the children playing in the street.",
+    },
+    readerImg: "/images/languages/mandarin-reader.png",
+    readerAlt:
+      "Lector reading a Mandarin passage with pinyin above each word, colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/mandarin-cloze.png",
+    clozeAlt: "Mandarin cloze practice in Lector with multiple-choice options",
+  },
+
   spanish: {
     slug: "spanish",
     answer:
