@@ -81,8 +81,8 @@ const linkActive = "text-olive-950 dark:text-white";
         <Button href={SIGNUP_URL} class="max-sm:hidden">Get started free</Button>
 
         <button
-          command="show-modal"
-          commandfor="mobile-menu"
+          type="button"
+          data-menu-open
           aria-label="Open menu"
           class="inline-flex rounded-full p-1.5 text-olive-950 hover:bg-olive-950/10 lg:hidden dark:text-white dark:hover:bg-white/10"
         >
@@ -96,11 +96,11 @@ const linkActive = "text-olive-950 dark:text-white";
       </div>
     </div>
 
-    <el-dialog>
-      <dialog id="mobile-menu" class="backdrop:bg-transparent lg:hidden">
-        <el-dialog-panel
-          class="fixed inset-0 flex flex-col bg-olive-100 px-6 py-6 dark:bg-olive-950"
-        >
+    <dialog
+      id="mobile-menu"
+      class="m-0 h-full max-h-none w-full max-w-none border-0 bg-olive-100 p-0 backdrop:bg-olive-100 lg:hidden dark:bg-olive-950 dark:backdrop:bg-olive-950"
+    >
+      <div class="flex h-full flex-col px-6 py-6">
           <div class="flex items-center justify-between">
             <a href="/" class="inline-flex items-center gap-2.5">
               <img src="/logo.svg" alt="" width="28" height="28" class="size-7" />
@@ -110,8 +110,8 @@ const linkActive = "text-olive-950 dark:text-white";
               >
             </a>
             <button
-              command="close"
-              commandfor="mobile-menu"
+              type="button"
+              data-menu-close
               aria-label="Close menu"
               class="inline-flex rounded-full p-1.5 text-olive-950 hover:bg-olive-950/10 dark:text-white dark:hover:bg-white/10"
             >
@@ -160,8 +160,26 @@ const linkActive = "text-olive-950 dark:text-white";
               Log in
             </Button>
           </div>
-        </el-dialog-panel>
-      </dialog>
-    </el-dialog>
+      </div>
+    </dialog>
   </nav>
 </header>
+
+<script is:inline>
+  (function () {
+    var dialog = document.getElementById("mobile-menu");
+    if (!dialog || typeof dialog.showModal !== "function") return;
+    var openBtn = document.querySelector("[data-menu-open]");
+    var closeBtn = document.querySelector("[data-menu-close]");
+    if (openBtn) {
+      openBtn.addEventListener("click", function () {
+        dialog.showModal();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        dialog.close();
+      });
+    }
+  })();
+</script>

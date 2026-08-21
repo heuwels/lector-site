@@ -14,6 +14,8 @@ interface Props {
   ogType?: "website" | "article";
   /** Page-specific JSON-LD (object or array). Organization + WebSite are always emitted. */
   schema?: object | object[];
+  /** Built AVIF URL to preload as LCP. Homepage hero only. */
+  lcpImage?: string;
 }
 
 const {
@@ -22,6 +24,7 @@ const {
   image = "/images/reader.png",
   ogType = "website",
   schema,
+  lcpImage,
 } = Astro.props;
 
 // Absolute URLs for canonical + social tags (site = https://lector.dev).
@@ -89,23 +92,19 @@ const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
       })();
     </script>
 
-    <!-- Fonts: Instrument Serif (display) + Inter (body). -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
+    {
+      lcpImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={lcpImage}
+          type="image/avif"
+          fetchpriority="high"
+        />
+      )
+    }
 
-    <!-- Privacy-friendly analytics by Plausible -->
-    <script
-      is:inline
-      async
-      src="https://plausible.io/js/pa-NBQHiTrDyS5mweKtdqu6v.js"></script>
+    <!-- Plausible: queue events now, fetch the script after first input. -->
     <script is:inline>
       window.plausible =
         window.plausible ||
@@ -114,12 +113,30 @@ const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
         };
       plausible.init = plausible.init || function (i) { plausible.o = i || {}; };
       plausible.init();
+      (function () {
+        var loaded = false;
+        function load() {
+          if (loaded) return;
+          loaded = true;
+          var s = document.createElement("script");
+          s.src = "https://plausible.io/js/pa-NBQHiTrDyS5mweKtdqu6v.js";
+          s.async = true;
+          document.head.appendChild(s);
+        }
+        ["pointerdown", "keydown", "scroll", "touchstart"].forEach(function (e) {
+          window.addEventListener(e, load, { once: true, passive: true });
+        });
+      })();
     </script>
 
-    <!-- @tailwindplus/elements: registers <el-dialog>, <el-disclosure>, etc.
-         used by the navbar mobile menu and the FAQ accordion. -->
-    <script>
-      import "@tailwindplus/elements";
+    <!-- Display font after first paint. Do not put @font-face in the main CSS. -->
+    <script is:inline>
+      window.addEventListener("load", function () {
+        var l = document.createElement("link");
+        l.rel = "stylesheet";
+        l.href = "/fonts/instrument-serif.css";
+        document.head.appendChild(l);
+      });
     </script>
   </head>
   <body class="text-olive-950 dark:text-white">

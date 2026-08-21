@@ -59,7 +59,12 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
       <slot />
     </div>
 
-    <form class="flex flex-col gap-4" data-notify-form novalidate>
+    <form
+      class="flex flex-col gap-4"
+      data-notify-form
+      data-turnstile-sitekey={TURNSTILE_SITE_KEY}
+      novalidate
+    >
       <div class="flex flex-col gap-1.5">
         <label class={label} for={`${id}-language`}>Language</label>
         <select class={field} id={`${id}-language`} name="language" required>
@@ -112,7 +117,7 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
           placeholder="News sites, and novels at about B1 level."></textarea>
       </div>
 
-      <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+      <div data-turnstile-slot></div>
 
       <button
         type="submit"
@@ -150,14 +155,42 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
   </noscript>
 </section>
 
-<script
-  is:inline
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-  async
-  defer></script>
-
 <script>
   const ENDPOINT = "/api/language-requests";
+  const TURNSTILE_SRC =
+    "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+
+  let turnstileLoader: Promise<void> | null = null;
+
+  function loadTurnstile(): Promise<void> {
+    if (window.turnstile) return Promise.resolve();
+    if (turnstileLoader) return turnstileLoader;
+    turnstileLoader = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = TURNSTILE_SRC;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Turnstile failed to load"));
+      document.head.appendChild(script);
+    });
+    return turnstileLoader;
+  }
+
+  function renderTurnstile(form: HTMLFormElement): void {
+    const slot = form.querySelector<HTMLElement>("[data-turnstile-slot]");
+    const siteKey = form.dataset.turnstileSitekey;
+    if (!slot || !siteKey || slot.dataset.ready) return;
+    window.turnstile?.render(slot, { sitekey: siteKey });
+    slot.dataset.ready = "1";
+  }
+
+  function armTurnstile(form: HTMLFormElement): void {
+    const arm = () => {
+      void loadTurnstile().then(() => renderTurnstile(form));
+    };
+    form.addEventListener("focusin", arm, { once: true });
+    form.addEventListener("pointerdown", arm, { once: true });
+  }
 
   // Fill any per-language count on the page. Runs once, after render, so a
   // failed request leaves the cards exactly as they were.
@@ -209,6 +242,7 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
     };
     select.addEventListener("change", syncOther);
     syncOther();
+    armTurnstile(form);
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -313,5 +347,10 @@ const label = "block text-sm/6 font-medium text-olive-950 dark:text-white";
     .querySelectorAll<HTMLFormElement>("[data-notify-form]")
     .forEach(setUpForm);
   setUpCardButtons();
-  void loadCounts();
+  const startCounts = () => {
+    void loadCounts();
+  };
+  ["pointerdown", "keydown", "scroll", "touchstart"].forEach((event) => {
+    window.addEventListener(event, startCounts, { once: true, passive: true });
+  });
 </script>
