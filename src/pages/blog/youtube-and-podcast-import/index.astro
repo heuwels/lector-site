@@ -1,7 +1,8 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
-<Base title="Import YouTube transcripts and podcasts | Lector" description="Two new ways to bring native audio and video into Lector: import a YouTube video's transcript with clickable timestamps, or upload a podcast and read along as it plays.">
+<Base title="Import YouTube transcripts and podcasts | Lector" description="Two new ways to bring native audio and video into Lector: import a YouTube video's transcript with clickable timestamps, or upload a podcast and read along as it plays." ogType="article" schema={articleSchema({ headline: "Import YouTube transcripts and podcasts", description: "Two new ways to bring native audio and video into Lector: import a YouTube video's transcript with clickable timestamps, or upload a podcast and read along as it plays.", url: "/blog/youtube-and-podcast-import/", datePublished: "2026-07-15", dateModified: "2026-07-15" })}>
 
 <header class="docs-header">
   <div class="container">

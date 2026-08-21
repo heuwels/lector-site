@@ -1,5 +1,6 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
 
 <!-- Whitespace note: Astro's HTML compressor trims the edges of every text
@@ -9,6 +10,14 @@ import Base from "../../../layouts/Base.astro";
 <Base
   title="Three new language packs: Ukrainian, Polish and Czech | Lector"
   description="Ukrainian, Polish and Czech language packs are live — on-device dictionaries, frequency-banded cloze banks and voices. Why Ukrainian is not a Russian preset, and what each pack measures."
+  ogType="article"
+  schema={articleSchema({
+    headline: "Three new language packs: Ukrainian, Polish and Czech",
+    description: "Ukrainian, Polish and Czech language packs are live — on-device dictionaries, frequency-banded cloze banks and voices. Why Ukrainian is not a Russian preset, and what each pack measures.",
+    url: "/blog/ukrainian-polish-czech/",
+    datePublished: "2026-08-08",
+    dateModified: "2026-08-08",
+  })}
 >
   <header class="docs-header">
     <div class="container">

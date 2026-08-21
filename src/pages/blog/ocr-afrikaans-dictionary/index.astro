@@ -1,10 +1,19 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
 
 <Base
   title="What I learned by OCRing an Afrikaans dictionary | Lector"
   description="Digitising a 346-page print Afrikaans-English dictionary to widen Lector's offline vocabulary: what it did to coverage, what OCR does to a language built on diacritics, and what the book reveals about Afrikaans itself."
+  ogType="article"
+  schema={articleSchema({
+    headline: "What I learned by OCRing an Afrikaans dictionary",
+    description: "Digitising a 346-page print Afrikaans-English dictionary to widen Lector's offline vocabulary: what it did to coverage, what OCR does to a language built on diacritics, and what the book reveals about Afrikaans itself.",
+    url: "/blog/ocr-afrikaans-dictionary/",
+    datePublished: "2026-06-19",
+    dateModified: "2026-06-19",
+  })}
 >
   <style is:global>
       .chart {

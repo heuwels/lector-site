@@ -1,5 +1,6 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import { articleSchema } from "../../../lib/schema";
 ---
 
 <!-- Whitespace note: Astro's HTML compressor trims the edges of every text
@@ -9,6 +10,14 @@ import Base from "../../../layouts/Base.astro";
 <Base
   title="Mandarin, Japanese and Korean: three scripts, three different problems | Lector"
   description="Lector now reads Mandarin, Japanese and Korean. Each script broke the reader in a different way, and each needed a different fix: segmentation, a morphological analyser, and a postposition peel."
+  ogType="article"
+  schema={articleSchema({
+    headline: "Mandarin, Japanese and Korean: three scripts, three different problems",
+    description: "Lector now reads Mandarin, Japanese and Korean. Each script broke the reader in a different way, and each needed a different fix: segmentation, a morphological analyser, and a postposition peel.",
+    url: "/blog/mandarin-japanese-korean/",
+    datePublished: "2026-08-21",
+    dateModified: "2026-08-21",
+  })}
 >
   <header class="docs-header">
     <div class="container">
