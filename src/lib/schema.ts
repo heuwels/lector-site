@@ -93,6 +93,19 @@ export function softwareApplicationSchema() {
     operatingSystem: "Web, Docker",
     url: SITE,
     downloadUrl: APP_URL,
+    description:
+      "A self-hosted reader for language learners, with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. You keep your books and your data.",
+    applicationSubCategory: "Language learning",
+    featureList: [
+      "Click-to-translate reading for EPUB, articles, YouTube captions, and podcasts",
+      "Frequency-ordered cloze practice with spaced repetition",
+      "Two-way Anki sync",
+      "On-device dictionary plus optional local or cloud LLM",
+      "Self-host with Docker, or Lector Cloud from $5/mo",
+    ],
+    screenshot: `${SITE}/images/reader.png`,
+    softwareLicense: "https://www.gnu.org/licenses/agpl-3.0.html",
+    license: "https://www.gnu.org/licenses/agpl-3.0.html",
     offers: {
       "@type": "Offer",
       price: "0",

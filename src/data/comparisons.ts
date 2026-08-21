@@ -59,7 +59,7 @@ export interface Comparison {
 // Lector's side of the table — one source of truth reused across comparisons.
 const LECTOR = {
   price: "Self-host free, or cloud from $5/mo",
-  reading: "EPUB, web articles, paste",
+  reading: "EPUB, web articles, YouTube captions, podcasts, paste",
   translate: "On-device dictionary + LLM",
   cloze: "Frequency-ordered, with SRS",
   anki: "Two-way (beta): push cards, Anki reviews update Lector",
