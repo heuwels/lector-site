@@ -20,6 +20,11 @@
   "workers_dev": false,
   "observability": { "enabled": true },
 
+  // Attaching a hostname here creates it and requests a certificate. That
+  // certificate can take several minutes on a hostname Cloudflare has not
+  // served before: DNS resolves and the port accepts connections well before
+  // TLS works, so the gap looks like an outage rather than a wait. It happens
+  // once per hostname, never on redeploys. verify.sh waits it out.
   "routes": [
     {
       "pattern": "registry.lector.dev",
@@ -34,6 +39,18 @@
     }
   ],
 
+  // Holds one random salt per UTC day, each written with a 48-hour TTL so it
+  // deletes itself. See `dailySalt` in src/index.ts. Create the namespaces once
+  // and paste the ids here:
+  //
+  //   wrangler kv namespace create registry-salts
+  //   wrangler kv namespace create registry-salts-staging
+  "kv_namespaces": [
+    {
+      "binding": "SALTS",
+      "id": "REPLACE_WITH_REGISTRY_SALTS_NAMESPACE_ID"
+    }
+  ],
   "vars": {
     "UPSTREAM_OWNER": "heuwels",
     // Comma-separated. Anything not listed gets NAME_UNKNOWN, which is what
@@ -59,6 +76,12 @@
         {
           "binding": "PULLS",
           "dataset": "lector_registry_pulls_staging"
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "SALTS",
+          "id": "REPLACE_WITH_REGISTRY_SALTS_STAGING_NAMESPACE_ID"
         }
       ],
       "vars": {

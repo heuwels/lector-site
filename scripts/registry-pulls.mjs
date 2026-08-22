@@ -33,6 +33,9 @@ const COLUMNS = {
   country: "blob6",
   colo: "blob7",
   digest: "blob8",
+  // A per-day pseudonym, not an identity: the salt behind it is deleted after
+  // 48 hours, so it cannot be joined across days even deliberately.
+  puller: "blob9",
   bytes: "double1",
 };
 
@@ -124,11 +127,16 @@ if (args.sql) {
 console.log(`\nDataset ${dataset}, last ${args.days} days\n`);
 
 console.log("Pulls per day");
+// `distinct_pullers` is the closest thing here to an install count. A pull is
+// an attempt, and an auto-updater re-checking a tag it already holds counts as
+// one, so the two columns diverge for a reason worth reading. The pseudonym
+// only holds within a day, so these numbers cannot be summed across rows.
 table(
   await query(`
     SELECT toDate(timestamp) AS day,
            SUM(IF(${c.method} = 'GET', _sample_interval, 0)) AS pulls,
-           SUM(IF(${c.method} = 'HEAD', _sample_interval, 0)) AS update_checks
+           SUM(IF(${c.method} = 'HEAD', _sample_interval, 0)) AS update_checks,
+           COUNT(DISTINCT ${c.puller}) AS distinct_pullers
     FROM ${dataset}
     WHERE ${since}
     GROUP BY day ORDER BY day DESC
@@ -148,7 +156,9 @@ table(
 console.log("\nBy client");
 table(
   await query(`
-    SELECT ${c.client} AS client, SUM(_sample_interval) AS pulls
+    SELECT ${c.client} AS client,
+           SUM(_sample_interval) AS pulls,
+           COUNT(DISTINCT ${c.puller}) AS distinct_pullers
     FROM ${dataset}
     WHERE ${since} AND ${c.method} = 'GET'
     GROUP BY client ORDER BY pulls DESC

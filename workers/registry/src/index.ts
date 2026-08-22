@@ -24,6 +24,9 @@
 interface Env {
   PULLS: AnalyticsEngineDataset;
 
+  // Holds one random salt per UTC day, written with a TTL so it deletes itself.
+  SALTS: KVNamespace;
+
   // GHCR user or org that owns the images, e.g. "heuwels".
   UPSTREAM_OWNER: string;
 
@@ -148,6 +151,72 @@ function registryError(status: number, code: string, message: string): Response 
   });
 }
 
+// Per-isolate cache of today's salt, so the KV read happens once per isolate
+// per day rather than once per pull.
+let cachedSalt: { day: string; salt: string } | undefined;
+
+const SALT_TTL_SECONDS = 60 * 60 * 48;
+
+function hex(bytes: Uint8Array): string {
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Today's salt, minted on first use and given a TTL so Cloudflare deletes it.
+ * Once it is gone the identifiers it produced cannot be traced back to an IP by
+ * anyone, including us: there is no stored salt left to test a guess against.
+ * This is the property that makes the scheme worth more than hashing alone.
+ *
+ * Two colos can mint different salts for the same day, because KV has no
+ * compare-and-set. That does not inflate a distinct count on its own — each
+ * client still maps to one identifier — but a client whose salt changes
+ * mid-day is counted twice. At this volume that is a rounding error on a
+ * figure that is an estimate anyway.
+ */
+async function dailySalt(env: Env): Promise<string> {
+  const day = new Date().toISOString().slice(0, 10);
+  if (cachedSalt?.day === day) return cachedSalt.salt;
+
+  const key = `salt:${day}`;
+  let salt = await env.SALTS.get(key);
+  if (!salt) {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    salt = hex(bytes);
+    await env.SALTS.put(key, salt, { expirationTtl: SALT_TTL_SECONDS });
+  }
+
+  cachedSalt = { day, salt };
+  return salt;
+}
+
+/**
+ * A per-day pseudonym for the puller, after Plausible's approach: hash the
+ * client's address and user agent with a salt that is thrown away daily. No IP
+ * address is stored or logged, and because the salt rotates, the same client
+ * cannot be followed from one day to the next.
+ *
+ * The repository goes into the hash so identifiers do not correlate across
+ * repositories if more are ever served here.
+ */
+async function pullerId(
+  env: Env,
+  request: Request,
+  repo: string,
+): Promise<string> {
+  const address = request.headers.get("cf-connecting-ip") ?? "";
+  const userAgent = request.headers.get("user-agent") ?? "";
+  const salt = await dailySalt(env);
+
+  const input = new TextEncoder().encode(
+    [salt, repo, address, userAgent].join("\u0000"),
+  );
+  const digest = await crypto.subtle.digest("SHA-256", input);
+
+  // 128 bits is far more than a distinct count over a few thousand rows needs.
+  return hex(new Uint8Array(digest).slice(0, 16));
+}
+
 /** Coarse client family, so queries can separate CI from people. */
 function clientKind(userAgent: string): string {
   const ua = userAgent.toLowerCase();
@@ -170,9 +239,11 @@ function clientKind(userAgent: string): string {
  * would multiply by layer count and drop to zero for a warm client.
  *
  * No IP address is stored, matching the language-interest table. Country and
- * colo give geography without identifying anyone.
+ * colo give geography without identifying anyone, and `pullerId` carries a
+ * pseudonym that expires daily so distinct pullers can be counted without
+ * keeping anything that identifies them.
  */
-function recordPull(
+async function recordPull(
   env: Env,
   request: Request,
   repo: string,
@@ -180,9 +251,10 @@ function recordPull(
   method: string,
   digest: string,
   bytes: number,
-): void {
+): Promise<void> {
   const userAgent = (request.headers.get("user-agent") ?? "").slice(0, 256);
   const cf = request.cf;
+  const puller = await pullerId(env, request, repo);
 
   env.PULLS.writeDataPoint({
     // The sampling key. Low cardinality on purpose.
@@ -197,13 +269,18 @@ function recordPull(
       (cf?.country as string) ?? "",
       (cf?.colo as string) ?? "",
       digest,
+      puller,
     ],
     doubles: [bytes],
   });
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(
+    request: Request,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response> {
     const url = new URL(request.url);
     const { pathname } = url;
 
@@ -255,7 +332,7 @@ export default {
     try {
       if (op.kind === "blob") return await serveBlob(repo, op.digest, request);
       if (op.kind === "tags") return await serveTags(repo, op.repo);
-      return await serveManifest(env, request, repo, op.ref);
+      return await serveManifest(env, ctx, request, repo, op.ref);
     } catch (err) {
       console.error("registry proxy failed", { repo, path: pathname, err });
       return registryError(502, "UNAVAILABLE", "Upstream registry error.");
@@ -265,6 +342,7 @@ export default {
 
 async function serveManifest(
   env: Env,
+  ctx: ExecutionContext,
   request: Request,
   repo: string,
   ref: string,
@@ -292,14 +370,18 @@ async function serveManifest(
 
   // A tag is the install signal; a digest is the same pull continuing.
   if (upstream.ok && !ref.startsWith("sha256:")) {
-    recordPull(
-      env,
-      request,
-      repo,
-      ref,
-      request.method,
-      upstream.headers.get("docker-content-digest") ?? "",
-      Number(upstream.headers.get("content-length") ?? 0),
+    // Deferred: hashing needs the day's salt, and a KV read should never sit in
+    // front of a pull. A failure here must not fail the pull either.
+    ctx.waitUntil(
+      recordPull(
+        env,
+        request,
+        repo,
+        ref,
+        request.method,
+        upstream.headers.get("docker-content-digest") ?? "",
+        Number(upstream.headers.get("content-length") ?? 0),
+      ).catch((err) => console.error("recording a pull failed", err)),
     );
   }
 

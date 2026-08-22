@@ -288,8 +288,45 @@ pnpm registry:pulls -- --days 7
 
 A `GET` on a tag is a pull. A `HEAD` on a tag is a client checking whether its
 copy is stale; the report keeps the two apart, because counting both as
-installs overstates them. No IP address is stored, matching
-`language_requests`; geography comes from country and colo only.
+installs overstates them.
+
+Even so, a pull is an attempt, not an install. `docker pull` always reads the
+manifest to compare digests, so an auto-updater re-checking a tag it already
+holds records a pull that downloads nothing. `distinct_pullers` is the closer
+figure.
+
+### Counting people without storing addresses
+
+No IP address is stored, matching `language_requests`. Telling two pulls apart
+still needs something per-client, so `pullerId` hashes the address and user
+agent with a salt that is random per UTC day, held in KV with a 48-hour TTL,
+and then deleted. This is what Plausible does for the site itself.
+
+Once a day's salt expires, the identifiers it produced cannot be traced back to
+an address by anyone, including us: there is no salt left to test a guess
+against. The same client also cannot be recognised across two days, so
+`COUNT(DISTINCT ...)` is only meaningful within a single day and must never be
+summed across rows.
+
+Two colos can mint different salts for the same day, because KV has no
+compare-and-set. A client whose salt changes mid-day is counted twice; at this
+volume that is a rounding error on a figure that is an estimate anyway.
+
+The privacy policy describes this and links to `dailySalt` and `pullerId`, so
+those two names are load-bearing — renaming them means editing
+`src/pages/privacy/index.astro` too.
+
+The KV namespaces hold nothing but salts. Create them once and paste the ids
+into `wrangler.jsonc`:
+
+```bash
+wrangler kv namespace create registry-salts
+wrangler kv namespace create registry-salts-staging
+```
+
+Analytics Engine also needs enabling once per account, in the dashboard under
+Workers, or a deploy carrying the binding fails with error 10089. The dataset
+itself is created on first write; there is nothing to set up for it.
 
 Analytics Engine keeps **3 months**. A longer history has to be rolled up into
 D1 before it ages out.
