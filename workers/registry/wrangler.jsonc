@@ -1,0 +1,70 @@
+// Container registry pull-through proxy (see src/index.ts).
+//
+// This config deliberately lives here rather than at the repo root. A root
+// Wrangler config is auto-discovered, and the Pages deploys in
+// .github/workflows/deploy.yml pass `--project-name`, which errors when a
+// discovered config exists. Deploys name this file explicitly:
+//
+//   wrangler deploy --config workers/registry/wrangler.jsonc --env staging
+//
+// The Worker is independent of the Pages site: separate deploy, separate
+// hostname, and registry traffic that never touches lector.dev.
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lector-registry",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+
+  // Nothing should pull from a workers.dev URL; the hostname is part of the
+  // documented pull command and needs to stay stable.
+  "workers_dev": false,
+  "observability": { "enabled": true },
+
+  "routes": [
+    {
+      "pattern": "registry.lector.dev",
+      "custom_domain": true
+    }
+  ],
+
+  "analytics_engine_datasets": [
+    {
+      "binding": "PULLS",
+      "dataset": "lector_registry_pulls"
+    }
+  ],
+
+  "vars": {
+    "UPSTREAM_OWNER": "heuwels",
+    // Comma-separated. Anything not listed gets NAME_UNKNOWN, which is what
+    // stops this from being an open proxy to all of GHCR.
+    "ALLOWED_REPOS": "lector"
+  },
+
+  // Named environments inherit nothing from the top level in Wrangler, so the
+  // bindings and vars are repeated rather than shared. Staging writes to its
+  // own dataset; mixing test pulls into the real counts would defeat the point.
+  "env": {
+    "staging": {
+      "name": "lector-registry-staging",
+      "workers_dev": false,
+      "observability": { "enabled": true },
+      "routes": [
+        {
+          "pattern": "registry.sandbox.lector.dev",
+          "custom_domain": true
+        }
+      ],
+      "analytics_engine_datasets": [
+        {
+          "binding": "PULLS",
+          "dataset": "lector_registry_pulls_staging"
+        }
+      ],
+      "vars": {
+        "UPSTREAM_OWNER": "heuwels",
+        "ALLOWED_REPOS": "lector"
+      }
+    }
+  }
+}

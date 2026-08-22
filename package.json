@@ -16,7 +16,14 @@
     "db:local": "wrangler d1 execute DB --local --config wrangler.dev.jsonc --file=./schema.sql",
     "db:remote": "wrangler d1 execute lector-language-requests --remote --file=./schema.sql",
     "requests:list": "wrangler d1 execute lector-language-requests --remote --command \"SELECT created_at, language, requested_name, email, country, note FROM language_requests WHERE unsubscribed_at IS NULL ORDER BY created_at DESC LIMIT 200\"",
-    "requests:counts": "wrangler d1 execute lector-language-requests --remote --command \"SELECT language, count(*) AS people FROM language_requests WHERE unsubscribed_at IS NULL GROUP BY language ORDER BY people DESC\""
+    "requests:counts": "wrangler d1 execute lector-language-requests --remote --command \"SELECT language, count(*) AS people FROM language_requests WHERE unsubscribed_at IS NULL GROUP BY language ORDER BY people DESC\"",
+    "registry:dev": "wrangler dev --config workers/registry/wrangler.jsonc --env=\"\" --compatibility-date=2026-04-13",
+    "registry:check": "wrangler deploy --config workers/registry/wrangler.jsonc --env=\"\" --dry-run --outdir .wrangler/registry-build",
+    "registry:check:staging": "wrangler deploy --config workers/registry/wrangler.jsonc --env staging --dry-run --outdir .wrangler/registry-build-staging",
+    "registry:deploy": "wrangler deploy --config workers/registry/wrangler.jsonc --env=\"\"",
+    "registry:deploy:staging": "wrangler deploy --config workers/registry/wrangler.jsonc --env staging",
+    "registry:verify": "./workers/registry/verify.sh registry.lector.dev",
+    "registry:pulls": "node scripts/registry-pulls.mjs"
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.3",

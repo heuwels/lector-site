@@ -192,3 +192,104 @@ npx wrangler pages dev dist --d1 DB --compatibility-date=2026-04-13 \
 
 To test the bot check as well, add the test secret and a local hostname list.
 Use the test site key at build time. See the Language interest list above.
+
+## Container registry
+
+GHCR publishes no pull statistics. The Packages REST API reports a version
+count but no counter, and the web UI shows none either, so a pull of
+`ghcr.io/heuwels/lector` is invisible. `workers/registry/` is a read-only
+pull-through proxy that makes pulls countable:
+
+```bash
+docker pull registry.lector.dev/lector:1.10.3     # counted
+docker pull ghcr.io/heuwels/lector:1.10.3         # works, not counted
+```
+
+Both `lector` and `heuwels/lector` resolve. Only repositories in
+`ALLOWED_REPOS` are served; everything else gets `NAME_UNKNOWN`, which is what
+keeps this from being an open proxy to all of GHCR.
+
+### Image bytes do not pass through the Worker
+
+GHCR answers a blob request with a 307 to a pre-signed
+`pkg-containers.githubusercontent.com` URL that needs no credentials. The
+Worker resolves that redirect and hands the client the signed URL, so layers
+come off GitHub's CDN exactly as before. A 1.7 GiB pull costs about 22 Worker
+requests carrying only manifest JSON.
+
+That property is the cost model, so `verify.sh` asserts it after every deploy.
+If a blob is ever served inline instead, layer bytes start flowing through the
+Worker: at 100 pulls a day that is roughly 5 TiB a month.
+
+The signed URL expires within minutes, so the redirect is returned `no-store`.
+A cached `Location` would hand out dead URLs and look like a GHCR outage.
+
+### Deployment
+
+`Deploy registry proxy` owns this Worker, separately from the site. It runs on
+a push to `master` that touches `workers/registry/**`, bundles both
+environments, deploys to `registry.sandbox.lector.dev`, verifies it, then
+promotes to `registry.lector.dev`.
+
+#### Credentials
+
+`CLOUDFLARE_API_TOKEN` exists at both the organisation and the repository
+level, with the same name. A repository secret wins over an organisation
+secret, so this repository uses its own copy and the organisation one is
+inert here. Rotating the organisation secret alone changes nothing for these
+workflows.
+
+Uploading the Worker needs **Workers Scripts: Edit**. Attaching
+`registry.lector.dev` is a second thing: it creates a hostname on the zone, so
+a token that only carries Workers Scripts can upload the script but may be
+refused on the route. If a deploy fails that way, either add **Workers Routes:
+Edit** to the token, or create the two hostnames once from a workstation, where
+`wrangler login` already holds `workers_routes:write` and `ssl_certs:write`:
+
+```bash
+pnpm registry:deploy:staging
+pnpm registry:deploy
+```
+
+After that the hostnames exist and CI only replaces the script. Keep the
+`routes` block in `wrangler.jsonc` either way: it is the record of which
+hostname serves this Worker.
+
+The first deploy waits on a certificate for a new hostname, which is why the
+first probe in `verify.sh` retries for two minutes.
+
+#### Commands
+
+```bash
+pnpm registry:dev                  # local, on :8787
+pnpm registry:check                # bundle without deploying
+pnpm registry:verify               # probe production
+FULL_PULL=1 ./workers/registry/verify.sh registry.lector.dev
+```
+
+`registry:dev` pins an older compatibility date for the same reason `dev:api`
+does: the installed Wrangler's local runtime is older than the date the deploy
+targets.
+
+### Read the counts
+
+Pulls land in the `lector_registry_pulls` Analytics Engine dataset, one data
+point per tag-addressed manifest read. That is one event per `docker pull`: a
+client resolves the tag once and addresses everything after it by digest.
+Counting blob requests instead would multiply by layer count and would drop to
+zero for a client that already holds the layers.
+
+```bash
+export CLOUDFLARE_ACCOUNT_ID=...
+export CLOUDFLARE_ANALYTICS_TOKEN=...   # Account Analytics: Read
+pnpm registry:pulls                     # last 30 days
+pnpm registry:pulls -- --days 7
+```
+
+A `GET` on a tag is a pull. A `HEAD` on a tag is a client checking whether its
+copy is stale; the report keeps the two apart, because counting both as
+installs overstates them. No IP address is stored, matching
+`language_requests`; geography comes from country and colo only.
+
+Analytics Engine keeps **3 months**. A longer history has to be rolled up into
+D1 before it ages out.
