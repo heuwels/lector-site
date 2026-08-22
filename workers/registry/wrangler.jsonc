@@ -20,6 +20,11 @@
   "workers_dev": false,
   "observability": { "enabled": true },
 
+  // Attaching a hostname here creates it and requests a certificate. That
+  // certificate can take several minutes on a hostname Cloudflare has not
+  // served before: DNS resolves and the port accepts connections well before
+  // TLS works, so the gap looks like an outage rather than a wait. It happens
+  // once per hostname, never on redeploys. verify.sh waits it out.
   "routes": [
     {
       "pattern": "registry.lector.dev",

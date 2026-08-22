@@ -12,16 +12,40 @@ HOST="${1:?usage: verify.sh <hostname> [tag]}"
 TAG="${2:-latest}"
 REPO=lector
 
-# A fresh custom hostname needs its certificate issued before anything answers,
-# so the first probe waits considerably longer than the rest.
-readonly FIRST_PROBE_ATTEMPTS=40
-readonly PROBE_SLEEP=3
+# A hostname Cloudflare has not served before needs a certificate issued before
+# anything answers over TLS, and that took well over two minutes the first time
+# registry.sandbox.lector.dev was attached. The budget is generous because it is
+# only ever spent once per hostname; a redeploy passes this probe immediately.
+readonly FIRST_PROBE_ATTEMPTS=100
+readonly PROBE_SLEEP=6
 
 ACCEPT='application/vnd.oci.image.index.v1+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.docker.distribution.manifest.v2+json'
 
 fail() {
   echo "FAIL: $*" >&2
   exit 1
+}
+
+# A bare curl status of 000 covers DNS, TCP and TLS failures alike, which is
+# not enough to act on. This separates them, because each has a different cause
+# and only one of them is worth waiting out.
+diagnose() {
+  if ! host "$HOST" >/dev/null 2>&1 && ! nslookup "$HOST" >/dev/null 2>&1; then
+    echo "DNS does not resolve — the custom domain was never attached"
+    return
+  fi
+  if ! curl --silent --output /dev/null --max-time 10 "https://${HOST}/v2/" 2>/dev/null; then
+    if curl --silent --output /dev/null --max-time 10 --insecure "https://${HOST}/v2/" 2>/dev/null; then
+      echo "the Worker answers, but the certificate is not valid yet — this is
+  the first-deploy case and resolves on its own"
+      return
+    fi
+    echo "cannot complete a TLS handshake. If this hostname is new, its
+  certificate is still being issued and the wait above was not long enough.
+  If it is not new, check that the custom domain is still attached."
+    return
+  fi
+  echo "connected, but /v2/ did not answer 200"
 }
 
 echo "== 1/6 version check =="
@@ -32,7 +56,8 @@ for attempt in $(seq "$FIRST_PROBE_ATTEMPTS"); do
     break
   fi
   if [ "$attempt" = "$FIRST_PROBE_ATTEMPTS" ]; then
-    fail "/v2/ never returned 200 (last status: ${status:-none})"
+    fail "/v2/ never returned 200 (last status: ${status:-none})
+  $(diagnose)"
   fi
   sleep "$PROBE_SLEEP"
 done
