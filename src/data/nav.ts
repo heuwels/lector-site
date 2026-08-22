@@ -18,4 +18,5 @@ export const SITE_PAGES: NavLink[] = [
   { href: "/blog/", label: "Blog" },
   { href: "/methodology/", label: "Methodology" },
   { href: "/reference-data/", label: "Reference Data" },
+  { href: "/funding/", label: "Funding" },
 ];

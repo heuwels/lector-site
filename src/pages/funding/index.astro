@@ -1,0 +1,323 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Text from "../../components/Text.astro";
+import {
+  ALLOCATIONS,
+  ANNUAL_TOTAL_AT_FLOOR,
+  COMMITMENT,
+  PAYMENTS,
+  totalPaidUsd,
+} from "../../data/funding";
+
+const paid = totalPaidUsd();
+const sharesTotal = ALLOCATIONS.reduce((sum, a) => sum + a.share, 0);
+if (sharesTotal !== 100) {
+  throw new Error(`Funding shares must add up to 100, got ${sharesTotal}.`);
+}
+
+const dateFormat = new Intl.DateTimeFormat("en-AU", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+const formatDate = (iso: string) => dateFormat.format(new Date(iso));
+const usd = (amount: number) => `$${amount.toLocaleString("en-US")}`;
+
+const cannotTakeMoney = [
+  {
+    name: "Anki",
+    body: "Anki runs as a business, and its FAQ says that it cannot easily accept donations. It asks people to buy AnkiMobile instead. Lector buys licences as a normal expense and does not count them in the 10%.",
+    href: "https://faqs.ankiweb.net/how-can-i-donate.html",
+    hrefLabel: "Anki's donation FAQ",
+  },
+  {
+    name: "wordfreq",
+    body: "The frequency bands in every pack come from wordfreq. Robyn Speer ended the project, because generated text polluted the web corpora it sampled. No work remains to fund.",
+    href: "https://lobste.rs/s/ueqoef/why_wordfreq_will_not_be_updated",
+    hrefLabel: "Why wordfreq will not be updated",
+  },
+  {
+    name: "Wikimedia",
+    body: "Wiktionary and Wikipedia dumps feed the dictionaries and the frequency blends. The Wikimedia Foundation is very well funded, so a payment there does the least good of any option here. Lector corrects Wiktionary entries instead, through the directed work fund.",
+  },
+  {
+    name: "Universities and standards bodies",
+    body: "MeCab and UniDic come from NINJAL. UDPipe comes from Charles University. OPUS comes from the University of Helsinki. The Unicode Consortium supplies ICU, CLDR and Unihan. Their gift processes cost more in administration than these amounts justify today. They become candidates when the percentage beats the floor.",
+  },
+];
+---
+
+<Base
+  title="Funding the data | Lector"
+  description="Lector pays $100 per month, or 10% of profit, whichever is greater, to the open data projects its language packs depend on. The commitment, the split, and a record of every payment."
+>
+  <PageHeader
+    title="Funding the data"
+    description="Lector is a reader, but the language packs are the product. Volunteers and small research groups built the data in those packs. Almost none of them get paid for it."
+  >
+    <Fragment slot="breadcrumb">
+      <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
+      funding
+    </Fragment>
+  </PageHeader>
+
+  <section class="py-16">
+    <Container class="flex flex-col gap-16">
+      <div class="flex flex-col gap-6">
+        <h2
+          class="font-display text-3xl/9 text-olive-950 dark:text-white"
+        >
+          The commitment
+        </h2>
+        <p
+          class="max-w-3xl font-display text-2xl/9 text-olive-950 sm:text-3xl/10 dark:text-white"
+        >
+          Lector pays {usd(COMMITMENT.floorUsdPerMonth)} per month, or {
+            COMMITMENT.profitShare * 100
+          }% of profit, whichever is greater.
+        </p>
+        <Text size="lg" class="flex max-w-2xl flex-col gap-4">
+          <p>
+            The floor applies now. Lector is not yet profitable, so the
+            maintainer pays the floor from a personal giving budget. The
+            percentage takes over when {COMMITMENT.profitShare * 100}% of profit
+            is more than {usd(COMMITMENT.floorUsdPerMonth)} per month.
+          </p>
+          <p>
+            Profit means revenue after payment-processor fees, refunds, hosting
+            and inference costs. This page publishes the payments. It does not
+            publish the accounts.
+          </p>
+          <p>
+            Lector pays once per year, in a single transfer to each recipient.
+            Bank fees and administration make small monthly transfers wasteful.
+          </p>
+        </Text>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <h2 class="font-display text-3xl/9 text-olive-950 dark:text-white">
+          Where it goes
+        </h2>
+        <Text class="max-w-2xl">
+          <p>
+            The annual total at the floor is {usd(ANNUAL_TOTAL_AT_FLOOR)}. That
+            splits three ways, not eight. A share of {usd(ANNUAL_TOTAL_AT_FLOOR)}
+            across every project on the list is too small. The administration
+            then costs more than the money, for both sides.
+          </p>
+        </Text>
+        <div class="flex flex-col gap-2">
+          {
+            ALLOCATIONS.map((allocation) => (
+              <div class="flex flex-col gap-3 rounded-xl bg-olive-950/2.5 p-6 sm:flex-row sm:items-baseline sm:gap-8 dark:bg-white/5">
+                <div class="flex shrink-0 items-baseline gap-3 sm:w-56">
+                  <span class="font-display text-3xl text-olive-950 dark:text-white">
+                    {allocation.share}%
+                  </span>
+                  <span class="font-medium text-olive-950 dark:text-white">
+                    {allocation.recipientUrl ? (
+                      <a
+                        href={allocation.recipientUrl}
+                        class="underline underline-offset-4"
+                        rel="noopener"
+                      >
+                        {allocation.recipient}
+                      </a>
+                    ) : (
+                      allocation.recipient
+                    )}
+                  </span>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-base/7 text-olive-700 dark:text-olive-400">
+                    {allocation.note}
+                  </p>
+                  <p class="text-sm/6 text-olive-600 dark:text-olive-500">
+                    {allocation.channel}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <h2 class="font-display text-3xl/9 text-olive-950 dark:text-white">
+          What Lector paid
+        </h2>
+        {
+          PAYMENTS.length === 0 ? (
+            <Text class="max-w-2xl">
+              <p>
+                Nothing yet. This section lists every payment once the money
+                leaves, with the date, the amount and the evidence. An empty
+                list means an empty list.
+              </p>
+            </Text>
+          ) : (
+            <div class="flex flex-col gap-6">
+              <Text class="max-w-2xl">
+                <p>
+                  Total paid to date: <strong>{usd(paid)}</strong>.
+                </p>
+              </Text>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-3xl border-collapse text-left text-base/7">
+                  <thead>
+                    <tr class="border-b border-olive-950/10 dark:border-white/10">
+                      <th class="py-3 pr-6 font-medium text-olive-950 dark:text-white">
+                        Date
+                      </th>
+                      <th class="py-3 pr-6 font-medium text-olive-950 dark:text-white">
+                        Recipient
+                      </th>
+                      <th class="py-3 pr-6 font-medium text-olive-950 dark:text-white">
+                        Amount
+                      </th>
+                      <th class="py-3 pr-6 font-medium text-olive-950 dark:text-white">
+                        Method
+                      </th>
+                      <th class="py-3 font-medium text-olive-950 dark:text-white">
+                        Evidence
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PAYMENTS.map((payment) => (
+                      <tr class="border-b border-olive-950/5 align-baseline dark:border-white/5">
+                        <td class="py-3 pr-6 whitespace-nowrap text-olive-700 dark:text-olive-400">
+                          {formatDate(payment.date)}
+                        </td>
+                        <td class="py-3 pr-6 text-olive-950 dark:text-white">
+                          {payment.recipientUrl ? (
+                            <a
+                              href={payment.recipientUrl}
+                              class="underline underline-offset-4"
+                              rel="noopener"
+                            >
+                              {payment.recipient}
+                            </a>
+                          ) : (
+                            payment.recipient
+                          )}
+                          <span class="block text-sm/6 text-olive-600 dark:text-olive-500">
+                            {payment.purpose}
+                          </span>
+                        </td>
+                        <td class="py-3 pr-6 whitespace-nowrap text-olive-700 dark:text-olive-400">
+                          {usd(payment.amountUsd)}
+                        </td>
+                        <td class="py-3 pr-6 text-olive-700 dark:text-olive-400">
+                          {payment.method}
+                        </td>
+                        <td class="py-3 text-olive-700 dark:text-olive-400">
+                          {payment.evidence ? (
+                            <a
+                              href={payment.evidence}
+                              class="underline underline-offset-4"
+                            >
+                              Receipt
+                            </a>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <h2 class="font-display text-3xl/9 text-olive-950 dark:text-white">
+          Who cannot take money
+        </h2>
+        <Text class="max-w-2xl">
+          <p>
+            Lector depends on these projects and cannot pay them. Each entry
+            gives the reason. This list matters as much as the one above,
+            because it shows where the gaps in open-data funding actually are.
+          </p>
+        </Text>
+        <div class="flex max-w-3xl flex-col gap-6">
+          {
+            cannotTakeMoney.map((entry) => (
+              <div class="flex flex-col gap-2">
+                <h3 class="font-medium text-olive-950 dark:text-white">
+                  {entry.name}
+                </h3>
+                <p class="text-base/7 text-olive-700 dark:text-olive-400">
+                  {entry.body}
+                </p>
+                {entry.href && (
+                  <p class="text-sm/6">
+                    <a
+                      href={entry.href}
+                      class="text-olive-600 underline underline-offset-4 dark:text-olive-500"
+                      rel="noopener"
+                    >
+                      {entry.hrefLabel}
+                    </a>
+                  </p>
+                )}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 rounded-xl bg-olive-950/2.5 p-8 dark:bg-white/5">
+        <h2 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+          One problem money cannot fix
+        </h2>
+        <Text class="max-w-2xl">
+          <p>
+            The frequency data has no upstream any more. wordfreq is finished,
+            and the open web corpora it drew on are degraded. Every pack's
+            frequency banding rests on a source that stopped. Lector must find
+            another source or build one, and no payment changes that.
+          </p>
+        </Text>
+        <p class="text-sm/6">
+          <a
+            href="https://github.com/heuwels/lector/issues/543"
+            class="text-olive-600 underline underline-offset-4 dark:text-olive-500"
+            rel="noopener"
+          >
+            Tracked as issue #543
+          </a>
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <h2 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+          Corrections
+        </h2>
+        <Text class="max-w-2xl">
+          <p>
+            If Lector uses your data and this page is wrong about it, open an
+            issue. If you know a better way to reach a project named here, open
+            an issue.
+          </p>
+        </Text>
+        <p class="text-sm/6">
+          <a
+            href="https://github.com/heuwels/lector/blob/master/FUNDING.md"
+            class="text-olive-600 underline underline-offset-4 dark:text-olive-500"
+            rel="noopener"
+          >
+            FUNDING.md in the repository
+          </a>
+        </p>
+      </div>
+    </Container>
+  </section>
+</Base>
