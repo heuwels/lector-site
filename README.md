@@ -325,6 +325,30 @@ Analytics Engine needs enabling once per account, in the dashboard under
 Workers, or a deploy carrying the binding fails with error 10089. The dataset
 itself is created on first write; there is nothing to set up for it.
 
+### Manifest caching
+
+Manifest reads are the only requests that reach this Worker in volume, and they
+repeat: an auto-updater re-reads the same tag on a schedule. Successful reads are
+held in the Cache API, keyed by repository, reference and `Accept`.
+
+`Accept` is part of the key because it decides which manifest GHCR returns — a
+client that accepts only a v2 manifest must not be handed an OCI index that some
+other client cached. Media types are normalised and sorted, so clients listing
+the same types in a different order share one entry.
+
+A tag is cached for 60 seconds and a digest for a day, because a digest cannot
+move and a tag can. A HEAD is answered from the same entry as a GET, so the
+upstream read is always a GET even when the client asked for a HEAD; a manifest
+is a few KB, which is cheaper than reaching GHCR again.
+
+Errors are never cached, and their bodies are passed through: a registry error
+carries a payload the client is meant to read, and GHCR uses it to explain an
+unusable `Accept` header.
+
+A pull served from cache is still recorded. The recording sits outside the cache
+branch on purpose — skipping it would undercount exactly the repeat traffic the
+cache exists to absorb.
+
 ### Which release a pull was for
 
 Recording the tag alone means most rows read `latest`, which says nothing about

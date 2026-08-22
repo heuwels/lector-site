@@ -242,6 +242,51 @@ const MAX_VERSION_CANDIDATES = 24;
 // Per-isolate, in front of the Cache API.
 const versionMemo = new Map<string, string>();
 
+// A tag moves, so a cached copy has to expire quickly; a digest cannot move at
+// all. The short window is aimed at auto-updaters, which re-read the same tag on
+// a schedule and would otherwise reach GHCR every time.
+const MANIFEST_TAG_TTL_SECONDS = 60;
+const MANIFEST_DIGEST_TTL_SECONDS = 60 * 60 * 24;
+
+const MANIFEST_HEADERS = [
+  "content-type",
+  "content-length",
+  "docker-content-digest",
+  "etag",
+] as const;
+
+/**
+ * Cache key for one manifest read.
+ *
+ * Accept has to be part of the key: it decides which manifest GHCR returns, so
+ * a client asking only for a v2 manifest must not be handed an OCI index that
+ * some other client's request cached. The values are normalised so that clients
+ * listing the same media types in a different order share an entry.
+ */
+function manifestCacheKey(repo: string, ref: string, accept: string): Request {
+  const media = accept
+    .split(",")
+    .map((entry) => entry.trim().split(";")[0])
+    .filter(Boolean)
+    .sort()
+    .join(",");
+
+  return new Request(
+    `https://registry.invalid/manifest/${encodeURIComponent(repo)}/${encodeURIComponent(ref)}?accept=${encodeURIComponent(media)}`,
+  );
+}
+
+function copyManifestHeaders(from: Headers): Headers {
+  const headers = new Headers({
+    "docker-distribution-api-version": "registry/2.0",
+  });
+  for (const name of MANIFEST_HEADERS) {
+    const value = from.get(name);
+    if (value) headers.set(name, value);
+  }
+  return headers;
+}
+
 function semverKey(tag: string): number[] {
   const parts = tag.split(".").map(Number);
   // A two-part tag like "1.15" is an alias that moves; the three-part tag it
@@ -470,28 +515,50 @@ async function serveManifest(
   ref: string,
 ): Promise<Response> {
   const accept = request.headers.get("accept") ?? DEFAULT_ACCEPT;
-  const upstream = await fromUpstream(
-    repo,
-    `/manifests/${ref}`,
-    request.method,
-    accept,
-  );
+  const key = manifestCacheKey(repo, ref, accept);
 
-  const headers = new Headers({
-    "docker-distribution-api-version": "registry/2.0",
-  });
-  for (const name of [
-    "content-type",
-    "content-length",
-    "docker-content-digest",
-    "etag",
-  ]) {
-    const value = upstream.headers.get(name);
-    if (value) headers.set(name, value);
+  let status: number;
+  let headers: Headers;
+  let body: ArrayBuffer | null = null;
+
+  const cached = await caches.default.match(key);
+  if (cached) {
+    status = 200;
+    headers = copyManifestHeaders(cached.headers);
+    body = await cached.arrayBuffer();
+  } else {
+    // Always GET upstream, even to answer a HEAD, so one entry serves both. A
+    // manifest is a few KB, so fetching a body in order to answer a HEAD costs
+    // less than reaching GHCR again on the next request.
+    const upstream = await fromUpstream(repo, `/manifests/${ref}`, "GET", accept);
+    status = upstream.status;
+    headers = copyManifestHeaders(upstream.headers);
+
+    // Read the body either way. A registry error carries a payload the client
+    // is meant to see — GHCR explains an unusable Accept header there — and
+    // dropping it leaves a bare 404 with no reason in it. Only a success is
+    // worth storing.
+    body = await upstream.arrayBuffer();
+
+    if (upstream.ok) {
+      const ttl = ref.startsWith("sha256:")
+        ? MANIFEST_DIGEST_TTL_SECONDS
+        : MANIFEST_TAG_TTL_SECONDS;
+      const stored = copyManifestHeaders(upstream.headers);
+      stored.set("cache-control", `max-age=${ttl}`);
+      ctx.waitUntil(
+        caches.default
+          .put(key, new Response(body, { headers: stored }))
+          .catch((err) => console.error("caching a manifest failed", err)),
+      );
+    }
   }
 
-  // A tag is the install signal; a digest is the same pull continuing.
-  if (upstream.ok && !ref.startsWith("sha256:")) {
+  // A tag is the install signal; a digest is the same pull continuing. This sits
+  // outside the cache branch on purpose: a pull served from cache is still a
+  // pull, and skipping it here would undercount exactly the repeat traffic the
+  // cache exists to absorb.
+  if (status === 200 && !ref.startsWith("sha256:")) {
     // Deferred: hashing needs the day's salt, and a KV read should never sit in
     // front of a pull. A failure here must not fail the pull either.
     ctx.waitUntil(
@@ -501,17 +568,16 @@ async function serveManifest(
         repo,
         ref,
         request.method,
-        upstream.headers.get("docker-content-digest") ?? "",
-        Number(upstream.headers.get("content-length") ?? 0),
+        headers.get("docker-content-digest") ?? "",
+        Number(headers.get("content-length") ?? 0),
       ).catch((err) => console.error("recording a pull failed", err)),
     );
   }
 
-  // Manifests are a few KB, so passing the body through costs nothing.
-  return new Response(
-    request.method === "HEAD" ? null : upstream.body,
-    { status: upstream.status, headers },
-  );
+  return new Response(request.method === "HEAD" ? null : body, {
+    status,
+    headers,
+  });
 }
 
 async function serveBlob(
