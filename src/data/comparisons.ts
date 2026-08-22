@@ -65,6 +65,7 @@ const LECTOR = {
   anki: "Two-way (beta): push cards, Anki reviews update Lector",
   tutor: "LLM tutor + writing correction",
   data: "Your server (one SQLite file)",
+  database: "SQLite on your server",
   offline: "Reader, cloze & vocab work offline",
   open: "Open source (AGPL-3.0)",
   languages: `${completeLanguageCount} packs; reader works with any language`,
@@ -72,6 +73,46 @@ const LECTOR = {
   install: "One Docker Compose file in the repository",
   hosted: "Yes. app.lector.dev from $5/mo",
 };
+
+/** Compact stack table for /vs/. Facts match the per-app pages. */
+export const stackMatrix = [
+  {
+    feature: "Database",
+    lector: "SQLite",
+    lingq: "Cloud",
+    clozemaster: "Cloud",
+    lute: "Local files",
+    linguacafe: "MySQL",
+    freelingo: "Postgres",
+  },
+  {
+    feature: "Install",
+    lector: LECTOR.install,
+    lingq: "Hosted only",
+    clozemaster: "Hosted only",
+    lute: "pip, Docker, or source",
+    linguacafe: "Four Compose services",
+    freelingo: "Compose, Postgres, Redis",
+  },
+  {
+    feature: "Anki",
+    lector: "Two-way (beta)",
+    lingq: "File export",
+    clozemaster: "No documented export",
+    lute: "One-way AnkiConnect",
+    linguacafe: "One-way AnkiConnect",
+    freelingo: "None",
+  },
+  {
+    feature: "Hosted app",
+    lector: "Yes. From $5/mo",
+    lingq: "Yes",
+    clozemaster: "Yes",
+    lute: "No",
+    linguacafe: "No",
+    freelingo: "Yes. freelingo.app",
+  },
+] as const;
 
 export const comparisons: Record<string, Comparison> = {
   lingq: {
@@ -84,6 +125,8 @@ export const comparisons: Record<string, Comparison> = {
       "LingQ pioneered learning by reading imported content, and it's a polished, mature product with a big library and native apps. Lector takes the same reading-first idea and makes it self-hostable and open source, joins it with Clozemaster-style cloze and a first-party two-way Anki integration, and lets you bring your own LLM. Here's an honest side-by-side.",
     rows: [
       { feature: "Price", lector: LECTOR.price, them: "$14.99/mo, or ~$10/mo billed annually", advantage: "lector" },
+      { feature: "Database", lector: LECTOR.database, them: "Cloud account", advantage: "lector" },
+      { feature: "Install", lector: LECTOR.install, them: "Hosted only", advantage: "lector" },
       { feature: "Free tier", lector: "Full app, self-hosted", them: "Limited: ~20 saved words, 5 imports", advantage: "lector" },
       { feature: "Reading imported content", lector: LECTOR.reading, them: "EPUB, articles, video, browser-extension import", advantage: "them" },
       { feature: "Click-to-translate", lector: LECTOR.translate, them: "Yes, with a built-in dictionary", advantage: "even" },
@@ -149,6 +192,8 @@ export const comparisons: Record<string, Comparison> = {
       "Clozemaster is a gamified way to drill vocabulary through fill-in-the-blank sentences ordered by frequency, over large sentence banks. Lector includes the same frequency cloze practice, then wraps it in a reading-first workflow (import anything, click to translate, mine cards to Anki) — self-hosted and open source. Here's an honest side-by-side.",
     rows: [
       { feature: "Price", lector: LECTOR.price, them: "Free (30/day); Pro $12.99/mo, ~$70/yr, or ~$199 lifetime", advantage: "lector" },
+      { feature: "Database", lector: LECTOR.database, them: "Cloud account", advantage: "lector" },
+      { feature: "Install", lector: LECTOR.install, them: "Hosted only", advantage: "lector" },
       { feature: "Frequency cloze practice", lector: LECTOR.cloze, them: "Yes — its core feature", advantage: "even" },
       { feature: "Sentence bank size", lector: "Thousands per language (Tatoeba)", them: "Very large banks (also Tatoeba)", advantage: "them" },
       { feature: "Reading imported content", lector: LECTOR.reading, them: "No — sentences only, not full texts", advantage: "lector" },
@@ -215,6 +260,7 @@ export const comparisons: Record<string, Comparison> = {
     rows: [
       { feature: "Price", lector: LECTOR.price, them: "Free to self-host", advantage: "even" },
       { feature: "Install", lector: LECTOR.install, them: "pip, Docker, or source. The manual does not pick one.", advantage: "lector" },
+      { feature: "Database", lector: LECTOR.database, them: "Local data files", advantage: "even" },
       { feature: "Hosted option", lector: LECTOR.hosted, them: "No", advantage: "lector" },
       { feature: "Reading imported content", lector: LECTOR.reading, them: "Yes. Import and read texts.", advantage: "even" },
       { feature: "Click-to-translate", lector: LECTOR.translate, them: "Yes. Word status on the text.", advantage: "even" },
@@ -302,6 +348,7 @@ export const comparisons: Record<string, Comparison> = {
     rows: [
       { feature: "Price", lector: LECTOR.price, them: "Free to self-host", advantage: "even" },
       { feature: "Install", lector: LECTOR.install, them: "Four Compose services. Then install languages and import dictionaries.", advantage: "lector" },
+      { feature: "Database", lector: LECTOR.database, them: "MySQL plus a storage folder", advantage: "lector" },
       { feature: "Hosted option", lector: LECTOR.hosted, them: "No", advantage: "lector" },
       { feature: "Reading imported content", lector: LECTOR.reading, them: "Yes. Library and reader for imported text.", advantage: "even" },
       { feature: "Click-to-translate", lector: LECTOR.translate, them: "Yes. Dictionaries plus optional DeepL.", advantage: "even" },
@@ -390,6 +437,7 @@ export const comparisons: Record<string, Comparison> = {
       { feature: "Category", lector: "Reader. Import real text.", them: "CEFR study plan. LLM-generated lessons.", advantage: "even" },
       { feature: "Price", lector: LECTOR.price, them: "Self-host free. Hosted from about $14.95/mo.", advantage: "lector" },
       { feature: "Install", lector: LECTOR.install, them: "Compose with Postgres, Redis, and optional GPU speech services.", advantage: "lector" },
+      { feature: "Database", lector: LECTOR.database, them: "Postgres", advantage: "lector" },
       { feature: "Hosted option", lector: LECTOR.hosted, them: "Yes. freelingo.app. Trial with no card.", advantage: "them" },
       { feature: "Import your own text", lector: LECTOR.reading, them: "No EPUB or article import. Generated passages only.", advantage: "lector" },
       { feature: "Word states on real text", lector: "New, learning, or known", them: "No word states on an imported book", advantage: "lector" },

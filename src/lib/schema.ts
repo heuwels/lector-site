@@ -3,7 +3,7 @@
 // Keeping these as plain builders means pages stay declarative and the shapes
 // are validated in one place (Google Rich Results / schema.org).
 
-import { APP_URL, SUPPORT_EMAIL } from "../data/links";
+import { APP_URL, GITHUB, SUPPORT_EMAIL } from "../data/links";
 
 const SITE = "https://lector.dev";
 
@@ -90,18 +90,21 @@ export function softwareApplicationSchema() {
     "@type": "SoftwareApplication",
     name: "Lector",
     applicationCategory: "EducationalApplication",
-    operatingSystem: "Web, Docker",
+    operatingSystem: "Web, Docker, Linux, macOS, Windows",
     url: SITE,
     downloadUrl: APP_URL,
+    sameAs: [GITHUB],
+    softwareRequirements: "Web browser. Docker for a self-host.",
     description:
-      "A self-hosted reader for language learners, with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. You keep your books and your data.",
+      "A language-learning reader with LingQ-style reading, Clozemaster-style cloze practice, and AnkiConnect integration. Use Lector Cloud, or self-host it. You keep your books and your data.",
     applicationSubCategory: "Language learning",
     featureList: [
       "Click-to-translate reading for EPUB, articles, YouTube captions, and podcasts",
       "Frequency-ordered cloze practice with spaced repetition",
-      "Two-way Anki sync",
-      "On-device dictionary plus optional local or cloud LLM",
-      "Self-host with Docker, or Lector Cloud from $5/mo",
+      "Two-way Anki sync through AnkiConnect or the Lector Sync add-on",
+      "SQLite database on the host",
+      "On-device dictionary plus optional Claude API or local LLM",
+      "Self-host with Docker Compose, or Lector Cloud from $5/mo",
     ],
     screenshot: `${SITE}/images/reader.png`,
     softwareLicense: "https://www.gnu.org/licenses/agpl-3.0.html",
