@@ -85,7 +85,7 @@ export function buildLlmsTxt(): string {
   const lines = [
     "# Lector",
     "",
-    `> Lector is self-hosted or Lector Cloud from $5/mo. Import EPUB, articles, YouTube captions, and podcasts. Click any word to translate. Practice with frequency cloze and two-way Anki. It is open source (AGPL). Language packs cover ${packNames}. Japanese and Korean have a dictionary and no cloze bank yet.`,
+    `> Lector is a language-learning reader. It is an alternative to LingQ and Clozemaster. Use Lector Cloud from $5/mo, or self-host it. Import EPUB, articles, YouTube captions, and podcasts. Click any word to translate. Practice with frequency cloze and two-way Anki. A self-host stores data in SQLite. It is open source (AGPL). Language packs cover ${packNames}. Japanese and Korean have a dictionary and no cloze bank yet.`,
     "",
     "## Learn a language",
     "",

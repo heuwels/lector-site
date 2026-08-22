@@ -3,8 +3,9 @@ import Base from "../../layouts/Base.astro";
 import Container from "../../components/Container.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
 import Text from "../../components/Text.astro";
-import { comparisons } from "../../data/comparisons";
+import { comparisons, stackMatrix } from "../../data/comparisons";
 import { breadcrumbSchema } from "../../lib/schema";
 
 const items = Object.values(comparisons);
@@ -14,11 +15,20 @@ const schema = [
     { name: "Comparisons", url: "/vs/" },
   ]),
 ];
+
+const stackColumns = [
+  { key: "lector", label: "Lector" },
+  { key: "lingq", label: "LingQ" },
+  { key: "clozemaster", label: "Clozemaster" },
+  { key: "lute", label: "Lute" },
+  { key: "linguacafe", label: "LinguaCafe" },
+  { key: "freelingo", label: "FreeLingo" },
+] as const;
 ---
 
 <Base
   title="Lector vs the alternatives | Lector"
-  description="Honest, side-by-side comparisons of Lector against LingQ, Clozemaster, Lute, LinguaCafe, and FreeLingo. Price, reading, cloze, Anki, and data ownership."
+  description="Honest, side-by-side comparisons of Lector against LingQ, Clozemaster, Lute, LinguaCafe, and FreeLingo. Database, install, Anki, price, reading, cloze, and data ownership."
   schema={schema}
 >
   <section class="pt-14 pb-12 sm:pt-20">
@@ -31,6 +41,65 @@ const schema = [
         Honest, side-by-side pages against paid apps and open-source readers.
         Where they win, where Lector wins, and who should pick which.
       </Text>
+    </Container>
+  </section>
+
+  <section class="pb-12">
+    <Container class="flex flex-col gap-6">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Stack</Eyebrow>
+        <Subheading>Database, install, and Anki.</Subheading>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[56rem] border-collapse text-left text-sm/6">
+          <thead>
+            <tr class="border-b border-olive-950/15 dark:border-white/15">
+              <th class="py-3 pr-4 font-normal text-olive-500"></th>
+              {
+                stackColumns.map((column) => (
+                  <th
+                    class:list={[
+                      "px-3 py-3 font-display text-lg",
+                      column.key === "lector"
+                        ? "rounded-t-lg bg-sage-600/10 text-olive-950 dark:text-white"
+                        : "text-olive-700 dark:text-olive-300",
+                    ]}
+                  >
+                    {column.label}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              stackMatrix.map((row) => (
+                <tr class="border-b border-olive-950/8 align-top dark:border-white/8">
+                  <th
+                    scope="row"
+                    class="py-3 pr-4 text-left font-medium text-olive-950 dark:text-white"
+                  >
+                    {row.feature}
+                  </th>
+                  {
+                    stackColumns.map((column) => (
+                      <td
+                        class:list={[
+                          "px-3 py-3 text-olive-700 dark:text-olive-400",
+                          column.key === "lector" &&
+                            "bg-sage-600/10 font-medium text-olive-950 dark:text-white",
+                        ]}
+                      >
+                        {row[column.key]}
+                      </td>
+                    ))
+                  }
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
     </Container>
   </section>
 
