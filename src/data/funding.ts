@@ -12,9 +12,20 @@ export interface FundingPayment {
   date: string;
   recipient: string;
   recipientUrl?: string;
-  /** Whole units, USD. */
+  /**
+   * The commitment is denominated in USD, so every payment records a USD
+   * figure. This is what the payment counts for against the commitment.
+   */
   amountUsd: number;
+  /**
+   * What actually left the account, when that was not USD. Recipients abroad
+   * take their own currency, and the rate on the day is not the commitment.
+   * Show this next to the USD figure, never instead of it.
+   */
+  amountAsPaid?: string;
   method: string;
+  /** Public reference for the transfer, when one exists. */
+  reference?: string;
   /** What the money is for, in one sentence. */
   purpose: string;
   /**
@@ -75,7 +86,20 @@ export const ALLOCATIONS: FundingAllocation[] = [
  * list renders as "no payments yet", which is the honest state. Never seed this
  * with an intended payment.
  */
-export const PAYMENTS: FundingPayment[] = [];
+export const PAYMENTS: FundingPayment[] = [
+  {
+    date: "2026-08-22",
+    recipient: "Tatoeba",
+    recipientUrl: "https://tatoeba.org",
+    amountUsd: 600,
+    amountAsPaid: "€513.78 EUR",
+    method: "PayPal",
+    reference: "9RH44382EK247412G",
+    purpose:
+      "The example sentences in every language pack. Association Tatoeba is a French non-profit.",
+    evidence: "/images/funding/tatoeba-2026-08.png",
+  },
+];
 
 export const totalPaidUsd = (): number =>
   PAYMENTS.reduce((sum, payment) => sum + payment.amountUsd, 0);

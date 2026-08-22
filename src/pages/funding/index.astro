@@ -162,7 +162,10 @@ const cannotTakeMoney = [
             <div class="flex flex-col gap-6">
               <Text class="max-w-2xl">
                 <p>
-                  Total paid to date: <strong>{usd(paid)}</strong>.
+                  Total paid to date: <strong>{usd(paid)}</strong>. The
+                  commitment is set in US dollars. A recipient abroad takes its
+                  own currency, so the row shows both figures. Each receipt is
+                  the evidence for one row.
                 </p>
               </Text>
               <div class="overflow-x-auto">
@@ -210,9 +213,19 @@ const cannotTakeMoney = [
                         </td>
                         <td class="py-3 pr-6 whitespace-nowrap text-olive-700 dark:text-olive-400">
                           {usd(payment.amountUsd)}
+                          {payment.amountAsPaid && (
+                            <span class="block text-sm/6 text-olive-600 dark:text-olive-500">
+                              paid as {payment.amountAsPaid}
+                            </span>
+                          )}
                         </td>
                         <td class="py-3 pr-6 text-olive-700 dark:text-olive-400">
                           {payment.method}
+                          {payment.reference && (
+                            <span class="block font-mono text-xs/6 break-all text-olive-600 dark:text-olive-500">
+                              {payment.reference}
+                            </span>
+                          )}
                         </td>
                         <td class="py-3 text-olive-700 dark:text-olive-400">
                           {payment.evidence ? (
