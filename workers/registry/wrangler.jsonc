@@ -40,15 +40,13 @@
   ],
 
   // Holds one random salt per UTC day, each written with a 48-hour TTL so it
-  // deletes itself. See `dailySalt` in src/index.ts. Create the namespaces once
-  // and paste the ids here:
-  //
-  //   wrangler kv namespace create registry-salts
-  //   wrangler kv namespace create registry-salts-staging
+  // deletes itself. See `dailySalt` in src/index.ts. The namespaces hold nothing
+  // else, so they can be emptied at any time without losing anything but a
+  // day's ability to tell two pullers apart.
   "kv_namespaces": [
     {
       "binding": "SALTS",
-      "id": "REPLACE_WITH_REGISTRY_SALTS_NAMESPACE_ID"
+      "id": "575160d810334ad695328a949a0f03b2"
     }
   ],
   "vars": {
@@ -81,7 +79,7 @@
       "kv_namespaces": [
         {
           "binding": "SALTS",
-          "id": "REPLACE_WITH_REGISTRY_SALTS_STAGING_NAMESPACE_ID"
+          "id": "43add901ee684e96b7b2d04a425c3e99"
         }
       ],
       "vars": {

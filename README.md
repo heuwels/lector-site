@@ -316,17 +316,36 @@ The privacy policy describes this and links to `dailySalt` and `pullerId`, so
 those two names are load-bearing — renaming them means editing
 `src/pages/privacy/index.astro` too.
 
-The KV namespaces hold nothing but salts. Create them once and paste the ids
-into `wrangler.jsonc`:
+The KV namespaces hold nothing but salts, so they can be emptied at any time;
+the only loss is a day's ability to tell two pullers apart. Their ids are in
+`wrangler.jsonc` — a namespace id is not a secret, and a deploy needs it before
+it can bind anything.
 
-```bash
-wrangler kv namespace create registry-salts
-wrangler kv namespace create registry-salts-staging
-```
-
-Analytics Engine also needs enabling once per account, in the dashboard under
+Analytics Engine needs enabling once per account, in the dashboard under
 Workers, or a deploy carrying the binding fails with error 10089. The dataset
 itself is created on first write; there is nothing to set up for it.
+
+### Which release a pull was for
+
+Recording the tag alone means most rows read `latest`, which says nothing about
+what people run. The image carries no version anywhere — no OCI labels, nothing
+in its config blob — so `resolveVersion` finds the version tag whose digest
+matches the one the pull resolved to.
+
+An exact tag like `1.15.0` is immutable and needs no lookup. Everything else
+moves and does: `1.15` is an alias onto the newest patch, so it resolves to
+`1.15.0` rather than being recorded verbatim.
+
+`latest` currently points at the same digest as `master`, and a build off master
+carries no release tag at all. Those resolve to `@<short digest>` instead of to
+nothing, because an unreleased build is worth seeing in a report and an empty
+column hides it. If `latest` is ever pointed at releases, they resolve to a
+version with no change here.
+
+The lookup runs in the deferred recording path, so it never delays a pull, and
+its result is held in the Cache API keyed by digest — about one lookup per colo
+per release. A miss costs the tag list plus one HEAD per candidate version,
+newest first, which usually matches on the first.
 
 Analytics Engine keeps **3 months**. A longer history has to be rolled up into
 D1 before it ages out.

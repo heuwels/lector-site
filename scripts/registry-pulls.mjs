@@ -36,6 +36,9 @@ const COLUMNS = {
   // A per-day pseudonym, not an identity: the salt behind it is deleted after
   // 48 hours, so it cannot be joined across days even deliberately.
   puller: "blob9",
+  // The release the tag resolved to. "@<digest>" means the build has no release
+  // tag — `latest` tracks `master`, so those are unreleased builds.
+  version: "blob10",
   bytes: "double1",
 };
 
@@ -150,6 +153,20 @@ table(
     FROM ${dataset}
     WHERE ${since} AND ${c.method} = 'GET'
     GROUP BY tag ORDER BY pulls DESC LIMIT 25
+    FORMAT JSON`),
+);
+
+console.log("\nBy version (pulls only)");
+// More useful than the tag column: everyone pulling `latest` looks identical
+// there, while this shows which build they actually received.
+table(
+  await query(`
+    SELECT ${c.version} AS version,
+           SUM(_sample_interval) AS pulls,
+           COUNT(DISTINCT ${c.puller}) AS distinct_pullers
+    FROM ${dataset}
+    WHERE ${since} AND ${c.method} = 'GET'
+    GROUP BY version ORDER BY pulls DESC LIMIT 25
     FORMAT JSON`),
 );
 
