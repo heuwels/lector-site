@@ -1,0 +1,130 @@
+name: Deploy registry proxy
+
+# The Worker deploys on its own, not with the site. It shares no build output
+# with Pages, so gating it behind the site's CI would only couple two unrelated
+# release paths. Path filters keep site-only commits from redeploying it.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "workers/registry/**"
+      - ".github/workflows/deploy-registry.yml"
+  workflow_dispatch:
+    inputs:
+      full_pull:
+        description: "Pull the whole image during staging verification"
+        type: boolean
+        default: false
+
+concurrency:
+  group: lector-registry-promotion
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # A tag that exists in ghcr.io/heuwels/lector, used by the probes below.
+  PROBE_TAG: latest
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Catches syntax errors and Wrangler config mistakes before either
+      # environment is touched. Both environments are bundled because the
+      # staging config repeats its bindings rather than inheriting them, so a
+      # typo there would otherwise only surface at deploy time.
+      - name: Bundle both environments
+        run: |
+          pnpm registry:check
+          pnpm registry:check:staging
+
+  deploy-staging:
+    needs: bundle
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://registry.sandbox.lector.dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy to staging
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            deploy
+            --config workers/registry/wrangler.jsonc
+            --env staging
+
+      # On the very first deploy the custom hostname has to be created and a
+      # certificate issued, which takes longer than a redeploy. The generous
+      # retry budget is for that case.
+      - name: Verify the registry answers
+        env:
+          FULL_PULL: ${{ inputs.full_pull && '1' || '0' }}
+        run: ./workers/registry/verify.sh registry.sandbox.lector.dev "$PROBE_TAG"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://registry.lector.dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # `--env=""` targets the top-level environment. Without it Wrangler warns
+      # and picks a default, which is not something a deploy should leave open.
+      - name: Deploy to production
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            deploy
+            --config workers/registry/wrangler.jsonc
+            --env=""
+
+      - name: Verify the registry answers
+        run: ./workers/registry/verify.sh registry.lector.dev "$PROBE_TAG"
