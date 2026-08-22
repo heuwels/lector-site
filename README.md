@@ -30,6 +30,11 @@ The `/docs/api/` page renders the OpenAPI document of the Lector app. The page
 also serves the raw document at `/openapi.json`. Both read one file:
 `src/data/openapi.json`.
 
+The site serves an API catalog at `/.well-known/api-catalog`. RFC 9727
+defines this catalog. Each entry has a link to the OpenAPI document, the
+docs page, and the health endpoint. The file has no extension.
+`public/_headers` sets the `Content-Type` to `application/linkset+json`.
+
 The app repository owns that document. To refresh the copy in this repository:
 
 ```bash
