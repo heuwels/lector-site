@@ -217,6 +217,126 @@ async function pullerId(
   return hex(new Uint8Array(digest).slice(0, 16));
 }
 
+// Tags that name a version, like "1.15.0" or "1.15".
+const SEMVER = /^\d+\.\d+(\.\d+)?$/;
+
+// Only a three-part tag is immutable. "1.15" is an alias that moves onto each
+// new patch, so it has to be resolved like any other moving tag — recording it
+// verbatim would hide which patch the client actually received.
+const EXACT_SEMVER = /^\d+\.\d+\.\d+$/;
+
+// A digest is immutable, so a resolved version never changes and can be held a
+// long time. A miss is cached briefly, so a dev build does not re-walk the tag
+// list on every pull.
+const VERSION_TTL_SECONDS = 60 * 60 * 24 * 30;
+
+// A digest with no version tag today could gain one later, if a release is cut
+// from exactly that build. A day is short enough to pick that up and long
+// enough that frequent master builds do not re-walk the tag list hourly.
+const UNRESOLVED_TTL_SECONDS = 60 * 60 * 24;
+
+// Bounds the subrequests one resolution can make. In practice a moving tag
+// points at the newest release, so the first candidate usually matches.
+const MAX_VERSION_CANDIDATES = 24;
+
+// Per-isolate, in front of the Cache API.
+const versionMemo = new Map<string, string>();
+
+function semverKey(tag: string): number[] {
+  const parts = tag.split(".").map(Number);
+  // A two-part tag like "1.15" is an alias that moves; the three-part tag it
+  // currently points at is the more useful answer, so it sorts first.
+  return [parts[0], parts[1], parts[2] ?? -1];
+}
+
+function newestFirst(a: string, b: string): number {
+  const [x, y] = [semverKey(a), semverKey(b)];
+  for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return y[i] - x[i];
+  return 0;
+}
+
+/**
+ * The release behind a moving tag.
+ *
+ * The image carries no version anywhere — no OCI labels, nothing in its config
+ * blob — so the only way to learn which release a tag points at is to find the
+ * version tag that resolves to the same digest. Recording just the tag leaves
+ * every pull reading "latest", which says nothing about what people run.
+ *
+ * Not every digest has a version. `latest` currently tracks `master`, and a
+ * build straight off master has no release tag at all, so those resolve to
+ * "@<short digest>" rather than to nothing: an unreleased build is a fact worth
+ * seeing in a report, and a blank column hides it.
+ *
+ * Runs inside the deferred recording path, and only on a digest this colo has
+ * not seen — about once per release, or once per master build.
+ */
+async function resolveVersion(
+  repo: string,
+  ref: string,
+  digest: string,
+): Promise<string> {
+  // The tag already names an exact version; nothing to look up.
+  if (EXACT_SEMVER.test(ref)) return ref;
+  if (!digest) return "";
+
+  const memo = versionMemo.get(digest);
+  if (memo !== undefined) return memo;
+
+  // Keyed on a synthetic URL; the Cache API needs a request, not a bare string.
+  const key = new Request(
+    `https://registry.invalid/version/${encodeURIComponent(repo)}/${digest}`,
+  );
+  const hit = await caches.default.match(key);
+  if (hit) {
+    const cached = await hit.text();
+    versionMemo.set(digest, cached);
+    return cached;
+  }
+
+  let version = "";
+  try {
+    const listing = await fromUpstream(repo, "/tags/list", "GET");
+    if (listing.ok) {
+      const { tags } = await listing.json<{ tags?: string[] }>();
+      const candidates = (tags ?? [])
+        .filter((tag) => SEMVER.test(tag))
+        .sort(newestFirst)
+        .slice(0, MAX_VERSION_CANDIDATES);
+
+      for (const tag of candidates) {
+        const head = await fromUpstream(
+          repo,
+          `/manifests/${tag}`,
+          "HEAD",
+          DEFAULT_ACCEPT,
+        );
+        if (head.headers.get("docker-content-digest") === digest) {
+          version = tag;
+          break;
+        }
+      }
+    }
+  } catch (err) {
+    // A pull must never depend on this working.
+    console.error("resolving a version failed", { repo, digest, err });
+  }
+
+  const resolved = version || `@${digest.replace("sha256:", "").slice(0, 12)}`;
+  versionMemo.set(digest, resolved);
+  await caches.default.put(
+    key,
+    new Response(resolved, {
+      headers: {
+        "cache-control": `max-age=${
+          version ? VERSION_TTL_SECONDS : UNRESOLVED_TTL_SECONDS
+        }`,
+      },
+    }),
+  );
+  return resolved;
+}
+
 /** Coarse client family, so queries can separate CI from people. */
 function clientKind(userAgent: string): string {
   const ua = userAgent.toLowerCase();
@@ -255,6 +375,7 @@ async function recordPull(
   const userAgent = (request.headers.get("user-agent") ?? "").slice(0, 256);
   const cf = request.cf;
   const puller = await pullerId(env, request, repo);
+  const version = await resolveVersion(repo, ref, digest);
 
   env.PULLS.writeDataPoint({
     // The sampling key. Low cardinality on purpose.
@@ -270,6 +391,7 @@ async function recordPull(
       (cf?.colo as string) ?? "",
       digest,
       puller,
+      version,
     ],
     doubles: [bytes],
   });
