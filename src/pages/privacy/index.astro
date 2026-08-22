@@ -16,6 +16,16 @@ interface Revision {
 
 const revisions: Revision[] = [
   {
+    version: 4,
+    date: "22 August 2026",
+    isoDate: "2026-08-22",
+    changes: [
+      "Added a section about pulling the container image. The image can now be pulled from registry.lector.dev, which counts pulls so we know roughly how many installs exist.",
+      "Explained the daily rotating salt that stands in for an IP address, and linked the code that does it.",
+      "Named ghcr.io as the way to pull the image without being counted.",
+    ],
+  },
+  {
     version: 3,
     date: "20 August 2026",
     isoDate: "2026-08-20",
@@ -82,6 +92,11 @@ const current = revisions[0];
           use that message to reply. The cloud service will store only what the
           account needs. Paddle handles payments.
         </p>
+        <p>
+          Pulling the container image from our address counts the pull. We store
+          no IP address for it, and you can pull from ghcr.io instead to stay
+          out of the count.
+        </p>
       </div>
 
       <h2>The self-hosted app</h2>
@@ -93,6 +108,58 @@ const current = revisions[0];
         from your server to the provider you configure (the Claude API, or a local
         model) using your own keys — not through us.
       </p>
+
+      <h2>Pulling the container image</h2>
+      <p>
+        Lector ships as a container image. The default install pulls it from{" "}
+        <code>registry.lector.dev</code>, which is our own address in front of
+        GitHub's registry. We run it for one reason: GitHub publishes no pull
+        statistics, so without it we have no idea how many people run Lector.
+      </p>
+      <p>
+        When you pull, we record the tag you asked for, the image version it
+        resolved to, your container client (Docker, Podman, and so on), your
+        country code, and the Cloudflare location that served you.{" "}
+        <strong>We do not store your IP address</strong> — not in those records,
+        and not anywhere else. Our diagnostic logs capture errors so we can fix
+        them; they do not record who pulled. Cloudflare handles the connection
+        itself, as it does for the rest of this site.
+      </p>
+      <p>
+        To count installs rather than pulls, we need to tell two pulls apart
+        without knowing who either came from. So your address and client are
+        hashed together with a random salt that we throw away every day, the
+        same approach{" "}
+        <a href="https://plausible.io/data-policy" target="_blank" rel="noopener noreferrer">Plausible</a>
+        {" "}uses for this site. The salt is deleted after 48 hours. Once it is
+        gone, the hashes it produced cannot be traced back to an address by
+        anyone, including us, and the same person cannot be recognised from one
+        day to the next. The code that does this is public — see{" "}
+        <a
+          href="https://github.com/heuwels/lector-site/blob/master/workers/registry/src/index.ts"
+          target="_blank"
+          rel="noopener noreferrer">the <code>dailySalt</code> and <code>pullerId</code> functions</a
+        >.
+      </p>
+      <p>
+        The numbers we get out of this are rough on purpose: a count of pulls, a
+        count of distinct pullers per day, and a breakdown by version and
+        country. Nothing about your server, your books, or your reading is
+        involved — that never leaves your hardware.
+      </p>
+      <div class="callout">
+        <p>
+          <strong>If you would rather not be counted.</strong> Pull the same
+          image straight from GitHub instead. It is the identical image, and the
+          request never touches us:
+        </p>
+        <p><code>docker pull ghcr.io/heuwels/lector:latest</code></p>
+        <p>
+          It is a drop-in swap: change the image line in your{" "}
+          <a href="/docs/self-hosting/">docker-compose.yml</a> and nothing else
+          about the install differs.
+        </p>
+      </div>
 
       <h2>This website</h2>
       <p>
