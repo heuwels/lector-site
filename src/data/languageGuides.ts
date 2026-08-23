@@ -6,16 +6,17 @@
 // Entries are ordered by TOTAL speakers worldwide (first language plus second
 // language), because that order decides prominence on /languages/ and it should
 // track how many people actually speak each language. Mandarin leads at about
-// 1.18 billion. Esperanto and Koine Greek have no comparable count, so they sit
-// at the end. src/data/languages.ts holds
+// 1.18 billion. Esperanto, Koine Greek, and Latin have no comparable count, so
+// they sit at the end. src/data/languages.ts holds
 // the same order; keep the two in step.
 //
 // Facts (speaker counts, FSI category/hours) were verified against the US Foreign
 // Service Institute, Ethnologue/Wikipedia, OIF 2022, and Instituto Cervantes 2024.
 // Keep those sources in mind when editing numbers. Sample passages are original,
 // wholesome sentences (no copyright risk) written to read naturally in each
-// language. Koine is the exception: its sample is John 1:1, because a marketing
-// page for a scriptural reading language should quote the text people come for.
+// language. Koine and Latin are the exceptions: their samples are John 1:1 and
+// Caesar, Gallic War 1.1, because a marketing page for a reading language
+// should quote the text people come for.
 
 export interface Faq {
   question: string;
@@ -835,5 +836,57 @@ export const languageGuides: Record<string, LanguageGuide> = {
     clozeImg: "/images/languages/koine-greek-cloze.png",
     clozeAlt:
       "Koine Greek cloze practice in Lector with multiple-choice options and the verse reference kept",
+  },
+
+  latin: {
+    slug: "latin",
+    answer:
+      "The best way to learn Latin is to read the texts themselves — Caesar, Cicero, Virgil, the Vulgate — with instant tap-to-translate and practice ordered by the Dickinson College Commentaries core vocabulary. The top 1,000 lemmas cover a large share of Classical prose, so real sentences come within reach early. This is a reading language, so reading is the whole method.",
+    nativeSpeakers: "None — a historical language",
+    totalSpeakers: "Studied worldwide; still liturgical in the Catholic Church",
+    fsiCategory: "Not FSI rated",
+    approxHours: "~600 hours",
+    approxWeeks: 24,
+    whyLearn: [
+      "It is the language of Caesar, Cicero, Virgil, the Vulgate, and Augustine. Reading them in Latin takes the translator out from between you and the text.",
+      "A mapped target: the Dickinson College Commentaries Latin Core Vocabulary ranks about 1,000 lemmas from a large Classical corpus, and those lemmas cover a large share of running prose. Few languages define the job this clearly.",
+      "Latin sits under the Romance languages and a large share of English scientific, legal, and theological vocabulary, so Spanish, French, Italian, and academic English all get easier with it.",
+    ],
+    mutualIntelligibility:
+      "Latin is the parent of the Romance family. Spanish, French, Italian, and Portuguese become far more approachable once the case system and the core lexicon are in place, and a large stock of English academic vocabulary is Latin on sight.",
+    difficultyNote:
+      "The FSI does not rate Latin, because it does not teach historical languages. Unofficial charts often put it in Category II (~600 hours) for English speakers, mainly because so much of the vocabulary is already familiar. The grammar is heavier than that number suggests: five declensions, six cases, and a verb system with subjunctive and sequence of tenses. The goal is different, though. You are learning to read rather than to speak, and reading a closed literary corpus with a dictionary one tap away is a much shorter road than conversational fluency.",
+    faqs: [
+      {
+        question: "Is Latin hard to learn?",
+        answer:
+          "The grammar is demanding — five declensions, six cases, and a verb system English has no direct equivalent for. The vocabulary is the compensating advantage: English already carries a huge Latin stock, so many words are recognised rather than memorised. The target is also narrow. You are learning to read a finite literary corpus, not to hold a conversation, which makes it far more tractable than a modern language of the same grammatical weight.",
+      },
+      {
+        question: "How long does it take to learn Latin?",
+        answer:
+          "There is no FSI figure, because the FSI does not teach historical languages. Unofficial Category II estimates of about 600 hours are a reasonable marker if the goal is reading. Reading-only is a shorter road than that: the DCC core list is about 1,000 lemmas, and those cover a large share of Classical prose, so Caesar's opening chapters become readable within months.",
+      },
+      {
+        question: "What is the best way to learn Latin?",
+        answer:
+          "Read real Latin from the start, with lookups that fold editorial macrons (amāre and amare are one key) and practice that is ordered by the DCC core vocabulary. Learning the highest-frequency lemmas first buys the most text for the least effort. Typed practice accepts unmarked vowels, so you can answer without copying dictionary length marks.",
+      },
+      {
+        question: "Does Lector read Latin aloud?",
+        answer:
+          "No, and that is deliberate. Classical and ecclesiastical pronunciation are both taught, and they disagree, so Lector stays silent rather than teaching you a guess. Every other feature — lookups, cloze practice, mining to Anki — works as it does for any other language.",
+      },
+    ],
+    sample: {
+      text: "Gallia est omnis divisa in partes tres, quarum unam incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua Celtae, nostra Galli appellantur.",
+      translation:
+        "Gaul as a whole is divided into three parts, of which the Belgae inhabit one, the Aquitani another, and the third those who in their own language are called Celts, in ours Gauls. (Caesar, Gallic War 1.1)",
+    },
+    readerImg: "/images/languages/latin-reader.png",
+    readerAlt:
+      "Lector reading a Latin passage with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/latin-cloze.png",
+    clozeAlt: "Latin cloze practice in Lector with multiple-choice options",
   },
 };
