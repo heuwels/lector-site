@@ -633,6 +633,47 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "latin",
+    name: "Latin → English",
+    endonym: "Latina",
+    // No country flag for a historical language — the Classical building
+    // matches the app's language picker.
+    flag: "🏛️",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Latin. Dictionaries mark vowel length; running text almost never does, so amāre and amare are one key, and typed practice accepts the unmarked form. Lookups also try the u/v and i/j spellings editions mix (uult finds vult). Frequency ranks come from the Dickinson College Commentaries Latin Core Vocabulary. No synthesized audio on principle: classical and ecclesiastical pronunciation are disputed, so the speaker stays silent rather than guessing.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "833,680 entries" },
+      { label: "English senses", value: "1,089,712" },
+      { label: "Inflections", value: "965,021" },
+      { label: "Cloze bank", value: "10,733 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Latin Wiktionary entries extracted through Kaikki.org, including form-of records for the five declensions and the full verb system. Keys strip editorial macrons and unfold æ/œ.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Latin/",
+      },
+      {
+        label: "Frequency ranks",
+        detail:
+          "Dickinson College Commentaries Latin Core Vocabulary — about 1,000 lemmas ranked from a large Classical Latin corpus. Tatoeba token counts fill the rest of the cloze spine.",
+        license: "CC BY-SA 3.0",
+        url: "https://dcc.dickinson.edu/latin-core-list1",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Latin–English sentence pairs from Tatoeba, ranked on the DCC spine and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "hindi",
     name: "Hindi → English",
     endonym: "हिन्दी",
@@ -712,18 +753,6 @@ export const languages: Language[] = [
     status: "coming-soon",
     roadmapIssue: 255,
     blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "latin",
-    name: "Latin → English",
-    endonym: "Latina",
-    flag: "🇻🇦",
-    status: "coming-soon",
-    roadmapIssue: 256,
-    blurb: "On the roadmap — pending a language pack.",
     downloads: [],
     stats: [],
     sources: [],
