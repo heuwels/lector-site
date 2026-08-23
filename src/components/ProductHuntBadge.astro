@@ -1,0 +1,38 @@
+---
+// The official Product Hunt badge. It renders nothing until
+// `PRODUCT_HUNT.postId` is set in src/data/launch.ts, so this component is safe
+// to leave in place between launches.
+//
+// The image comes from api.producthunt.com by design: Product Hunt keeps the
+// vote count on it current, and a self-hosted copy would freeze that number.
+import {
+  PRODUCT_HUNT,
+  productHuntUrl,
+  productHuntBadgeUrl,
+} from "../data/launch";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+{
+  PRODUCT_HUNT.postId !== null && (
+    <a
+      href={productHuntUrl()}
+      target="_blank"
+      rel="noopener"
+      class:list={["inline-block", className]}
+    >
+      <img
+        src={productHuntBadgeUrl()}
+        alt="Lector on Product Hunt"
+        width="250"
+        height="54"
+        class="h-[54px] w-[250px]"
+      />
+    </a>
+  )
+}
