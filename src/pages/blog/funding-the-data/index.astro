@@ -1,148 +1,225 @@
 ---
+import { DISCORD } from "../../../data/links";
 import Base from "../../../layouts/Base.astro";
 import { articleSchema } from "../../../lib/schema";
 ---
-<Base title="Lector pays the data back | Lector" description="Lector now pays $100 a month, or 10% of profit, whichever is greater, to the open data projects its language packs depend on. Who gets it, who cannot take it, and why the second list is longer than expected." ogType="article" schema={articleSchema({ headline: "Lector pays the data back", description: "Lector now pays $100 a month, or 10% of profit, whichever is greater, to the open data projects its language packs depend on. Who gets it, who cannot take it, and why the second list is longer than expected.", url: "/blog/funding-the-data/", datePublished: "2026-08-22", dateModified: "2026-08-22" })}>
 
-<header class="docs-header">
+<Base
+  title="Lector pays the data back | Lector"
+  description="Lector now pays $100 a month, or 10% of profit, whichever is greater, to the open data projects its language packs depend on. Who gets it, who cannot take it, and why the second list is longer than expected."
+  ogType="article"
+  schema={articleSchema({
+    headline: "Lector pays the data back",
+    description:
+      "Lector now pays $100 a month, or 10% of profit, whichever is greater, to the open data projects its language packs depend on. Who gets it, who cannot take it, and why the second list is longer than expected.",
+    url: "/blog/funding-the-data/",
+    datePublished: "2026-08-22",
+    dateModified: "2026-08-22",
+  })}
+>
+  <header class="docs-header">
+    <div class="container">
+      <p class="breadcrumb">
+        <a href="/">lector</a> / <a href="/blog/">blog</a> / funding the data
+      </p>
+      <h1>Lector pays the data back</h1>
+      <p class="post-meta">22 August 2026 &middot; 6 min read &middot; Notes</p>
+    </div>
+  </header>
+
   <div class="container">
-    <p class="breadcrumb"><a href="/">lector</a> / <a href="/blog/">blog</a> / funding the data</p>
-    <h1>Lector pays the data back</h1>
-    <p class="post-meta">22 August 2026 &middot; 6 min read &middot; Notes</p>
+    <div class="docs-layout">
+      <main class="docs-body">
+        <p>
+          Lector is a reader app, but the language packs are the product. I
+          didn't build the data in those packs, so it only makes sense to pay
+          back the volunteers.
+        </p>
+
+        <p>
+          From this month onwards, Lector pays some of it back:{" "}<strong
+            >$100 a month, or 10% of profit, whichever is greater</strong
+          >. The floor applies now, out of my own pocket, because Lector is not
+          profitable yet. The percentage takes over when it beats the floor. The{
+            " "
+          }
+          <a href="/funding/">funding page</a> carries the split and a record of every
+          payment.
+        </p>
+
+        <p>
+          As a Christian, I am called to give generously with no expectation of
+          a return. This will form a portion of my annual giving budget until
+          Lector makes enough to cover it as an entity. Finding a worthy cause
+          is difficult, and the default answer is giving to your local church,
+          but I hope that allocating a portion of this budget will have a small
+          impact globally. Language learning is something that truly has the
+          power to bring people together, across borders. It has been inspiring
+          to watch a small community form in the{" "}<a
+            href={DISCORD}
+            target="_blank"
+            rel="noreferrer noopener">Discord server</a
+          > from all walks of life. United by a common goal of understanding others.
+        </p>
+
+        <p>
+          The first payment is already out the door: <strong
+            >$600 to Association Tatoeba</strong
+          >, sent on 22 August 2026. Receipt and transaction reference are on
+          the <a href="/funding/">funding page</a>. I am publishing this of
+          course partly for marketing, but it is also in the spirit of
+          transparency which open-source champions, and for accountability from
+          the community.
+        </p>
+
+        <p>
+          The interesting part of this process is what I found when I tried to
+          work out who to actually pay.
+        </p>
+
+        <h2 id="what-lector-runs-on">What Lector utilises</h2>
+
+        <p>
+          By grepping the codebase, I figured out the dependencies which have
+          the greatest impact to try to figure out apportionment fairly.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Tatoeba</strong> - 756 references. Every example sentence in every
+            pack.
+          </li>
+          <li>
+            <strong>wordfreq</strong> - 204 references. The frequency bands that decide
+            which words you learn first.
+          </li>
+          <li>
+            <strong>kaikki.org</strong> - 184 references. The dictionaries for fifteen-plus
+            languages, extracted from Wiktionary.
+          </li>
+          <li>
+            <strong>jieba</strong> and <strong>Kuromoji</strong> - 41 between them.
+            Vital for Mandarin and Japanese tokenisation.
+          </li>
+          <li>
+            <strong>eSpeak NG</strong> - 9 references, and it is the only voice Lector
+            has for Esperanto.
+          </li>
+        </ul>
+
+        <p>
+          Then there is ICU, CLDR and Unihan under the tokeniser, Stanza and
+          UDPipe in the pack builds, OPUS and OpenSubtitles behind the frequency
+          blends, and the SBLGNT text under the Koine Greek pack.
+        </p>
+
+        <h2 id="who-cannot-take-money">Most of them cannot take the money</h2>
+
+        <p>
+          I expected to send a payment via Github sponsorships/OpenCollective to
+          each project and be done. Instead I discovered that roughly half the
+          list has no way to receive one.
+        </p>
+
+        <p>
+          <strong>Anki</strong> was the biggest surprise. Lector's Anki add-on is
+          one of its most-used features, so Anki was near the top of my list. Its
+          <a
+            href="https://faqs.ankiweb.net/how-can-i-donate.html"
+            rel="noopener">donation FAQ</a
+          > says Anki runs as a business and cannot easily accept donations. Setting
+          up a Patreon would take time away from working on Anki, so it asks people
+          to buy AnkiMobile instead.
+        </p>
+
+        <p>
+          <strong>kaikki.org</strong> has no sponsor button, no Open Collective, no
+          donation page. There is an email address and a request not to use it for
+          marketing. So I wrote to the maintainer and asked what would actually help
+          support maintenance.
+        </p>
+
+        <p>
+          <strong>eSpeak NG</strong> and <strong>jieba</strong> have no legal entity
+          at all. There is nowhere to send money. But there is somewhere to send <em
+            >work</em
+          >, which is the part I had not thought through.
+        </p>
+
+        <p>
+          <strong>Wikimedia</strong> can take money but it does not need mine. The
+          Foundation runs a large surplus. A few hundred dollars there does less good
+          than anywhere else on this list, and I believe that Wikimedia is no longer
+          using donations responsibly. Every pack build spits out a list of Wiktionary
+          entries that were missing or malformed. Paying someone to fix those entries
+          improves the data Lector reads and the dictionary everyone else reads too.
+          I'll explore this more in the near future.
+        </p>
+
+        <p>
+          That is why 30% goes to a directed work fund instead of a recipient.
+          Held, then spent in single amounts on specific upstream jobs: voice
+          fixes in eSpeak NG for languages Lector ships, corrections to the
+          Wiktionary entries a pack build found broken.
+        </p>
+
+        <h2 id="wordfreq">The one I could not fund, and cannot replace</h2>
+
+        <p>
+          wordfreq is the second-biggest dependency in the codebase. Every
+          frequency band in every pack comes from it. It decides the order of
+          the starter word lists, the bands on the Anki decks, and which words
+          the reader treats as common.
+        </p>
+
+        <p>
+          It is finished. Robyn Speer
+          <a
+            href="https://lobste.rs/s/ueqoef/why_wordfreq_will_not_be_updated"
+            rel="noopener">ended the project</a
+          > because generated text polluted the web corpora it sampled, and because
+          Reddit and X closed the data that fed the rest. Her write-up is worth reading
+          in full.
+        </p>
+
+        <p>
+          So there is nobody to pay, and I am not going to offer money to a
+          maintainer who stopped precisely because of the kind of text a
+          language-model-adjacent product produces.
+        </p>
+
+        <p>
+          The uncomfortable part is not that the project ended. It is that
+          wordfreq's final data already sampled a web containing
+          machine-generated text, and I cannot measure how much of Lector's
+          banding rests on that. The provenance is not recoverable from the
+          published numbers. A frozen source also drifts: new words never
+          arrive, and dead words keep their rank.
+        </p>
+
+        <p>
+          This is a hinderance to the funding commitment which money cannot fix.
+          Lector needs to compute its own frequency counts from a corpus with a
+          known cut-off date, and record that provenance in each pack. It is
+          <a href="https://github.com/heuwels/lector/issues/543" rel="noopener"
+            >tracked as issue #543</a
+          >, and it is a bigger job than the payments.
+        </p>
+
+        <h2 id="conclusion">Conclusion</h2>
+
+        <p>
+          The donations are currently small. $1,200US per year won't move the
+          needle on an annual budget, but the hope is that as the project grows,
+          we can contribute more fully to the open language learning ecosystem.
+        </p>
+
+        <p>
+          If Lector uses your data and the funding page is wrong about it, or
+          you know a better way to reach a project listed there, open an issue
+          and I will fix it.
+        </p>
+      </main>
+    </div>
   </div>
-</header>
-
-<div class="container">
-  <div class="docs-layout">
-    <main class="docs-body">
-
-      <p>Lector is a reader. The language packs are the product. And I did not
-        build the data in those packs &mdash; volunteers and a handful of small
-        research groups did, over about twenty years, mostly unpaid.</p>
-
-      <p>So from this month Lector pays some of it back:
-        <strong>$100 a month, or 10% of profit, whichever is greater</strong>.
-        The floor applies now, out of my own pocket, because Lector is not
-        profitable yet. The percentage takes over when it beats the floor. The
-        <a href="/funding/">funding page</a> carries the split and a record of
-        every payment.</p>
-
-      <p>The first payment is already out the door: <strong>$600 to
-        Association Tatoeba</strong>, sent on 22 August 2026. Receipt and
-        transaction reference are on the <a href="/funding/">funding page</a>. I
-        did that before writing this, because a percentage nobody can check is
-        just marketing.</p>
-
-      <p>That is the announcement. The interesting part is what I found when I
-        tried to work out who to actually pay.</p>
-
-      <h2 id="what-lector-runs-on">What Lector actually runs on</h2>
-
-      <p>I grepped the codebase rather than guessing. The dependency counts are
-        blunt but honest:</p>
-
-      <ul>
-        <li><strong>Tatoeba</strong> &mdash; 756 references. Every example
-          sentence in every pack.</li>
-        <li><strong>wordfreq</strong> &mdash; 204 references. The frequency
-          bands that decide which words you learn first.</li>
-        <li><strong>kaikki.org</strong> &mdash; 184 references. The dictionaries
-          for fifteen-plus languages, extracted from Wiktionary.</li>
-        <li><strong>jieba</strong> and <strong>Kuromoji</strong> &mdash; 41
-          between them. Mandarin and Japanese would not tokenise without
-          them.</li>
-        <li><strong>eSpeak NG</strong> &mdash; 9 references, and it is the only
-          voice Lector has for Esperanto.</li>
-      </ul>
-
-      <p>Then there is ICU, CLDR and Unihan under the tokeniser, Stanza and
-        UDPipe in the pack builds, OPUS and OpenSubtitles behind the frequency
-        blends, and the SBLGNT text under the Koine Greek pack.</p>
-
-      <h2 id="who-cannot-take-money">Most of them cannot take the money</h2>
-
-      <p>I expected to write a cheque to each project and be done. Instead,
-        roughly half the list has no way to receive one.</p>
-
-      <p><strong>Anki</strong> was the surprise. Lector's Anki add-on is one of
-        its most-used features, so Anki was near the top of my list. Its
-        <a href="https://faqs.ankiweb.net/how-can-i-donate.html" rel="noopener">donation
-        FAQ</a> says Anki runs as a business and cannot easily accept donations.
-        Setting up a Patreon would take time away from working on Anki, so it
-        asks people to buy AnkiMobile instead. Fair enough. I buy licences and
-        do not count them in the 10%.</p>
-
-      <p><strong>kaikki.org</strong> has no sponsor button, no Open Collective,
-        no donation page. There is an email address and a request not to use it
-        for marketing. So I wrote to the maintainer and asked what would
-        actually help, rather than assuming.</p>
-
-      <p><strong>eSpeak NG</strong> and <strong>jieba</strong> have no legal
-        entity at all. There is nowhere to send money. But there is somewhere to
-        send <em>work</em>, which is the part I had not thought through.</p>
-
-      <p><strong>Wikimedia</strong> can take money and does not need mine. The
-        Foundation runs a large surplus. A few hundred dollars there does less
-        good than anywhere else on this list, and Wiktionary is the actual thing
-        Lector depends on rather than the Foundation. Every pack build spits out
-        a list of Wiktionary entries that were missing or malformed. Paying
-        someone to fix those entries improves the data Lector reads and the
-        dictionary everyone else reads too.</p>
-
-      <p>That is why 30% goes to a directed work fund instead of a recipient.
-        Held, then spent in single amounts on specific upstream jobs: voice
-        fixes in eSpeak NG for languages Lector ships, corrections to the
-        Wiktionary entries a pack build found broken. It is worth more to those
-        projects than a sponsorship button they do not have.</p>
-
-      <h2 id="wordfreq">The one I could not fund, and cannot replace</h2>
-
-      <p>wordfreq is the second-biggest dependency in the codebase. Every
-        frequency band in every pack comes from it. It decides the order of the
-        starter word lists, the bands on the Anki decks, and which words the
-        reader treats as common.</p>
-
-      <p>It is finished. Robyn Speer
-        <a href="https://lobste.rs/s/ueqoef/why_wordfreq_will_not_be_updated" rel="noopener">ended
-        the project</a> because generated text polluted the web corpora it
-        sampled, and because Reddit and X closed the data that fed the rest. Her
-        write-up is worth reading in full.</p>
-
-      <p>So there is nobody to pay, and I am not going to offer money to a
-        maintainer who stopped precisely because of the kind of text a
-        language-model-adjacent product produces.</p>
-
-      <p>The uncomfortable part is not that the project ended. It is that
-        wordfreq's final data already sampled a web containing machine-generated
-        text, and I cannot measure how much of Lector's banding rests on that.
-        The provenance is not recoverable from the published numbers. A frozen
-        source also drifts: new words never arrive, and dead words keep their
-        rank.</p>
-
-      <p>This is the honest limit of a funding commitment. Money does not fix
-        it. Lector needs to compute its own frequency counts from a corpus with
-        a known cut-off date, and record that provenance in each pack. It is
-        <a href="https://github.com/heuwels/lector/issues/543" rel="noopener">tracked
-        as issue #543</a>, and it is a bigger job than the payments.</p>
-
-      <h2 id="why-publish">Why publish the numbers</h2>
-
-      <p>Because a percentage that nobody can check is marketing. The
-        <a href="/funding/">funding page</a> lists every payment with a date, an
-        amount and evidence. It also lists the projects that cannot take money
-        and why, which is the part I would want to read.</p>
-
-      <p>The amounts are small. $1,200 a year is not going to change anyone's
-        budget, and I would rather say that plainly than dress it up. It is what
-        a pre-profit project can do without pretending. It grows when Lector
-        does, because 10% of profit eventually beats the floor.</p>
-
-      <p>If Lector uses your data and the funding page is wrong about it, or you
-        know a better way to reach a project listed there, open an issue and I
-        will fix it.</p>
-
-    </main>
-  </div>
-</div>
-
 </Base>
