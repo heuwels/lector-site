@@ -1,6 +1,8 @@
 ---
+import { DISCORD } from "../../data/links";
 import DocsPage from "../../layouts/DocsPage.astro";
 ---
+
 <DocsPage
   title="Reading & practice | Lector Docs"
   description="Reading formats, click-to-translate, word states, cloze practice with SRS, AI providers, and two-way Anki sync."
@@ -9,14 +11,28 @@ import DocsPage from "../../layouts/DocsPage.astro";
   <h2 id="reading">Reading</h2>
   <p>Lector supports two content formats:</p>
   <ul>
-    <li><strong>EPUB files</strong>: upload directly through the library interface</li>
-    <li><strong>Web articles</strong>: paste a URL and Lector extracts the content via Readability</li>
+    <li>
+      <strong>EPUB files</strong>: upload directly through the library interface
+    </li>
+    <li>
+      <strong>Web articles</strong>: paste a URL and Lector extracts the content
+      via Readability
+    </li>
   </ul>
   <p>You can also paste raw text directly for quick reading practice.</p>
 
   <h3 id="click-to-translate">Click-to-translate</h3>
-  <p>Click any word while reading to see its translation. If you have an <code>ANTHROPIC_API_KEY</code> configured, Lector uses Claude for context-aware translation of uncommon words and phrases. Without an API key, it falls back to a built-in dictionary of the top 2000 words.</p>
-  <p>Translation quality depends on which <a href="#llm-providers">AI provider</a> you have configured.</p>
+  <p>
+    Click any word while reading to see its translation. If you have an <code
+      >ANTHROPIC_API_KEY</code
+    > configured, Lector uses Claude for context-aware translation of uncommon words
+    and phrases. Without an API key, it falls back to a built-in dictionary of the
+    top 2000 words.
+  </p>
+  <p>
+    Translation quality depends on which <a href="#llm-providers">AI provider</a
+    > you have configured.
+  </p>
 
   <h3 id="word-states">Word states</h3>
   <p>Every word you encounter is tracked with a state:</p>
@@ -25,19 +41,34 @@ import DocsPage from "../../layouts/DocsPage.astro";
     <li><strong>Learning</strong>: you've looked it up or saved it</li>
     <li><strong>Known</strong>: you've marked it as known</li>
   </ul>
-  <p>Words are highlighted in your text based on their state, so you can see at a glance how much of a passage you already know.</p>
+  <p>
+    Words are highlighted in your text based on their state, so you can see at a
+    glance how much of a passage you already know.
+  </p>
 
   <h2 id="cloze-practice">Cloze practice</h2>
-  <p>The cloze practice system ships with frequency-ordered sentence banks from <a href="https://tatoeba.org">Tatoeba</a> for every <a href="/docs/languages/">supported language</a>, so you learn common words first.</p>
+  <p>
+    The cloze practice system ships with frequency-ordered sentence banks from <a
+      href="https://tatoeba.org">Tatoeba</a
+    > for every <a href="/docs/languages/">supported language</a>, so you learn
+    common words first.
+  </p>
 
   <h3 id="practice-modes">Practice modes</h3>
   <ul>
-    <li><strong>Multiple choice</strong>: pick the correct word from four options</li>
-    <li><strong>Typing</strong>: type the missing word (with optional hard mode that disables hints)</li>
+    <li>
+      <strong>Multiple choice</strong>: pick the correct word from four options
+    </li>
+    <li>
+      <strong>Typing</strong>: type the missing word (with optional hard mode
+      that disables hints)
+    </li>
   </ul>
 
   <h3 id="srs-scheduling">SRS scheduling</h3>
-  <p>Sentences are scheduled using spaced repetition with five mastery levels:</p>
+  <p>
+    Sentences are scheduled using spaced repetition with five mastery levels:
+  </p>
   <table class="env-table">
     <thead>
       <tr>
@@ -55,18 +86,44 @@ import DocsPage from "../../layouts/DocsPage.astro";
   </table>
 
   <h2 id="llm-providers">LLM providers</h2>
-  <p>Lector uses a large language model for context-aware translations when you click words and phrases. You choose between two providers in <strong>Settings &rarr; AI Provider</strong>: <strong>Anthropic</strong> (cloud) or <strong>Local / self-hosted</strong> (any OpenAI-compatible server).</p>
+  <p>
+    Lector uses a large language model for context-aware translations when you
+    click words and phrases. You choose between two providers in <strong
+      >Settings &rarr; AI Provider</strong
+    >: <strong>Anthropic</strong> (cloud) or <strong>Local / self-hosted</strong
+    > (any OpenAI-compatible server).
+  </p>
 
   <div class="callout">
-    <p><strong>A note on local quality:</strong> a capable local model holds up well even on a low-resource language like Afrikaans. In our own testing (Afrikaans &rarr; English, chrF++ on Tatoeba), a good ~12B model run through LM Studio matched the cloud models. What matters is picking a general instruction-tuned model (roughly 8B or larger, not a tiny or coder-only model), more than choosing cloud over local.</p>
+    <p>
+      <strong>A note on local quality:</strong> a capable local model holds up well
+      even on a low-resource language like Afrikaans. In our own testing (Afrikaans
+      &rarr; English, chrF++ on Tatoeba), a good ~12B model run through LM Studio
+      matched the cloud models. What matters is picking a general instruction-tuned
+      model (roughly 8B or larger, not a tiny or coder-only model), more than choosing
+      cloud over local.
+    </p>
   </div>
 
   <h3 id="provider-anthropic">Anthropic (cloud)</h3>
-  <p>The highest-quality option. Uses Claude for context-aware translation of words, phrases, and grammar explanations.</p>
+  <p>
+    The highest-quality option. Uses Claude for context-aware translation of
+    words, phrases, and grammar explanations.
+  </p>
   <p>Lector supports two authentication methods:</p>
   <ul>
-    <li><strong>API key:</strong> Get one from <a href="https://console.anthropic.com">console.anthropic.com</a>. Set <code>ANTHROPIC_API_KEY</code> in your environment, or enter it in Settings. Pay-as-you-go billing.</li>
-    <li><strong>OAuth token (Pro/Team plan):</strong> Uses your existing Claude Pro or Team subscription credits. Set <code>CLAUDE_CODE_OAUTH_TOKEN</code> in your environment. Note: OAuth connections have slower initial startup times compared to API keys.</li>
+    <li>
+      <strong>API key:</strong> Get one from <a
+        href="https://console.anthropic.com">console.anthropic.com</a
+      >. Set <code>ANTHROPIC_API_KEY</code> in your environment, or enter it in Settings.
+      Pay-as-you-go billing.
+    </li>
+    <li>
+      <strong>OAuth token (Pro/Team plan):</strong> Uses your existing Claude Pro
+      or Team subscription credits. Set <code>CLAUDE_CODE_OAUTH_TOKEN</code> in your
+      environment. Note: OAuth connections have slower initial startup times compared
+      to API keys.
+    </li>
   </ul>
   <ul>
     <li>Best translation quality, especially for less common languages</li>
@@ -74,50 +131,167 @@ import DocsPage from "../../layouts/DocsPage.astro";
   </ul>
 
   <h3 id="provider-openai">Local / self-hosted (OpenAI-compatible)</h3>
-  <p>Points Lector at any server that speaks the OpenAI chat API: <a href="https://ollama.com">Ollama</a>, <a href="https://lmstudio.ai">LM Studio</a>, vLLM, or a remote OpenAI-compatible endpoint. One config covers them all: an endpoint, an optional API key, and a model name. The text you're translating stays on your hardware (unless you point it at a remote endpoint).</p>
-  <p>In <strong>Settings &rarr; AI Provider</strong>, choose <strong>Local / self-hosted (OpenAI-compatible)</strong>, then set:</p>
+  <p>
+    Points Lector at any server that speaks the OpenAI chat API: <a
+      href="https://ollama.com">Ollama</a
+    >, <a href="https://lmstudio.ai">LM Studio</a>, vLLM, or a remote
+    OpenAI-compatible endpoint. One config covers them all: an endpoint, an
+    optional API key, and a model name. The text you're translating stays on
+    your hardware (unless you point it at a remote endpoint).
+  </p>
+  <p>
+    In <strong>Settings &rarr; AI Provider</strong>, choose <strong
+      >Local / self-hosted (OpenAI-compatible)</strong
+    >, then set:
+  </p>
   <ul>
-    <li><strong>Preset</strong> (optional) &mdash; pick <strong>Ollama</strong> or <strong>LM Studio</strong> to autofill the endpoint, or <strong>Custom</strong> for anything else. It only fills the endpoint; edit it afterwards if you like.</li>
-    <li><strong>Endpoint</strong> &mdash; the base URL of your server (<code>http://localhost:1234</code> for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends <code>/v1</code> itself. The call is made server-side, so <code>localhost</code> works even when Lector is hosted elsewhere, except from inside Docker, where you need a host-reachable address.</li>
-    <li><strong>API Key</strong> (optional) &mdash; leave empty for a local server. Only needed for reverse-proxied or cloud endpoints. Sent as a Bearer token from the server, never exposed to the browser.</li>
-    <li><strong>Model</strong> &mdash; click <strong>Fetch models</strong> to list what the server reports via <code>/v1/models</code>, or type a model id directly.</li>
+    <li>
+      <strong>Preset</strong> (optional) &mdash; pick <strong>Ollama</strong> or <strong
+        >LM Studio</strong
+      > to autofill the endpoint, or <strong>Custom</strong> for anything else. It
+      only fills the endpoint; edit it afterwards if you like.
+    </li>
+    <li>
+      <strong>Endpoint</strong> &mdash; the base URL of your server (<code
+        >http://localhost:1234</code
+      > for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends
+      <code>/v1</code> itself. The call is made server-side, so <code
+        >localhost</code
+      > works even when Lector is hosted elsewhere, except from inside Docker, where
+      you need a host-reachable address.
+    </li>
+    <li>
+      <strong>API Key</strong> (optional) &mdash; leave empty for a local server.
+      Only needed for reverse-proxied or cloud endpoints. Sent as a Bearer token from
+      the server, never exposed to the browser.
+    </li>
+    <li>
+      <strong>Model</strong> &mdash; click <strong>Fetch models</strong> to list what
+      the server reports via <code>/v1/models</code>, or type a model id
+      directly.
+    </li>
   </ul>
-  <p>Use <strong>Refresh</strong> to confirm a green "Connected" status. For a full walkthrough with LM Studio, including the Docker networking gotcha, see <a href="/blog/lm-studio-translation-agent/">Run translations locally with LM Studio</a>.</p>
+  <p>
+    Use <strong>Refresh</strong> to confirm a green "Connected" status. For a full
+    walkthrough with LM Studio, including the Docker networking gotcha, see <a
+      href="/blog/lm-studio-translation-agent/"
+      >Run translations locally with LM Studio</a
+    >.
+  </p>
 
   <h2 id="ankiconnect">AnkiConnect</h2>
-  <p>New to Anki? Start with <a href="/docs/anki/">Getting started with Anki</a> for what it is, how to install it, and how to load your first deck &mdash; this section covers wiring up the Lector &rarr; Anki integration specifically.</p>
-  <p>Lector connects directly to <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a> running on your local machine. This lets you push vocabulary cards from Lector straight into Anki Desktop. No proxy server, no cloud sync.</p>
+  <p>
+    New to Anki? Start with <a href="/docs/anki/">Getting started with Anki</a> for
+    what it is, how to install it, and how to load your first deck &mdash; this section
+    covers wiring up the Lector &rarr; Anki integration specifically.
+  </p>
+  <p>
+    Lector connects directly to <a
+      href="https://ankiweb.net/shared/info/2055492159">AnkiConnect</a
+    > running on your local machine. This lets you push vocabulary cards from Lector
+    straight into Anki Desktop. No proxy server, no cloud sync.
+  </p>
 
   <h3 id="anki-setup">Setup</h3>
   <ol>
-    <li>Install the <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect add-on</a> in Anki Desktop</li>
-    <li>In AnkiConnect's config, add your Lector origin to the CORS allowlist:</li>
+    <li>
+      Install the <a href="https://ankiweb.net/shared/info/2055492159"
+        >AnkiConnect add-on</a
+      > in Anki Desktop
+    </li>
+    <li>
+      In AnkiConnect's config, add your Lector origin to the CORS allowlist:
+    </li>
   </ol>
   <pre><code>&#123;
   "webCorsOriginList": ["http://localhost:3000"]
 &#125;</code></pre>
-  <p>If you're accessing Lector via a reverse proxy, add that origin too (e.g. <code>https://lector.home.yourdomain.com</code>).</p>
+  <p>
+    If you're accessing Lector via a reverse proxy, add that origin too (e.g. <code
+      >https://lector.home.yourdomain.com</code
+    >).
+  </p>
 
   <div class="callout">
-    <p><strong>Note:</strong> AnkiConnect runs on <code>localhost:8765</code> by default. The connection is browser-to-localhost, so Anki Desktop must be running on the same machine as your browser.</p>
+    <p>
+      <strong>Note:</strong> AnkiConnect runs on <code>localhost:8765</code> by default.
+      The connection is browser-to-localhost, so Anki Desktop must be running on the
+      same machine as your browser.
+    </p>
   </div>
 
   <h2 id="anki-addon">Lector add-on for Anki (beta) &mdash; two-way sync</h2>
-  <p>The Lector add-on runs inside Anki Desktop and syncs with your Lector server &mdash; cloud or self-hosted &mdash; using a personal API token from <strong>Settings</strong>. It differs from AnkiConnect in two ways:</p>
+  <p>
+    The Lector add-on runs inside Anki Desktop and syncs with your Lector server
+    &mdash; cloud or self-hosted &mdash; using a personal API token from <strong
+      >Settings</strong
+    >. It differs from AnkiConnect in two ways:
+  </p>
   <ul>
-    <li><strong>It's two-way</strong> &mdash; words and cloze phrases arrive as <em>Lector</em> and <em>Lector Cloze</em> notes, keyed by a stable id, so pushing again updates the existing card instead of creating a duplicate. When you review in Anki, the grades come back: the word's mastery in Lector updates on the next sync.</li>
-    <li><strong>It works remotely</strong> &mdash; the add-on talks to the server itself, not through your browser, so Anki doesn't have to be on the same machine. This is how Anki works on Lector Cloud; self-hosters can pick either connection under <strong>Settings &rarr; Anki Integration</strong>.</li>
+    <li>
+      <strong>It's two-way</strong> &mdash; words and cloze phrases arrive as <em
+        >Lector</em
+      > and <em>Lector Cloze</em> notes, keyed by a stable id, so pushing again updates
+      the existing card instead of creating a duplicate. When you review in Anki,
+      the grades come back: the word's mastery in Lector updates on the next sync.
+    </li>
+    <li>
+      <strong>It works remotely</strong> &mdash; the add-on talks to the server itself,
+      not through your browser, so Anki doesn't have to be on the same machine. This
+      is how Anki works on Lector Cloud; self-hosters can pick either connection under
+      <strong>Settings &rarr; Anki Integration</strong>.
+    </li>
   </ul>
   <h3 id="anki-addon-install">Install the add-on</h3>
-  <p>The add-on is on AnkiWeb as <a href="https://ankiweb.net/shared/info/1098736891" target="_blank" rel="noreferrer noopener">Lector Sync</a>, add-on code <code>1098736891</code>. It needs Anki 2.1.50 or later.</p>
+  <p>
+    The add-on is on AnkiWeb as <a
+      href="https://ankiweb.net/shared/info/1098736891"
+      target="_blank"
+      rel="noreferrer noopener">Lector Sync</a
+    >, add-on code <code>1098736891</code>. It needs Anki 2.1.50 or later.
+  </p>
   <ol>
-    <li>In Anki Desktop: <strong>Tools &rarr; Add-ons &rarr; Get Add-ons</strong>, enter <code>1098736891</code>, then restart Anki.</li>
-    <li>In Lector: <strong>Settings &rarr; API Tokens</strong>, mint a token with the <strong>anki</strong> scopes.</li>
-    <li>In Anki: <strong>Tools &rarr; Add-ons &rarr; Lector Sync &rarr; Config</strong>, set <code>api_url</code> (e.g. <code>https://app.lector.dev</code>, or your self-hosted API origin) and <code>api_token</code>.</li>
-    <li>Run <strong>Tools &rarr; Lector: Sync now</strong> &mdash; it also syncs when your profile opens.</li>
+    <li>
+      In Anki Desktop: <strong>Tools &rarr; Add-ons &rarr; Get Add-ons</strong>,
+      enter <code>1098736891</code>, then restart Anki.
+    </li>
+    <li>
+      In Lector: <strong>Settings &rarr; API Tokens</strong>, mint a token with
+      the <strong>anki</strong> scopes.
+    </li>
+    <li>
+      In Anki: <strong
+        >Tools &rarr; Add-ons &rarr; Lector Sync &rarr; Config</strong
+      >, set <code>api_url</code> (e.g. <code>https://app.lector.dev</code>, or
+      your self-hosted API origin) and <code>api_token</code>.
+    </li>
+    <li>
+      Run <strong>Tools &rarr; Lector: Sync now</strong> &mdash; it also syncs when
+      your profile opens.
+    </li>
   </ol>
-  <p>Every release is also attached to <a href="https://github.com/heuwels/lector/releases" target="_blank" rel="noreferrer noopener">GitHub releases</a> as a <code>.ankiaddon</code> file, for <strong>Tools &rarr; Add-ons &rarr; Install from file</strong>. If you installed that way before, the AnkiWeb copy disables your hand-installed one, and you can delete it under <strong>Tools &rarr; Add-ons</strong>.</p>
+  <p>
+    Every release is also attached to <a
+      href="https://github.com/heuwels/lector/releases"
+      target="_blank"
+      rel="noreferrer noopener">GitHub releases</a
+    > as a <code>.ankiaddon</code> file, for <strong
+      >Tools &rarr; Add-ons &rarr; Install from file</strong
+    >. If you installed that way before, the AnkiWeb copy disables your
+    hand-installed one, and you can delete it under <strong
+      >Tools &rarr; Add-ons</strong
+    >.
+  </p>
   <div class="callout">
-    <p><strong>Beta:</strong> please report anything odd &mdash; duplicate notes, deck weirdness, sync errors &mdash; on <a href="https://github.com/heuwels/lector/issues" target="_blank" rel="noreferrer noopener">GitHub</a> or Discord, ideally with the sync tooltip text.</p>
+    <p>
+      Please report anything odd, such as duplicate notes, deck weirdness, sync
+      errors, on{" "}<a
+        href="https://github.com/heuwels/lector/issues"
+        target="_blank"
+        rel="noreferrer noopener">GitHub</a
+      > or{" "}<a href={DISCORD} target="_blank" rel="noreferrer noopener"
+        >Discord</a
+      >, ideally with the sync tooltip text.
+    </p>
   </div>
 </DocsPage>

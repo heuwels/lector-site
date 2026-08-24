@@ -1,63 +1,230 @@
 ---
+import { DISCORD } from "../../data/links";
 import DocsPage from "../../layouts/DocsPage.astro";
 ---
+
 <DocsPage
   title="Getting started with Anki | Lector Docs"
   description="New to Anki? What it is, why spaced repetition works, how to install it, and how to load your first frequency-ordered deck — then connect it to Lector."
   heading="Getting started with Anki"
 >
-  <p>Lector can push vocabulary straight into <strong>Anki</strong>, and ships frequency-ordered decks you can study there. If you've never used Anki, this page gets you from zero to your first review. Already an Anki user? Skip ahead to <a href="/docs/features/#ankiconnect">connecting it to Lector</a>.</p>
+  <p>
+    Lector can push vocabulary straight into <strong>Anki</strong>, and ships
+    frequency-ordered decks you can study there. If you've never used Anki, this
+    page gets you from zero to your first review. Already an Anki user? Skip
+    ahead to <a href="/docs/features/#ankiconnect">connecting it to Lector</a>.
+  </p>
 
   <h2 id="what-is-anki">What is Anki?</h2>
-  <p>Anki is a free, open-source flashcard app built around <em>spaced repetition</em>. It has been around for over fifteen years and is a staple for language learners and medical students &mdash; anyone who needs to commit a lot of facts to long-term memory. It runs on your computer and your phone, and syncs between them through a free account.</p>
-  <p>The idea is simple: you review cards (a prompt on the front, the answer on the back), and Anki decides <em>when</em> to show each one again based on how well you knew it.</p>
+  <p>
+    Anki is a free, open-source flashcard app built around <em
+      >spaced repetition</em
+    >. It has been around for over fifteen years and is a staple for language
+    learners and medical students &mdash; anyone who needs to commit a lot of
+    facts to long-term memory. It runs on your computer and your phone, and
+    syncs between them through a free account.
+  </p>
+  <p>
+    The idea is simple: you review cards (a prompt on the front, the answer on
+    the back), and Anki decides <em>when</em> to show each one again based on how
+    well you knew it.
+  </p>
 
   <h2 id="spaced-repetition">Why spaced repetition works</h2>
-  <p>After you see a card's answer, you rate how easily you recalled it. Anki uses that rating to schedule the next review: cards you find easy come back in weeks or months, cards you struggle with come back tomorrow. Each successful review pushes the next one further out.</p>
-  <p>The effect is that you review each word roughly at the moment you're about to forget it &mdash; the point where the review does the most good. You spend your time on the handful of words that are slipping rather than re-reading things you already know cold. It's the same principle behind Lector's own <a href="/docs/features/#cloze-practice">cloze practice</a>; Anki just applies it to plain flashcards.</p>
+  <p>
+    After you see a card's answer, you rate how easily you recalled it. Anki
+    uses that rating to schedule the next review: cards you find easy come back
+    in weeks or months, cards you struggle with come back tomorrow. Each
+    successful review pushes the next one further out.
+  </p>
+  <p>
+    The effect is that you review each word roughly at the moment you're about
+    to forget it &mdash; the point where the review does the most good. You
+    spend your time on the handful of words that are slipping rather than
+    re-reading things you already know cold. It's the same principle behind
+    Lector's own <a href="/docs/features/#cloze-practice">cloze practice</a>;
+    Anki just applies it to plain flashcards.
+  </p>
 
   <h2 id="installing">Installing Anki</h2>
   <ul>
-    <li><strong>Desktop (do this first)</strong> &mdash; the free desktop app for Windows, macOS, and Linux from <a href="https://apps.ankiweb.net" target="_blank" rel="noreferrer noopener">apps.ankiweb.net</a>. This is where you review, edit, and import decks, and it's the piece Lector talks to.</li>
-    <li><strong>A free AnkiWeb account</strong> &mdash; sign up at <a href="https://ankiweb.net" target="_blank" rel="noreferrer noopener">ankiweb.net</a> so your cards sync and back up across devices.</li>
-    <li><strong>Mobile (optional)</strong> &mdash; <a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" rel="noreferrer noopener">AnkiDroid</a> on Android is free; AnkiMobile on iOS is a paid app that funds the project. Handy for reviewing on the go once your deck is set up.</li>
+    <li>
+      <strong>Desktop (do this first)</strong> &mdash; the free desktop app for Windows,
+      macOS, and Linux from <a
+        href="https://apps.ankiweb.net"
+        target="_blank"
+        rel="noreferrer noopener">apps.ankiweb.net</a
+      >. This is where you review, edit, and import decks, and it's the piece
+      Lector talks to.
+    </li>
+    <li>
+      <strong>A free AnkiWeb account</strong> &mdash; sign up at <a
+        href="https://ankiweb.net"
+        target="_blank"
+        rel="noreferrer noopener">ankiweb.net</a
+      > so your cards sync and back up across devices.
+    </li>
+    <li>
+      <strong>Mobile (optional)</strong> &mdash; <a
+        href="https://play.google.com/store/apps/details?id=com.ichi2.anki"
+        target="_blank"
+        rel="noreferrer noopener">AnkiDroid</a
+      > on Android is free; AnkiMobile on iOS is a paid app that funds the project.
+      Handy for reviewing on the go once your deck is set up.
+    </li>
   </ul>
-  <div class="callout">
-    <p><strong>For use with Lector you only need the desktop app.</strong> Lector's push talks to <a href="/docs/features/#ankiconnect">AnkiConnect</a>, an add-on that runs inside Anki Desktop, so Anki has to be open on the same machine as your browser when you push cards. On Lector Cloud (or any remote server) the <a href="/docs/features/#anki-addon">Lector add-on (beta)</a> is used instead &mdash; it syncs two-way and doesn't need Anki on the same machine as your browser. Get it from AnkiWeb as <a href="https://ankiweb.net/shared/info/1098736891" target="_blank" rel="noreferrer noopener">Lector Sync</a> (add-on code <code>1098736891</code>).</p>
-  </div>
+  <div>
+    <h3 id="anki-addon-install">Install the add-on</h3>
+    <p>
+      The add-on is on AnkiWeb as <a
+        href="https://ankiweb.net/shared/info/1098736891"
+        target="_blank"
+        rel="noreferrer noopener">Lector Sync</a
+      >, add-on code <code>1098736891</code>. It needs Anki 2.1.50 or later.
+    </p>
+    <ol>
+      <li>
+        In Anki Desktop: <strong>Tools &rarr; Add-ons &rarr; Get Add-ons</strong
+        >, enter <code>1098736891</code>, then restart Anki.
+      </li>
+      <li>
+        In Lector: <strong>Settings &rarr; API Tokens</strong>, mint a token
+        with the <strong>anki</strong> scopes.
+      </li>
+      <li>
+        In Anki: <strong
+          >Tools &rarr; Add-ons &rarr; Lector Sync &rarr; Config</strong
+        >, set <code>api_url</code> (e.g. <code>https://app.lector.dev</code>,
+        or your self-hosted API origin) and <code>api_token</code>.
+      </li>
+      <li>
+        Run <strong>Tools &rarr; Lector: Sync now</strong> &mdash; it also syncs when
+        your profile opens.
+      </li>
+    </ol>
+    <p>
+      Every release is also attached to <a
+        href="https://github.com/heuwels/lector/releases"
+        target="_blank"
+        rel="noreferrer noopener">GitHub releases</a
+      > as a <code>.ankiaddon</code> file, for <strong
+        >Tools &rarr; Add-ons &rarr; Install from file</strong
+      >. If you installed that way before, the AnkiWeb copy disables your
+      hand-installed one, and you can delete it under <strong
+        >Tools &rarr; Add-ons</strong
+      >.
+    </p>
+    <div class="callout">
+      <p>
+        Please report anything odd, such as duplicate notes, deck weirdness,
+        sync errors, on{" "}<a
+          href="https://github.com/heuwels/lector/issues"
+          target="_blank"
+          rel="noreferrer noopener">GitHub</a
+        > or{" "}<a href={DISCORD} target="_blank" rel="noreferrer noopener"
+          >Discord</a
+        >, ideally with the sync tooltip text.
+      </p>
+    </div>
 
-  <h2 id="core-concepts">Cards, decks, and reviews</h2>
-  <ul>
-    <li><strong>Card</strong> &mdash; one thing to learn: a prompt on the front (say, an Afrikaans word) and the answer on the back (its English meaning).</li>
-    <li><strong>Deck</strong> &mdash; a collection of cards. You can have a deck per language, and decks can hold sub-decks (Lector's frequency decks are split this way).</li>
-    <li><strong>Review</strong> &mdash; each day Anki shows you the cards that are due. You reveal the answer, then rate it <strong>Again</strong>, <strong>Hard</strong>, <strong>Good</strong>, or <strong>Easy</strong>. That rating sets when you'll next see the card.</li>
-    <li><strong>New cards</strong> &mdash; Anki introduces unseen cards at a capped rate each day (20 by default) so a big deck doesn't overwhelm you all at once.</li>
-  </ul>
+    <h2 id="core-concepts">Cards, decks, and reviews</h2>
+    <ul>
+      <li>
+        <strong>Card</strong> &mdash; one thing to learn: a prompt on the front (say,
+        an Afrikaans word) and the answer on the back (its English meaning).
+      </li>
+      <li>
+        <strong>Deck</strong> &mdash; a collection of cards. You can have a deck per
+        language, and decks can hold sub-decks (Lector's frequency decks are split
+        this way).
+      </li>
+      <li>
+        <strong>Review</strong> &mdash; each day Anki shows you the cards that are
+        due. You reveal the answer, then rate it <strong>Again</strong>, <strong
+          >Hard</strong
+        >, <strong>Good</strong>, or <strong>Easy</strong>. That rating sets
+        when you'll next see the card.
+      </li>
+      <li>
+        <strong>New cards</strong> &mdash; Anki introduces unseen cards at a capped
+        rate each day (20 by default) so a big deck doesn't overwhelm you all at once.
+      </li>
+    </ul>
 
-  <h2 id="getting-cards">Getting cards to study</h2>
-  <p>There are two ways to fill Anki with useful cards, and they work well together.</p>
+    <h2 id="getting-cards">Getting cards to study</h2>
+    <p>
+      There are two ways to fill Anki with useful cards, and they work well
+      together.
+    </p>
 
-  <h3 id="starter-deck">1. Start with a ready-made deck</h3>
-  <p>The quickest start is a frequency-ordered deck for your language &mdash; the most common words first, so early study pays off fastest. Browse the <a href="/reference-data/">reference data</a> page and pick your language: Afrikaans ships Lector's own deck, and the other languages link hand-picked, free community decks on AnkiWeb.</p>
-  <p>For a downloadable deck (an <code>.apkg</code> file, like the Afrikaans one), import it into Anki Desktop:</p>
-  <ol>
-    <li>Download the <code>.apkg</code> file from the reference data page.</li>
-    <li>Double-click it, or in Anki choose <strong>File &rarr; Import</strong> and select the file.</li>
-    <li>Start with the most-frequent sub-deck (e.g. <em>Core</em>) and work down.</li>
-  </ol>
-  <p>Community decks linked from AnkiWeb open with an <strong>Get</strong> button that adds them to your account directly &mdash; no file to download.</p>
+    <h3 id="starter-deck">1. Start with a ready-made deck</h3>
+    <p>
+      The quickest start is a frequency-ordered deck for your language &mdash;
+      the most common words first, so early study pays off fastest. Browse the <a
+        href="/reference-data/">reference data</a
+      > page and pick your language: Afrikaans ships Lector's own deck, and the other
+      languages link hand-picked, free community decks on AnkiWeb.
+    </p>
+    <p>
+      For a downloadable deck (an <code>.apkg</code> file, like the Afrikaans one),
+      import it into Anki Desktop:
+    </p>
+    <ol>
+      <li>
+        Download the <code>.apkg</code> file from the reference data page.
+      </li>
+      <li>
+        Double-click it, or in Anki choose <strong>File &rarr; Import</strong> and
+        select the file.
+      </li>
+      <li>
+        Start with the most-frequent sub-deck (e.g. <em>Core</em>) and work
+        down.
+      </li>
+    </ol>
+    <p>
+      Community decks linked from AnkiWeb open with an <strong>Get</strong> button
+      that adds them to your account directly &mdash; no file to download.
+    </p>
 
-  <h3 id="mine-from-lector">2. Mine your own cards from Lector</h3>
-  <p>As you read in Lector, save the words you look up and push them into Anki with a click over <a href="/docs/features/#ankiconnect">AnkiConnect</a>, or through the <a href="/docs/features/#anki-addon">Lector add-on (beta)</a>, which also sends your Anki review grades back to Lector. These cards come straight from what you're actually reading, so they're relevant and stickier than a generic list. Many people do both: a ready-made deck for the high-frequency core, and mined cards for the long tail of words specific to their books.</p>
+    <h3 id="mine-from-lector">2. Mine your own cards from Lector</h3>
+    <p>
+      As you read in Lector, save the words you look up and push them into Anki
+      with a click through the Lector add-on (which also sends your Anki review
+      grades back to Lector) or through AnkiConnect alternatively. These cards
+      come straight from what you're actually reading, so they're relevant and
+      stickier than a generic list. Many people do both: a ready-made deck for
+      the high-frequency core, and mined cards for the long tail of words
+      specific to their books.
+    </p>
 
-  <h2 id="daily-habit">Building the habit</h2>
-  <p>Spaced repetition only works if you turn up. A few pointers:</p>
-  <ul>
-    <li><strong>Review every day.</strong> The schedule assumes it &mdash; skip a week and due cards pile up. A short daily session beats an occasional marathon.</li>
-    <li><strong>Keep the new-card limit modest.</strong> 10&ndash;20 new cards a day is plenty; every new card becomes tomorrow's review, so the daily load compounds.</li>
-    <li><strong>Be honest with your ratings.</strong> Press <em>Again</em> when you blank &mdash; that's how Anki learns to resurface it sooner.</li>
-  </ul>
-  <div class="callout">
-    <p>Flashcards are just the first phase. See the <a href="/methodology/#phase-1">methodology</a> for how a frequency-first vocabulary base feeds into reading and sentence mining &mdash; and once Anki's running, wire it up in <a href="/docs/features/#ankiconnect">AnkiConnect setup</a>.</p>
+    <h2 id="daily-habit">Building the habit</h2>
+    <p>Spaced repetition only works if you turn up. A few pointers:</p>
+    <ul>
+      <li>
+        <strong>Review every day.</strong> The schedule assumes it &mdash; skip a
+        week and due cards pile up. A short daily session beats an occasional marathon.
+      </li>
+      <li>
+        <strong>Keep the new-card limit modest.</strong> 10&ndash;20 new cards a day
+        is plenty; every new card becomes tomorrow's review, so the daily load compounds.
+        You may find you can only cope with 5 new cards long-term, unless you are
+        familiar with the language and brushing up.
+      </li>
+      <li>
+        <strong>Be honest with your ratings.</strong> Press <em>Again</em> when you
+        blank &mdash; that's how Anki learns to resurface it sooner.
+      </li>
+    </ul>
+    <div class="callout">
+      <p>
+        Flashcards are just the first phase. See the <a
+          href="/methodology/#phase-1">methodology</a
+        > for how a frequency-first vocabulary base feeds into reading and sentence
+        mining &mdash; and once Anki's running, wire it up in <a
+          href="/docs/features/#ankiconnect">AnkiConnect setup</a
+        >.
+      </p>
+    </div>
   </div>
 </DocsPage>
