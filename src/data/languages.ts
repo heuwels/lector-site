@@ -140,7 +140,7 @@ export const languages: Language[] = [
     flag: "🌍",
     status: "complete",
     blurb:
-      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Arabic: the first right-to-left language pack. Modern Standard Arabic, the written form newspapers and Wikipedia use, not a spoken dialect. A dictionary prints كَتَبَ and a newspaper prints كتب, so entries are keyed on the unvocalized spelling and running text resolves without the vowel marks, while the vocalized spelling shows in the definition. The four alef spellings fold to one key, so إلى and الى answer the same entry, and lookups peel the articles, conjunctions and pronoun endings that Arabic writes solid (وبالقلم → قلم, كتابه → كتاب). Typed practice accepts an unvocalized answer, because that is how the language is written.",
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Arabic: the first right-to-left language pack. Modern Standard Arabic, the written form newspapers and Wikipedia use, not a spoken dialect. A dictionary prints كَتَبَ and a newspaper prints كتب, so entries are keyed on the unvocalized spelling and running text resolves without the vowel marks, while the vocalized spelling shows in the definition. The four alef spellings fold to one key, so إلى and الى answer the same entry, and lookups peel the articles, conjunctions and pronoun endings that Arabic writes solid, so a tap on وبالقلم reaches the entry for قلم on its own. Typed practice accepts an unvocalized answer, because that is how the language is written.",
     downloads: [],
     stats: [
       { label: "Dictionary", value: "25,750 entries" },

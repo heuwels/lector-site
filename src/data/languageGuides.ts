@@ -161,6 +161,69 @@ export const languageGuides: Record<string, LanguageGuide> = {
     clozeAlt: "Spanish cloze practice in Lector with multiple-choice options",
   },
 
+  arabic: {
+    slug: "arabic",
+    answer:
+      "The best way to learn Arabic is to read Modern Standard Arabic with instant tap-to-translate, because running text leaves out the short vowels that a dictionary prints. Lector keys its entries on the unvocalized spelling a newspaper actually uses, so a word resolves on the first tap, and it shows the vocalized form in the definition so you still learn how the word sounds.",
+    nativeSpeakers: "~310 million across its varieties",
+    totalSpeakers: "~400 million (incl. second-language)",
+    fsiCategory: "Category IV",
+    approxHours: "~2,200 hours",
+    approxWeeks: 88,
+    whyLearn: [
+      "Around 400 million speakers across more than twenty countries, and one written standard that all of them read. Learning to read Modern Standard Arabic opens the whole region at once, rather than one country at a time.",
+      "The script is the opposite problem to Chinese: 28 letters, and they tell you how a word sounds. The alphabet is a couple of weeks of work, not a couple of years, and everything after that is vocabulary and pattern.",
+      // Each Arabic word is followed by an English gloss on purpose. A run of
+      // Arabic separated only by commas is one right-to-left sequence to the
+      // bidi algorithm, so the browser reverses the order and misplaces the
+      // commas. The glosses put a strong left-to-right character between each
+      // pair, which isolates them, and they help a reader who cannot read the
+      // script yet.
+      "Words are built from three-consonant roots on fixed patterns. Once you see that كتاب means book, كاتب means writer, مكتب means office and مكتبة means library, all on the one root, vocabulary stops being a list to memorise and starts being a system you can predict.",
+    ],
+    mutualIntelligibility:
+      "Modern Standard Arabic is nobody's mother tongue. Everyone speaks a regional variety at home — Egyptian, Levantine, Gulf, Iraqi, Maghrebi — and learns the standard at school. Those varieties are not always mutually intelligible in speech, and a Moroccan and an Iraqi may switch to the standard to understand each other. The written standard is shared everywhere, which is why reading carries across the region even where speech does not.",
+    difficultyNote:
+      "FSI Category IV (~2,200 hours), the hardest tier for English speakers, alongside Mandarin, Japanese and Korean. The alphabet is not the reason. Three other things are: the short vowels are not written, so you have to know a word to voice it; grammar attaches to both ends of a word with no space; and the variety you read is not the variety anyone speaks. Reading answers the first two directly. Lector keys entries on the unvocalized spelling, prints the vocalized form in the definition, and peels the articles, conjunctions and pronoun endings that Arabic writes solid, so a tap on وبالقلم still reaches the entry for قلم on its own.",
+    faqs: [
+      {
+        question: "Is Arabic hard to learn?",
+        answer:
+          "Arabic sits in the FSI's hardest tier, though not because of the script. Twenty-eight letters that map to sounds is a fortnight of work. The real difficulty is that short vowels are left out of ordinary writing, that prefixes and suffixes attach with no space, and that the written standard differs from every spoken variety. A reader that resolves an unvocalized word on the first tap removes most of the first two.",
+      },
+      {
+        question: "How long does it take to learn Arabic?",
+        answer:
+          "The US Foreign Service Institute places Arabic in Category IV, at roughly 2,200 class hours, or about 88 weeks of intensive study, to reach professional working proficiency. Reading is a much shorter road than speaking. With lookups a tap away and practice ordered by frequency, simple news text comes within reach long before that figure.",
+      },
+      {
+        question: "Should I learn Modern Standard Arabic or a dialect?",
+        answer:
+          "Both, for different jobs. Everything written — news, books, Wikipedia, signage, official documents — is Modern Standard Arabic, and it is shared across every Arabic-speaking country. Everything spoken at home is a regional variety, and which one you want depends on where you are going. Lector teaches the standard, because that is what reading needs and because it is the one variety that is useful everywhere.",
+      },
+      {
+        question: "Do I need to learn the vowel marks?",
+        answer:
+          "No. Ordinary Arabic does not print them, so a learner who depends on them cannot read a newspaper. Lector keys its dictionary on the unvocalized spelling instead, which is why a word from running text resolves at once, and it shows the vocalized spelling in the definition so you learn the vowels as you read. Typed practice accepts an unvocalized answer, because nobody types the marks.",
+      },
+      {
+        question: "Which Arabic does Lector read aloud?",
+        answer:
+          "A deliberately multi-region Modern Standard voice, not a national accent. Google publishes Arabic speech as ar-XA for exactly this reason, and Lector uses it, so the audio does not teach an Egyptian or a Gulf accent to somebody who has not chosen one.",
+      },
+    ],
+    sample: {
+      text: "في المساء، عندما تغيب الشمس خلف البيوت، يجلس الناس في الساحة ويتحدثون، وينظرون إلى الأطفال وهم يلعبون أمام النافورة.",
+      translation:
+        "In the evening, when the sun sets behind the houses, people sit in the square and talk, and watch the children playing in front of the fountain.",
+    },
+    readerImg: "/images/languages/arabic-reader.png",
+    readerAlt:
+      "Lector reading an Arabic passage right-to-left with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/arabic-cloze.png",
+    clozeAlt: "Arabic cloze practice in Lector with multiple-choice options",
+  },
+
   french: {
     slug: "french",
     answer:
