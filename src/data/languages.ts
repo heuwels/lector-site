@@ -130,6 +130,42 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "arabic",
+    name: "Arabic → English",
+    endonym: "العربية",
+    // No country flag. Modern Standard Arabic is a pan-Arab written standard
+    // that no single state owns, so a national flag reads as a claim to an
+    // Egyptian, Iraqi or Moroccan learner. Same reasoning as the 🏛️ on Latin
+    // and Koine Greek, and it matches the flag in the app's language picker.
+    flag: "🌍",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Arabic: the first right-to-left language pack. Modern Standard Arabic, the written form newspapers and Wikipedia use, not a spoken dialect. A dictionary prints كَتَبَ and a newspaper prints كتب, so entries are keyed on the unvocalized spelling and running text resolves without the vowel marks, while the vocalized spelling shows in the definition. The four alef spellings fold to one key, so إلى and الى answer the same entry, and lookups peel the articles, conjunctions and pronoun endings that Arabic writes solid (وبالقلم → قلم, كتابه → كتاب). Typed practice accepts an unvocalized answer, because that is how the language is written.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "25,750 entries" },
+      { label: "English senses", value: "58,893" },
+      { label: "Inflections", value: "347,672" },
+      { label: "Cloze bank", value: "7,126 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Arabic Wiktionary entries extracted through Kaikki.org. Keys drop the vowel marks and fold the alef spellings أ إ آ ٱ to bare ا, so a headword matches running text. The vocalized spelling is kept from each entry's canonical form and shown in the definition.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Arabic/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Arabic–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "french",
     name: "French → English",
     endonym: "Français",
@@ -686,18 +722,6 @@ export const languages: Language[] = [
     sources: [],
   },
   {
-    slug: "arabic",
-    name: "Arabic → English",
-    endonym: "العربية",
-    flag: "🇸🇦",
-    status: "coming-soon",
-    roadmapIssue: 253,
-    blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
     slug: "japanese",
     name: "Japanese → English",
     endonym: "日本語",
@@ -814,7 +838,7 @@ export const languages: Language[] = [
     flag: "🇮🇱",
     status: "coming-soon",
     blurb:
-      "On the roadmap, behind right-to-left reader support. Arabic and Biblical Hebrew pay for that work, and Modern Hebrew follows it.",
+      "On the roadmap. Right-to-left reading shipped with Arabic, so what is left is the pack itself: an unpointed key for pointed dictionary entries, which is the same fold Arabic uses for its vowel marks.",
     downloads: [],
     stats: [],
     sources: [],
