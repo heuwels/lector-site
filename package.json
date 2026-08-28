@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "deploy": "astro build && wrangler pages deploy dist --project-name=lector-site",
     "dev:api": "astro build && wrangler pages dev dist --d1 DB --compatibility-date=2026-04-13",
+    "lint:spaces": "node scripts/scan-inline-space.mjs",
     "openapi:sync": "node scripts/sync-openapi.mjs",
     "openapi:check": "node scripts/sync-openapi.mjs --check",
     "db:local": "wrangler d1 execute DB --local --config wrangler.dev.jsonc --file=./schema.sql",

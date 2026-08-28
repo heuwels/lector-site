@@ -1,0 +1,138 @@
+---
+import Base from "../../layouts/Base.astro";
+import Container from "../../components/Container.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Heading from "../../components/Heading.astro";
+import Subheading from "../../components/Subheading.astro";
+import Text from "../../components/Text.astro";
+import Button from "../../components/Button.astro";
+import { DISCORD, SUPPORT_EMAIL } from "../../data/links";
+import { breadcrumbSchema } from "../../lib/schema";
+
+// Index of the audience pages. This page exists so a new audience page needs no
+// header slot: the header holds five links (see src/data/nav.ts) and this is
+// one of them.
+//
+// Each entry must state what ships today. The Greek and Hebrew page is a
+// founding cohort for a pack in development, so this page says that plainly
+// rather than listing it beside a finished feature.
+//
+// Prose on this page follows ASD-STE100. See ~/personal/CLAUDE.md.
+
+const useCases = [
+  {
+    title: "Offline and remote work",
+    status: "Available now",
+    href: "/use-cases/offline/",
+    action: "Read the offline guide",
+    body: "Read and translate with no connection. The reader, the on-device dictionary, and cloze practice all run on your own laptop. Add a local model for sentence translation and grammar help. Built for field translators, missionaries, aid workers, and anybody a long way from a tower.",
+  },
+  {
+    title: "Heritage speakers",
+    status: "Available now",
+    href: "/use-cases/heritage/",
+    action: "Read the heritage guide",
+    body: "You grew up hearing the language and never learned to read it. Lector starts from the vocabulary your ear already holds, and handles the scripts that stopped you: characters, unvocalized Arabic, Cyrillic. One install serves a whole family, with a library each.",
+  },
+  {
+    title: "Anki users",
+    status: "Available now",
+    href: "/use-cases/anki/",
+    action: "See the two-way sync",
+    body: "Keep the review habit you built. Lector mines vocabulary while you read, pushes it to your own collection, and takes your Anki grades back as mastery. Your existing decks and note types are never touched. The two-way sync is in beta.",
+  },
+  {
+    title: "Greek and Hebrew",
+    status: "In development",
+    href: "/for/greek-hebrew/",
+    action: "Join the founding cohort",
+    body: "Keep the biblical languages you studied, by reading the text. The Koine Greek pack is in development, and a founding cohort shapes it now. Lector answers questions about language, and never about theology.",
+  },
+];
+
+const title = "Use cases | Lector";
+const description =
+  "How people put Lector to work. Offline reading and translation in remote places, and a reading-first workspace for Greek and Hebrew.";
+
+const schema = breadcrumbSchema([
+  { name: "Lector", url: "/" },
+  { name: "Use cases", url: "/use-cases/" },
+]);
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-10 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Use cases</Eyebrow>
+      <Heading class="max-w-3xl text-5xl/[1.05] sm:text-6xl/[1.05]">
+        What people bring <span class="italic">Lector</span> to.
+      </Heading>
+      <Text size="lg" class="max-w-2xl text-pretty">
+        Lector is one reading workspace, and it serves more than one job. These
+        pages cover the jobs that need their own answer.
+      </Text>
+    </Container>
+  </section>
+
+  <!-- The use cases -->
+  <section class="py-10">
+    <Container class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+      {
+        useCases.map((useCase) => (
+          <div class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5">
+            <div class="flex flex-col gap-2">
+              <span class="text-xs/6 font-medium tracking-wide text-olive-500 uppercase">
+                {useCase.status}
+              </span>
+              <h2 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+                {useCase.title}
+              </h2>
+            </div>
+            <p class="text-base/7 text-olive-700 dark:text-olive-400">
+              {useCase.body}
+            </p>
+            <a
+              href={useCase.href}
+              class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+            >
+              {useCase.action}
+            </a>
+          </div>
+        ))
+      }
+    </Container>
+  </section>
+
+  <!-- Ask for one -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-6">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Subheading>Is your job not here?</Subheading>
+        <Text class="text-pretty">
+          Tell us what you read, and tell us what gets in the way. We write
+          these pages from the questions people send us. A language pack, a
+          feature, or a guide can start with one email.
+        </Text>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <Button href="/contact/" size="lg">Send us a message</Button>
+        <Button
+          href={DISCORD}
+          variant="soft"
+          size="lg"
+          target="_blank"
+          rel="noopener"
+        >
+          Ask on Discord
+        </Button>
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        Or write to us directly at <a
+          href={`mailto:${SUPPORT_EMAIL}`}
+          class="underline underline-offset-2">{SUPPORT_EMAIL}</a
+        >.
+      </p>
+    </Container>
+  </section>
+</Base>

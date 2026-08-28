@@ -2,16 +2,26 @@
 import Container from "./Container.astro";
 import { GITHUB, DISCORD } from "../data/links";
 
+// The footer carries every top-level page. The header (src/data/nav.ts) holds
+// five links only, so a page that leaves the header must land in a group here.
 const columns = [
   {
     title: "Explore",
     links: [
       { href: "/docs/", label: "Docs" },
-      { href: "/vs/", label: "Comparisons" },
+      { href: "/languages/", label: "Languages" },
       { href: "/pricing/", label: "Pricing" },
+      { href: "/vs/", label: "Comparisons" },
       { href: "/roadmap/", label: "Roadmap" },
-      { href: "/reference-data/", label: "Reference data" },
-      { href: "/blog/local-llm-translation-eval/", label: "Model eval" },
+    ],
+  },
+  {
+    title: "Use cases",
+    links: [
+      { href: "/use-cases/offline/", label: "Offline and remote" },
+      { href: "/use-cases/heritage/", label: "Heritage speakers" },
+      { href: "/use-cases/anki/", label: "Anki users" },
+      { href: "/for/greek-hebrew/", label: "Greek and Hebrew" },
     ],
   },
   {
@@ -20,6 +30,8 @@ const columns = [
       { href: "/learn/", label: "Learn by reading" },
       { href: "/methodology/", label: "Methodology" },
       { href: "/blog/", label: "Blog" },
+      { href: "/reference-data/", label: "Reference data" },
+      { href: "/blog/local-llm-translation-eval/", label: "Model eval" },
     ],
   },
   {
@@ -29,6 +41,7 @@ const columns = [
       { href: DISCORD, label: "Discord", external: true },
       { href: "/contact/", label: "Contact", external: false },
       { href: "/support/", label: "Support", external: false },
+      { href: "/funding/", label: "Funding", external: false },
     ],
   },
 ];
@@ -39,7 +52,7 @@ const columns = [
     class="bg-olive-950/2.5 py-16 text-olive-950 dark:bg-white/5 dark:text-white"
   >
     <Container class="flex flex-col gap-12">
-      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div class="flex flex-col gap-3">
           <a href="/" class="inline-flex items-center gap-2.5">
             <img src="/logo.svg" alt="" width="28" height="28" class="size-7" />

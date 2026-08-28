@@ -1,0 +1,406 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Container from "../../../components/Container.astro";
+import Eyebrow from "../../../components/Eyebrow.astro";
+import Heading from "../../../components/Heading.astro";
+import Subheading from "../../../components/Subheading.astro";
+import Text from "../../../components/Text.astro";
+import Button from "../../../components/Button.astro";
+import Faqs from "../../../components/Faqs.astro";
+import { DISCORD, SIGNUP_URL, GITHUB } from "../../../data/links";
+import { faqPageSchema, breadcrumbSchema } from "../../../lib/schema";
+
+// Use-case page for people who already run Anki and will not leave it.
+//
+// HONESTY RULES for this page (do not edit these away):
+//  * The add-on is BETA. Every section that promises sync must say so.
+//  * Ownership rules come from anki-addon/lector/sync.py `lector_owned`: a note
+//    joins the sync only when its note type is Lector or Lector Cloze AND it
+//    carries a LectorId or the `lector` tag. Do not widen that claim.
+//  * Competitor claims come from src/data/comparisons.ts. Keep them factual and
+//    keep them checkable. No mockery.
+//  * AnkiConnect is one-way and needs Anki on the same machine as the browser.
+//    Never describe the two connections as equal.
+//
+// Prose on this page follows ASD-STE100. See ~/personal/CLAUDE.md.
+
+const ANKIWEB_CODE = "1098736891";
+const ANKIWEB_URL = `https://ankiweb.net/shared/info/${ANKIWEB_CODE}`;
+
+const loop = [
+  {
+    title: "1. Mine while you read",
+    body: "Tap a word in the reader and save it. Lector keeps the sentence it came from, so the card carries its context instead of a bare word pair.",
+  },
+  {
+    title: "2. Push to your collection",
+    body: "Words and cloze phrases arrive as Lector and Lector Cloze notes, in a deck named Lector and one subdeck per language. Each note carries a stable id, so a second push updates the note instead of making a duplicate.",
+  },
+  {
+    title: "3. Review in Anki, as always",
+    body: "Your scheduler, your deck options, your add-ons, your habit. Lector does not ask you to review anywhere else, and it does not need you to open it.",
+  },
+  {
+    title: "4. Grades come back",
+    body: "When you grade a card in Anki, the next sync sends that grade to Lector, and the mastery of that word updates. Your reading statistics stay true to the work you did in Anki.",
+  },
+];
+
+const others = [
+  {
+    name: "LingQ",
+    detail: "Exports a CSV or an Anki file, sent to you by email.",
+    href: "/vs/lingq/",
+  },
+  {
+    name: "Clozemaster",
+    detail: "No documented Anki export.",
+    href: "/vs/clozemaster/",
+  },
+  {
+    name: "Lute",
+    detail: "One-way through AnkiConnect. Nothing comes back.",
+    href: "/vs/lute/",
+  },
+  {
+    name: "LinguaCafe",
+    detail: "One-way through AnkiConnect. Nothing comes back.",
+    href: "/vs/linguacafe/",
+  },
+];
+
+const connections = {
+  addon: [
+    "Two-way. Reviews in Anki update mastery in Lector.",
+    "Works across machines, because the add-on calls the server itself.",
+    "Needs Anki 2.1.50 or later, and a personal token with the anki scopes.",
+    "Syncs when your profile opens, and on demand from the Tools menu.",
+    "Beta. Report anything odd, and the sync tooltip text helps most.",
+  ],
+  ankiconnect: [
+    "One-way. Lector pushes cards, and nothing returns.",
+    "Needs Anki Desktop on the same machine as your browser.",
+    "Needs your Lector origin in the AnkiConnect CORS list.",
+    "No token, and no add-on from us.",
+    "Stable, and older than the add-on.",
+  ],
+};
+
+const setup = [
+  "In Anki, open Tools, then Add-ons, then Get Add-ons. Enter the code and restart Anki.",
+  "In Lector, open Settings, then API Tokens. Mint a token with the anki scopes.",
+  "In Anki, open the Lector Sync config. Set api_url to your server and paste the token.",
+  "Run Tools, then Lector: Sync now. Check that a Lector deck appears.",
+  "Grade one card in Anki. Sync again, and watch that word change mastery in Lector.",
+];
+
+const faqs = [
+  {
+    question: "Will this touch my existing decks or note types?",
+    answer:
+      "No. A note joins the sync only when two things are true. Its note type must be <em>Lector</em> or <em>Lector Cloze</em>. It must also carry a Lector id or the <code>lector</code> tag. A note type of your own that happens to be named Lector is left alone. Your other decks, note types, and cards are never read and never written.",
+  },
+  {
+    question: "Can I sync cards I made myself?",
+    answer:
+      "Yes, and this is deliberate. Add the <code>lector</code> tag to a hand-made note of the Lector or Lector Cloze type, and the add-on takes it into the sync. That is the documented way to opt a card in.",
+  },
+  {
+    question: "Will I get duplicates?",
+    answer:
+      'No. Every note the add-on creates carries a stable Lector id, and a push looks for that id before it writes. The same word pushed twice updates one note. If you do see a duplicate, that is a bug worth reporting on <a href="https://github.com/heuwels/lector/issues">GitHub</a> or Discord.',
+  },
+  {
+    question: "Does Anki have to run on the same machine as Lector?",
+    answer:
+      "It depends on the connection. The add-on talks to your server directly, so Anki can run anywhere with a route to it. AnkiConnect runs through your browser, so Anki Desktop must be on the machine you browse from.",
+  },
+  {
+    question: "What comes back from Anki?",
+    answer:
+      "The grades. When the add-on syncs, it sends the reviews you did on Lector notes, and Lector updates the mastery of each word. Nothing else in your collection is uploaded.",
+  },
+  {
+    question: "Do I need Lector Cloud for this?",
+    answer:
+      'No. Point <code>api_url</code> at any Lector server, including your own. A self-hoster can use the add-on or AnkiConnect, and picks the connection under <strong>Settings, then Anki Integration</strong>. See the <a href="/docs/features/#anki-addon">Anki documentation</a>.',
+  },
+  {
+    question: "Does the sync work with no internet connection?",
+    answer:
+      'Yes, when both halves are yours. The add-on calls your own server, so a self-hosted Lector and Anki on the same network sync with no route to the internet. Read <a href="/use-cases/offline/">offline and remote use</a> for the rest of what runs with the network off.',
+  },
+  {
+    question: "It is beta. What does that mean here?",
+    answer:
+      'It means the sync works and the edges are still moving. Duplicate notes, deck placement, and sync errors are the reports we want. Send them with the sync tooltip text to <a href="https://github.com/heuwels/lector/issues">GitHub</a> or Discord. Every release also ships a <code>.ankiaddon</code> file if you prefer to install by hand.',
+  },
+  {
+    question: "What does it cost?",
+    answer:
+      'The add-on is free, and so is self-hosting Lector. <a href="/pricing/">Lector Cloud</a> starts at $5 a month, for anybody who prefers not to run a server.',
+  },
+];
+
+const title = "Keep Anki. Add reading. | Lector";
+const description =
+  "Lector mines vocabulary while you read and syncs it with your own Anki collection, both ways. Reviews in Anki update mastery in Lector. Your cards stay yours.";
+
+const schema = [
+  faqPageSchema(faqs),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Use cases", url: "/use-cases/" },
+    { name: "Anki", url: "/use-cases/anki/" },
+  ]),
+];
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-14 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Use case &middot; Anki</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Keep Anki. Add <span class="italic">reading</span>.
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">
+        You already have the review habit and the collection to prove it. Lector
+        gives you the reading that fills it, then syncs both ways: cards go out,
+        and your Anki grades come back as mastery. Your collection stays yours.
+      </Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg">Start on Lector Cloud</Button>
+          <Button
+            href={ANKIWEB_URL}
+            variant="soft"
+            size="lg"
+            target="_blank"
+            rel="noopener"
+          >
+            Get Lector Sync on AnkiWeb
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Add-on code {ANKIWEB_CODE} &middot; two-way sync is in beta
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- The problem -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The problem</Eyebrow>
+        <Subheading>Most reading apps keep your cards.</Subheading>
+        <Text class="text-pretty">
+          A reading app that holds your vocabulary asks you to run two review
+          systems, or to abandon the one that works. The usual answer is an
+          export, which is a copy and not a connection.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          others.map((other) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {other.name}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {other.detail}
+              </p>
+              <a
+                href={other.href}
+                class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+              >
+                Full comparison
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        Every claim here is checkable, and each card links to the full
+        comparison. Tell us when one goes out of date.
+      </p>
+    </Container>
+  </section>
+
+  <!-- The loop -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The loop</Eyebrow>
+        <Subheading>Read in Lector. Review in Anki. Both stay true.</Subheading>
+        <Text class="text-pretty">
+          The Lector Sync add-on runs inside Anki Desktop and talks to your
+          Lector server with a personal token. That is what makes the second
+          direction possible.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          loop.map((step) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {step.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {step.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- Two connections -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Two connections</Eyebrow>
+        <Subheading>Pick the one that matches your setup.</Subheading>
+        <Text class="text-pretty">
+          The add-on is the route we recommend, because it is two-way and it
+          works across machines. AnkiConnect stays supported for a setup that
+          already uses it.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+        >
+          <h3 class="font-display text-2xl/8">Lector Sync add-on (beta)</h3>
+          <ul class="flex flex-col gap-3">
+            {
+              connections.addon.map((item) => (
+                <li class="flex gap-3 text-base/7 text-olive-200">
+                  <span aria-hidden="true" class="mt-px text-olive-400">
+                    &#10003;
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5"
+        >
+          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+            AnkiConnect
+          </h3>
+          <ul class="flex flex-col gap-3">
+            {
+              connections.ankiconnect.map((item) => (
+                <li class="flex gap-3 text-base/7 text-olive-700 dark:text-olive-400">
+                  <span aria-hidden="true" class="mt-px text-olive-500">
+                    &#8226;
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Setup -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Five minutes</Eyebrow>
+        <Subheading>Set up the two-way sync.</Subheading>
+        <Text class="text-pretty">
+          The add-on is on AnkiWeb as <strong>Lector Sync</strong>, code {
+            ANKIWEB_CODE
+          }. The <a
+            href="/docs/features/#anki-addon"
+            class="font-medium underline underline-offset-4">documentation</a
+          > covers every field.
+        </Text>
+        <p class="text-xs/6 text-olive-500">
+          Prefer to install by hand? Every <a
+            href={`${GITHUB}/releases`}
+            target="_blank"
+            rel="noopener"
+            class="underline underline-offset-2">release</a
+          > ships a <code>.ankiaddon</code> file.
+        </p>
+      </div>
+      <ol class="flex flex-col gap-3">
+        {
+          setup.map((item, index) => (
+            <li class="flex gap-4 rounded-2xl bg-olive-950/2.5 p-5 dark:bg-white/5">
+              <span class="font-display text-lg/7 text-olive-500">
+                {index + 1}
+              </span>
+              <span class="text-base/7 text-olive-700 dark:text-olive-400">
+                {item}
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Straight answers</Eyebrow>
+        <Subheading>What an Anki user asks first.</Subheading>
+        <Text class="text-pretty">
+          Mostly: will this make a mess of a collection I spent years on. The
+          short answer is no, and here is exactly why.
+        </Text>
+      </div>
+      <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading
+          color="light"
+          class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
+        >
+          Your cards. Your <span class="italic">scheduler</span>.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Nothing about your Anki habit has to change. Lector just gives it
+          something real to feed on.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg" color="light">
+            Start on Lector Cloud
+          </Button>
+          <Button
+            href={DISCORD}
+            variant="plain"
+            size="lg"
+            color="light"
+            target="_blank"
+            rel="noopener"
+          >
+            Ask on Discord
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-400">
+          Self-hosting is free forever, and the add-on works against your own
+          server.
+        </p>
+      </div>
+    </Container>
+  </section>
+</Base>

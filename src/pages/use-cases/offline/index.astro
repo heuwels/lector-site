@@ -1,0 +1,534 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Container from "../../../components/Container.astro";
+import Eyebrow from "../../../components/Eyebrow.astro";
+import Heading from "../../../components/Heading.astro";
+import Subheading from "../../../components/Subheading.astro";
+import Text from "../../../components/Text.astro";
+import Button from "../../../components/Button.astro";
+import Faqs from "../../../components/Faqs.astro";
+import LanguageNotify from "../../../components/LanguageNotify.astro";
+import { DISCORD } from "../../../data/links";
+import { faqPageSchema, breadcrumbSchema } from "../../../lib/schema";
+import { languages } from "../../../data/languages";
+
+// Use-case page for offline and remote work: field translators, missionaries,
+// aid workers, and researchers who work where there is no signal.
+//
+// HONESTY RULES for this page (do not edit these away):
+//  * Every claim describes Lector as it ships today. Nothing here is a plan.
+//  * No Pacific Island language has a pack. The page must say so plainly, in
+//    the coverage section AND in the FAQ. A missionary who reads this page must
+//    not arrive in Fiji and find no dictionary.
+//  * Setup needs a connection. The image, the packs, and the model all
+//    download once. Say it, and say it early.
+//  * No invented users. The audience section describes who the setup suits, not
+//    who already uses it.
+//  * Local-model quality numbers come from /blog/local-llm-translation-eval/.
+//    Keep the link beside the numbers.
+//
+// Prose on this page follows ASD-STE100. See ~/personal/CLAUDE.md.
+
+const completePacks = languages.filter((language) => language.status === "complete");
+const packCount = completePacks.length;
+
+// Packs that help around the Pacific today. Slugs must stay in step with
+// src/data/languages.ts.
+const pacificPacks = [
+  {
+    slug: "indonesian",
+    name: "Indonesian",
+    detail: "The language of school and government in Papua and West Papua.",
+  },
+  {
+    slug: "french",
+    name: "French",
+    detail:
+      "Official in New Caledonia, French Polynesia, and Wallis and Futuna. Also official in Vanuatu.",
+  },
+  {
+    slug: "spanish",
+    name: "Spanish",
+    detail: "Official on Easter Island, and across Latin America.",
+  },
+  {
+    slug: "mandarin",
+    name: "Mandarin",
+    detail: "Spoken by Chinese communities across the region.",
+  },
+];
+
+const worksOffline = [
+  "The reader. Import an EPUB file, or paste text straight in.",
+  "Word lookup. The on-device dictionary answers from the language pack.",
+  "Cloze practice. Each pack ships a frequency-ordered sentence bank.",
+  "Your vocabulary, your streaks, and your statistics. Lector writes them to SQLite on your machine.",
+  "With a local model: sentence translation, phrase translation, the tutor, and journal correction.",
+  "Anki, both ways. Point the Lector add-on at your own server. AnkiConnect also works.",
+  "Speech for Esperanto. The container runs eSpeak NG, so it needs no key and no network.",
+  "Backups. Copy one directory to a second disk.",
+];
+
+const needsConnection = [
+  "The first install. Docker pulls the image once.",
+  "Language packs. Lector downloads a dictionary the first time you enable its language.",
+  "The model download. A model file is between about 3 GB and 8 GB.",
+  "Import from a web page, from YouTube, or from a podcast feed.",
+  "Google Cloud speech, which every pack except Esperanto uses for its best voice.",
+  "Claude, and any other cloud model.",
+];
+
+const steps = [
+  {
+    title: "1. Run Lector on your own machine",
+    body: "One file for Docker Compose starts it. The default file also starts Ollama beside Lector, so the local model needs no separate install.",
+    href: "/docs/installation/",
+    action: "Installation guide",
+  },
+  {
+    title: "2. Install the language packs",
+    body: "While you still have a connection, enable each language in the picker. Settings marks each dictionary as installed at the end of the download. Dictionary files range from about 3 MB to about 280 MB.",
+    href: "/docs/languages/",
+    action: "Supported languages",
+  },
+  {
+    title: "3. Point Lector at the local model",
+    body: "Open Settings and choose the local provider. LM Studio and Ollama both work, and so does any server that speaks the OpenAI chat API.",
+    href: "/blog/lm-studio-translation-agent/",
+    action: "Local model guide",
+  },
+];
+
+const audiences = [
+  {
+    title: "Field translators and linguists",
+    body: "You work with text far from a data connection. Lector keeps the reader, the dictionary, and the vocabulary record on your laptop. The text is not always yours to publish. With Lector, it never leaves the machine.",
+  },
+  {
+    title: "Missionaries and church workers",
+    body: "Language study in a remote posting cannot depend on a signal. Read at your own pace, tap the words you do not know, and practise them on the same laptop. Languages from common missionary fields are not supported yet.",
+    link: { href: "#notify", label: "Ask for your language" },
+  },
+  {
+    title: "Aid and health workers",
+    body: "A deployment gives you weeks of dead time and no data connection. Load the books before you fly. Your reading and your review schedule continue with the network off.",
+  },
+  {
+    title: "Researchers, students, and crews at sea",
+    body: "A field station, a research vessel, or a long flight all give you time and no internet. Lector needs the laptop, and nothing else.",
+  },
+];
+
+const checklist = [
+  "Start Lector once at home. Open it in a browser and read one page.",
+  "Enable every language you need. Wait until Settings shows each dictionary as installed.",
+  "Download the local model. Ask it for one translation, so you know the server answers.",
+  "Import the books you plan to read. Paste any article you want to keep.",
+  "Turn off the network. Tap five words. Practise five cloze sentences. Play one word aloud.",
+  "Copy the data directory to a second disk. That copy is your backup.",
+  "Check the memory. A 4-bit model of about 8B parameters needs 5 GB to 6 GB of RAM.",
+  "Plan the power. A local model uses more battery than the reader alone.",
+];
+
+const faqs = [
+  {
+    question: "Does Lector work with no internet connection at all?",
+    answer:
+      "Yes, after you set it up. The reader, the on-device dictionary, cloze practice, and every statistic run on your machine. Add a local model and you also get sentence translation, grammar help, and journal correction. Setup itself needs a connection, because the image, the packs, and the model all download once.",
+  },
+  {
+    question: "My language has no pack. What do I get?",
+    answer:
+      "The reader works with any language. It tracks which words you know, and it keeps your reading progress. Without a pack there is no on-device dictionary and no cloze bank. A local model can still translate, but a small language tests its limits. Test the exact language on the exact model before you travel.",
+  },
+  {
+    question: "Which languages have a pack today?",
+    answer: `Lector ships ${packCount} packs: ${completePacks
+      .map((language) => language.name.replace(" → English", ""))
+      .join(
+        ", ",
+      )}. No Pacific Island language has a pack yet. Ask for the one you need with the form on this page, and see the <a href="/languages/">languages page</a> for the detail of each pack.`,
+  },
+  {
+    question: "Do I need a GPU?",
+    answer:
+      'No. A 4-bit model of about 8B parameters runs on a laptop with 5 GB to 6 GB of free RAM. A GPU makes each answer faster, and it changes nothing else. You can also skip the model. Word lookup then comes from the on-device dictionary alone.',
+  },
+  {
+    question: "Is a local model good enough for translation?",
+    answer:
+      'A capable local model holds up well, even for a language with little data. In our own test of Afrikaans to English, a 12B model scored 82.7 chrF++ on Tatoeba, ahead of Claude Opus and GPT-4o. Two cloud models beat it, by less than a point. Pick a general instruction-tuned model of 8B parameters or more. Read the full numbers in <a href="/blog/local-llm-translation-eval/">the translation eval</a>.',
+  },
+  {
+    question: "Does my text leave the laptop?",
+    answer:
+      'With the local provider, no. Lector calls your own model, and the text stays on your hardware. The cloud provider is the exception, because Claude runs on Anthropic servers. See the <a href="/privacy/">privacy page</a>.',
+  },
+  {
+    question: "Can Lector speak a word offline?",
+    answer:
+      'In part. Esperanto speaks through eSpeak NG, which runs inside the Lector container and needs no network. Every other pack calls Google Cloud for its best voice, and that call needs a connection. When it fails, Lector uses the voice in your browser instead. A voice that your operating system installs speaks offline, so test your own browser with the network off before you travel.',
+  },
+  {
+    question: "Does Anki sync work offline?",
+    answer:
+      'Yes, and both routes stay on your machine. The <a href="/docs/features/#anki-addon">Lector add-on for Anki</a> is the route we recommend, because it syncs both ways. Point its <code>api_url</code> at your own server, such as <code>http://localhost:3457</code>. AnkiConnect also works, because the browser talks to Anki on the same machine.',
+  },
+  {
+    question: "Can a team share one laptop?",
+    answer:
+      'Yes. Lector serves the web app and the API over the local network, so a phone or a tablet on the same network can open it. Set <code>API_URL</code> to the address the browser uses. The <a href="/docs/installation/">installation guide</a> covers it. Give each person a separate library with <a href="/docs/multi-user-oidc/">multi-user accounts</a>.',
+  },
+  {
+    question: "Can I install it with no connection?",
+    answer:
+      "No. Docker pulls the image, Lector downloads the dictionaries, and the model server downloads the model. Do all three before you leave. After that, Lector needs no connection.",
+  },
+  {
+    question: "What does it cost?",
+    answer:
+      'If you host it yourself, nothing. Lector is open source, and there are no feature gates. A local model costs no money per word. <a href="/pricing/">Lector Cloud</a> starts at $5 a month, and it needs a connection, so it is the wrong choice for the field.',
+  },
+];
+
+const title = "Offline translation in remote places | Lector";
+const description = `Read and translate with no connection. Lector runs on your laptop with an on-device dictionary and a local model. ${packCount} language packs, no API key, no signal needed.`;
+
+const schema = [
+  faqPageSchema(faqs),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Offline and remote", url: "/use-cases/offline/" },
+  ]),
+];
+
+// Roadmap languages for the request form, in the same shape the homepage uses.
+const notifyOptions = languages
+  .filter((language) => language.status === "coming-soon")
+  .map((language) => ({
+    slug: language.slug,
+    name: `${language.endonym} (${language.name.replace(" → English", "")})`,
+  }));
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-14 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Use case &middot; offline and remote</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Translate where there is <span class="italic">no signal</span>.
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">
+        Lector runs on your own laptop. The reader, the on-device dictionary,
+        cloze practice, and your vocabulary all work with the network off. Add a
+        local model and you also get sentence translation and grammar help. No
+        API key. No per-word bill. No signal.
+      </Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href="/docs/installation/" size="lg">Self-host, free</Button>
+          <Button
+            href="/blog/lm-studio-translation-agent/"
+            variant="soft"
+            size="lg"
+          >
+            Set up a local model
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          Set it up while you have a connection. After that it needs none.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- What works offline -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The honest split</Eyebrow>
+        <Subheading>What works with the network off.</Subheading>
+        <Text class="text-pretty">
+          Most of Lector never touches the network. Three features do, and one
+          of them has a local answer. Here is the whole picture, so you can plan
+          around it.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+        >
+          <h3 class="font-display text-2xl/8">Works offline</h3>
+          <ul class="flex flex-col gap-3">
+            {
+              worksOffline.map((item) => (
+                <li class="flex gap-3 text-base/7 text-olive-200">
+                  <span aria-hidden="true" class="mt-px text-olive-400">
+                    &#10003;
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div
+          class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5"
+        >
+          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
+            Needs a connection
+          </h3>
+          <ul class="flex flex-col gap-3">
+            {
+              needsConnection.map((item) => (
+                <li class="flex gap-3 text-base/7 text-olive-700 dark:text-olive-400">
+                  <span aria-hidden="true" class="mt-px text-olive-500">
+                    &#8226;
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        Word lookup tries the on-device dictionary first. Only a miss goes to a
+        model, so a local model answers the rest. Speech has a second route.
+        When the call to Google Cloud fails, Lector uses the voice in your
+        browser. A voice that your operating system installs speaks offline.
+        Test your own browser with the network off, because some browser voices
+        come from a server.
+      </p>
+    </Container>
+  </section>
+
+  <!-- The three parts -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The setup</Eyebrow>
+        <Subheading>Three parts, all on your hardware.</Subheading>
+        <Text class="text-pretty">
+          Lector holds your books and your vocabulary. A language pack holds the
+          dictionary and the sentence bank. A local model answers what the
+          dictionary cannot. Each part lives on the same machine.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
+        {
+          steps.map((step) => (
+            <div class="flex flex-col gap-3 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {step.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {step.body}
+              </p>
+              <a
+                href={step.href}
+                class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+              >
+                {step.action}
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        A tip for a long trip. Set <code>DICT_LANGS</code> in your Compose file
+        to name the languages you want, and Lector fetches each dictionary at
+        boot. Use <code>all</code> to take every published language.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Who this is for -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Who this suits</Eyebrow>
+        <Subheading>Built for a laptop a long way from a tower.</Subheading>
+        <Text class="text-pretty">
+          The same setup answers a common problem. You need a language, you have
+          time, and you have no data connection to spend on it.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          audiences.map((audience) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {audience.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {audience.body}
+              </p>
+              {audience.link && (
+                <a
+                  href={audience.link.href}
+                  class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+                >
+                  {audience.link.label}
+                </a>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- Language coverage -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Read this first</Eyebrow>
+        <Subheading>Language coverage, without the sales pitch.</Subheading>
+        <Text class="text-pretty">
+          Lector ships {packCount} language packs.{" "}
+          <strong class="font-semibold text-olive-950 dark:text-white"
+            >No Pacific Island language has a pack yet.</strong
+          > There is no pack for Tok Pisin, Fijian, Samoan, Tongan, or Bislama. If
+          you go to the Pacific for one of those languages, Lector gives you the
+          reader and your vocabulary record, and no dictionary.
+        </Text>
+        <Text class="text-pretty">
+          Other common fields are also open. There is no pack for Swahili, Thai,
+          Khmer, Nepali, or Amharic, and none of them is on the roadmap yet.
+          Hindi is on the roadmap, which helps in Fiji in part. Fiji Hindi is a
+          separate variety, so treat that pack as a start and not an answer.
+          Tagalog is on the roadmap for work in the Philippines.
+        </Text>
+        <Text class="text-pretty">
+          Ask for the language you need with the form below. An unlisted language
+          counts too.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          pacificPacks.map((pack) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {pack.name}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {pack.detail}
+              </p>
+              <a
+                href={`/reference-data/${pack.slug}/`}
+                class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+              >
+                Pack detail
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        These four packs cover the languages of school and government in much of
+        the region. See <a
+          href="/languages/"
+          class="underline underline-offset-2">every pack</a
+        > for the rest.
+      </p>
+      <LanguageNotify
+        options={notifyOptions}
+        heading="Which language do you need in the field?"
+        blurb="Name the language. We will email you once, on the day the pack is ready. No newsletter."
+      />
+    </Container>
+  </section>
+
+  <!-- Before you travel -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Before you travel</Eyebrow>
+        <Subheading>Do these eight things while you have a signal.</Subheading>
+        <Text class="text-pretty">
+          Every download happens once. Do each one at home, and test the whole
+          loop with the network off before you pack.
+        </Text>
+      </div>
+      <ol class="flex flex-col gap-3">
+        {
+          checklist.map((item, index) => (
+            <li class="flex gap-4 rounded-2xl bg-olive-950/2.5 p-5 dark:bg-white/5">
+              <span class="font-display text-lg/7 text-olive-500">
+                {index + 1}
+              </span>
+              <span class="text-base/7 text-olive-700 dark:text-olive-400">
+                {item}
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="text-xs/6 text-olive-500">
+        The <a href="/docs/backups/" class="underline underline-offset-2"
+          >backup guide</a
+        > covers the data directory. One copy protects your whole library.
+      </p>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Straight answers</Eyebrow>
+        <Subheading>The questions that matter most.</Subheading>
+        <Text class="text-pretty">
+          For the way Lector teaches a language, read the <a
+            href="/methodology/"
+            class="font-medium underline underline-offset-4">method</a
+          >.
+        </Text>
+      </div>
+      <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading
+          color="light"
+          class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
+        >
+          Set it up <span class="italic">before</span> you go.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Lector is free to self-host, and it is open source. Install it
+          tonight, load your packs, and test it with the network off.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href="/docs/installation/" size="lg" color="light">
+            Read the installation guide
+          </Button>
+          <Button
+            href={DISCORD}
+            variant="plain"
+            size="lg"
+            color="light"
+            target="_blank"
+            rel="noopener"
+          >
+            Ask on Discord
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-400">
+          Is there no pack for your language? Write to us at <a
+            href="mailto:support@lector.dev"
+            class="underline underline-offset-2">support@lector.dev</a
+          >.
+        </p>
+      </div>
+    </Container>
+  </section>
+</Base>

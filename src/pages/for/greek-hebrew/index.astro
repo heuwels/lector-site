@@ -7,161 +7,334 @@ import Subheading from "../../../components/Subheading.astro";
 import Text from "../../../components/Text.astro";
 import Button from "../../../components/Button.astro";
 import Faqs from "../../../components/Faqs.astro";
-import { DISCORD, GITHUB } from "../../../data/links";
+import { DISCORD, GITHUB, SIGNUP_URL } from "../../../data/links";
 import { faqPageSchema, breadcrumbSchema } from "../../../lib/schema";
 import { languages } from "../../../data/languages";
 
-// Founding-cohort landing page for the biblical-languages vertical.
-// Honesty rules for this page (do not edit these away): the Koine/Hebrew packs
-// are NOT shipped — every claim below is either about Lector as it exists today
-// or clearly framed as what the cohort is helping build. No manufactured social
-// proof, no "any language" claims, language answers not theological ones.
+// Landing page for the biblical and classical languages.
+//
+// HONESTY RULES for this page (do not edit these away):
+//  * The Koine Greek pack SHIPS. Every number on this page comes from that
+//    pack's entry in src/data/languages.ts. An earlier version of this page
+//    said the pack was unbuilt, months after it shipped. Do not reintroduce
+//    that.
+//  * Biblical Hebrew does NOT ship. It is `coming-soon` with roadmap issue 255.
+//    The cohort ask belongs to Hebrew alone.
+//  * The scope limit is the important part: the dictionary and the morphology
+//    are Ancient Greek, but the frequency ranks and the cloze bank are built
+//    from the Greek New Testament. Somebody who teaches Homer must read that
+//    here, in the scope section, not discover it later.
+//  * Pricing must match /pricing/. There is no Scholar plan and no per-language
+//    price. Do not invent one.
+//  * Language answers, never theological ones. Denominationally neutral.
+//  * Lexicon data is public domain or permissively licensed. No BDAG, no HALOT.
+//
+// Prose on this page follows ASD-STE100. See ~/personal/CLAUDE.md.
 
 const SUPPORT = "support@lector.dev";
 
-const mailtoSubject = encodeURIComponent(
-  "Founding cohort — Greek & Hebrew reading",
-);
+const pack = (slug: string) => languages.find((language) => language.slug === slug);
+const greek = pack("koine-greek");
+const latin = pack("latin");
+const stat = (slug: string, label: string) =>
+  pack(slug)?.stats.find((entry) => entry.label === label)?.value ?? "";
+
+const mailtoSubject = encodeURIComponent("Biblical Hebrew cohort");
 const mailtoBody = encodeURIComponent(
   [
     "Hi Luke,",
     "",
-    "I'd like to join the Greek & Hebrew founding cohort.",
+    "I want to help shape the Biblical Hebrew pack.",
     "",
     "A little about me:",
     "- Name:",
-    "- I am a (pastor / seminary student / student / retaining coursework / other):",
-    "- My Greek and/or Hebrew background:",
-    "- What I'm hoping to keep (or recover):",
-    "- I'm interested in the six-week Koine reading pilot: yes / maybe / just keep me posted",
+    "- I am a (pastor / seminary student / teacher / student / other):",
+    "- My Hebrew background:",
+    "- The text and edition I read most:",
     "",
     "Thanks!",
   ].join("\n"),
 );
-const JOIN_MAILTO = `mailto:${SUPPORT}?subject=${mailtoSubject}&body=${mailtoBody}`;
+const HEBREW_MAILTO = `mailto:${SUPPORT}?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+const ships = [
+  {
+    title: "Morphology-aware lookup",
+    body: `${stat("koine-greek", "Inflections")} inflected forms resolve to their lemma, so a tap answers the word in front of you and not a dictionary headword you must work back to. Lookups forgive accent variance, so τὸν finds τόν.`,
+  },
+  {
+    title: "A real dictionary, on your device",
+    body: `${stat("koine-greek", "Dictionary")} entries and ${stat("koine-greek", "English senses")} English senses, from Ancient Greek Wiktionary through Kaikki, with per-word lemma data from MorphGNT for the Koine forms that Classical-leaning tables miss.`,
+  },
+  {
+    title: "Corpus-frequency vocabulary",
+    body: "Frequency ranks come from the Greek New Testament itself through MorphGNT, with glosses from the Dodson lexicon. The 300 most frequent lemmas cover most of the running text, so early review buys the most reading.",
+  },
+  {
+    title: "Verse-aligned practice",
+    body: `${stat("koine-greek", "Cloze bank")} of cloze practice, built from SBLGNT verses aligned to the World English Bible. Every practice sentence keeps its verse reference, so you can always check the context.`,
+  },
+  {
+    title: "Polytonic typing, without the fight",
+    body: "Typed practice accepts a mark-stripped answer, because polytonic input needs a specialist keyboard. Type λογος and λόγος is accepted.",
+  },
+  {
+    title: "No audio, on principle",
+    body: "Koine pronunciation is reconstructed and disputed. Erasmian, Reuchlinian and period reconstructions all have a claim, so the speaker stays silent rather than teaching you one of them as fact.",
+  },
+];
+
+const scope = [
+  {
+    title: "The dictionary reaches past the New Testament",
+    body: "The entries come from Ancient Greek Wiktionary, not from a New Testament word list. Homeric, Attic and Byzantine vocabulary is largely there, and the inflection index resolves forms from any period.",
+  },
+  {
+    title: "Reading has no corpus limit",
+    body: "Import an EPUB file, paste a passage, or load a page by URL. Homer, Thucydides, a Byzantine chronicle: the reader treats them all as text, and tap-to-define works the same way.",
+  },
+  {
+    title: "Frequency and practice are New Testament only",
+    body: "This is the real limit. Ranks come from the Greek NT, and every cloze sentence is a New Testament verse. For Homer the vocabulary order is wrong and the practice register is wrong.",
+  },
+  {
+    title: "What can change that",
+    body: "A Classical or Homeric frequency list gives a second spine, the way the Latin pack ranks on the Dickinson core vocabulary. A cloze bank outside the New Testament needs an aligned corpus. The Tatoeba Greek set holds about 1,800 sentences, which is too few.",
+  },
+];
+
+const limits = [
+  {
+    title: "It answers language questions",
+    body: "Grammar, morphology, vocabulary, and how a phrase works in context. It does not answer theological questions, and it stays denominationally neutral.",
+  },
+  {
+    title: "It brings no BDAG and no HALOT",
+    body: "Lexicon data is public domain or permissively licensed, and every source is named on the pack page. Keep your reference shelf. Lector does the reading and the retention, not the exegesis.",
+  },
+  {
+    title: "It is not an interlinear",
+    body: "An interlinear reads for you, which is exactly why the language fades. Lector shows you the text, answers the word you tap, and gives it back to you in review until it is yours.",
+  },
+];
 
 const faqs = [
   {
     question: "Is this a Bible-study or theology tool?",
     answer:
-      "No. Lector is a language tool, and it stays denominationally neutral. It helps with grammar, vocabulary, morphology, and how a phrase works in context — it does not answer theological questions, and it never will.",
+      "No. Lector is a language tool, and it stays denominationally neutral. It helps with grammar, vocabulary, morphology, and how a phrase works in context. It does not answer theological questions, and it never will.",
   },
   {
-    question: "What exists today, and what is still being built?",
-    answer: `Lector itself is real and shipping: an open-source reading workspace with tap-to-look-up, spaced-repetition cloze review, and first-party Anki export, currently covering ${languages.filter((lang) => lang.status === "complete").length} modern languages. The <strong>biblical packs are not shipped yet</strong> — morphology-aware lookup, corpus-frequency vocabulary, and verse-aligned texts for Koine Greek are what the founding cohort is helping design and test. We would rather tell you that plainly than sell you a screenshot.`,
+    question: "What ships today, and what does not?",
+    answer: `The <strong>Koine Greek pack ships now</strong>: ${stat("koine-greek", "Dictionary")} dictionary entries, ${stat("koine-greek", "Inflections")} inflected forms, New Testament frequency ranks, and ${stat("koine-greek", "Cloze bank")} of verse-aligned cloze practice. <strong>Biblical Hebrew does not ship yet.</strong> It is on the roadmap, and the cohort on this page is for Hebrew. <a href="/reference-data/koine-greek/">The pack page</a> lists every source and licence.`,
   },
   {
-    question: "Which texts and lexica will it use?",
+    question: "Does it cover Homer, Attic, and Byzantine Greek?",
     answer:
-      "Public-domain and permissively licensed editions of the Greek New Testament, with editions and licensing stated transparently before anything launches. Lexicon data will come from public-domain works (Abbott-Smith, Strong's-class data, and friends) — meaning no bundled BDAG or HALOT. If you need those, keep them; Lector's job is the reading-and-retention loop, not replacing your reference shelf.",
+      "In part, and the split matters. The dictionary and the inflection index come from Ancient Greek Wiktionary. Vocabulary from Homer to the Byzantine period is largely covered, and you can read any text you import. The frequency ranks and every cloze sentence come from the Greek New Testament, so practice and word order suit the NT and not the Iliad. Teachers outside the NT are welcome in the Discord, because a second frequency spine is the next thing to build.",
+  },
+  {
+    question: "Which texts and lexica does it use?",
+    answer:
+      'Ancient Greek Wiktionary entries through <a href="https://kaikki.org/dictionary/Ancient%20Greek/">Kaikki</a>, with lemma data from MorphGNT. Glosses come from the <a href="https://github.com/biblicalhumanities/Dodson-Greek-Lexicon">Dodson Greek-English lexicon</a>. Cloze sentences come from SBLGNT, aligned to the World English Bible. All of it is public domain or permissively licensed. There is no bundled BDAG and no HALOT, so keep the reference shelf you already own.',
+  },
+  {
+    question: "Why does the speaker button stay silent?",
+    answer:
+      "Because Koine pronunciation is reconstructed and disputed. Erasmian, Reuchlinian and period reconstructions each have a case, and synthesized audio can only teach one of them as settled fact. The same rule applies to Latin, where classical and ecclesiastical pronunciation disagree.",
   },
   {
     question: "What about Hebrew?",
     answer:
-      "Second, deliberately. Pointed Hebrew with right-to-left text is genuinely harder engineering than Greek, and we'd rather ship an excellent Greek New Testament experience first than a mediocre pair. Hebrew Bible support is on the roadmap and cohort members shape its priority.",
+      'Second, and deliberately. Pointed Hebrew is harder engineering than Greek, though less so now. The <a href="/reference-data/arabic/">Arabic pack</a> shipped as the first right-to-left pack, so the reader handles right-to-left text today. Biblical Hebrew is on the roadmap, and the people who write in now shape its priority.',
   },
   {
-    question: "What will it cost?",
-    answer:
-      'Self-hosting Lector is free forever — it\'s <a href="https://github.com/heuwels/lector" class="underline underline-offset-2">open source</a>, biblical packs included when they ship. The managed cloud version for biblical languages is planned as a Scholar plan at roughly US$99/year, with student and institutional pricing planned alongside it. Founding-cohort members help set that price and keep their founding rate.',
+    question: "Is Latin ready too?",
+    answer: `Yes. The Latin pack ships with ${stat("latin", "Dictionary")} entries and ${stat("latin", "Inflections")} inflected forms. Keys strip editorial macrons, so amāre and amare are one key, and the u/v and i/j spellings that editions mix both resolve. Frequency ranks come from the Dickinson College Commentaries core vocabulary. See <a href="/languages/latin/">the Latin guide</a>.`,
   },
   {
     question: "Do I need to be a scholar?",
     answer:
-      "No. This is being built for pastors preparing weekly, seminary students mid-coursework, and anyone whose hard-won Greek is quietly slipping — morphology help on tap means you can read above your parsing pay-grade while it comes back.",
+      "No. Morphology help on tap means you can read above your parsing level while it comes back. This suits a pastor who prepares every week, a student in the middle of coursework, and anybody whose hard-won Greek slips away.",
   },
   {
     question: "How is this different from Logos or an interlinear?",
     answer:
-      "Reference platforms are superb at exegesis lookup — but an interlinear does the reading <em>for</em> you, which is exactly why the language fades. Lector is a learning loop: read the text, tap what you don't know, keep what matters, and review it until it's yours — in the app and in Anki.",
+      "A reference platform is excellent at exegesis lookup, and an interlinear does the reading for you, which is why the language fades. Lector is a loop. Read the text, tap what you do not know, and keep what matters. Review it until it is yours, in the app and in Anki.",
+  },
+  {
+    question: "Can I use it with no internet connection?",
+    answer:
+      'Yes. The reader, the on-device dictionary and cloze practice all run with the network off. Read <a href="/use-cases/offline/">offline and remote use</a> for the detail.',
+  },
+  {
+    question: "What does it cost?",
+    answer:
+      'Self-hosting is free forever, and it is <a href="https://github.com/heuwels/lector">open source</a>, with every language pack included. There is no per-language price and no scholar tier. <a href="/pricing/">Lector Cloud</a> starts at $5 a month if you prefer not to run a server.',
   },
 ];
 
-const title = "Keep your Greek and Hebrew | Lector for biblical languages";
-const description =
-  "A reading-first workspace for the Greek New Testament, with the Hebrew Bible to follow: morphology-aware lookup, corpus-frequency vocabulary, cloze review, and Anki export. In development — join the founding cohort.";
+const title = "Greek and Hebrew | Lector for biblical languages";
+const description = `Read the Greek New Testament in a reading-first workspace. The Koine Greek pack ships now: ${stat("koine-greek", "Inflections")} inflected forms, New Testament frequency ranks, verse-aligned cloze practice, and Anki export. Biblical Hebrew is on the roadmap.`;
 
 const schema = [
   faqPageSchema(faqs),
   breadcrumbSchema([
     { name: "Lector", url: "/" },
-    { name: "Lector for Greek & Hebrew", url: "/for/greek-hebrew/" },
+    { name: "Greek and Hebrew", url: "/for/greek-hebrew/" },
   ]),
 ];
-
-const fades = [
-  {
-    title: "Interlinears read for you",
-    body: "Parsing guides and interlinear Bibles hand you the answer before you've done the work. They're wonderful references — and quiet accomplices in letting the language go.",
-  },
-  {
-    title: "Flashcards float free of the text",
-    body: "Vocabulary drilled in isolation doesn't survive contact with a real sentence. Words stick when you meet them where they live: in the text, in context, repeatedly.",
-  },
-  {
-    title: "Retention needs a loop, not a resolution",
-    body: "“I should really keep my Greek up” isn't a system. Reading a manageable portion, capturing what you didn't know, and reviewing it on a schedule — that's a system.",
-  },
-];
-
-const building = [
-  {
-    title: "Morphology-aware lookup",
-    body: "Tap any word for its parsing, lemma, and gloss — aorist passive participles included — without losing your place in the verse.",
-  },
-  {
-    title: "Corpus-frequency vocabulary",
-    body: "Learn words in the order the Greek New Testament actually uses them, so every hour of review buys the most reading fluency.",
-  },
-  {
-    title: "Verse-aligned practice",
-    body: "Cloze review built from the very verses you've read, on a spaced-repetition schedule — recognition in context, not trivia.",
-  },
-  {
-    title: "Anki, first-class",
-    body: "Push what you save straight to your own Anki collection and keep it for life. Your vocabulary is yours, not a feature of our database.",
-  },
-  {
-    title: "Grammar help on tap",
-    body: "Ask why a construction works the way it does and get a language answer — usage, syntax, idiom. Never a theological one.",
-  },
-  {
-    title: "Open source, self-hostable",
-    body: "The whole workspace is open source. Run it on your own hardware for free, forever — or let the managed cloud handle it for you.",
-  },
-];
-
-const cohort = {
-  give: [
-    "Early access to the Koine Greek pack as it takes shape",
-    "A direct line to the builder — your workflow shapes the tool",
-    "The founding price, kept, when the Scholar plan launches",
-  ],
-  ask: [
-    "Read along for six weeks — one New Testament book, a manageable portion each week",
-    "Two short conversations about what helped and what got in the way",
-    "Honest feedback, especially the unflattering kind",
-  ],
-};
 ---
 
 <Base title={title} description={description} schema={schema}>
   <!-- Hero -->
   <section class="pt-14 pb-14 sm:pt-20">
     <Container class="flex flex-col items-center gap-6 text-center">
-      <Eyebrow>Founding cohort &middot; in development</Eyebrow>
+      <Eyebrow>Koine Greek ships &middot; Hebrew on the roadmap</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
-        Keep your Greek and Hebrew by <span class="italic">reading</span> the text.
+        Keep your Greek by <span class="italic">reading</span> the text.
       </Heading>
       <Text size="lg" class="max-w-3xl text-pretty">
-        A reading-first workspace for the Greek New Testament — and the Hebrew
-        Bible next: corpus-frequency vocabulary, morphology-aware lookup,
+        A reading-first workspace for the Greek New Testament, and it is
+        available today. Morphology-aware lookup, corpus-frequency vocabulary,
         verse-aligned review, and Anki export. Help with grammar and phrasing,
-        not theological answers.
+        never theological answers.
       </Text>
       <div class="mt-2 flex flex-col items-center gap-3">
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={JOIN_MAILTO} size="lg">Join the founding cohort</Button>
+          <Button href={SIGNUP_URL} size="lg">Start reading Greek</Button>
+          <Button href="/reference-data/koine-greek/" variant="soft" size="lg">
+            See the pack data
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          {greek?.stats[0]?.value} dictionary entries &middot; {
+            stat("koine-greek", "Inflections")
+          } inflected forms &middot; self-host free, or Lector Cloud from $5 a month
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- What ships -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Available now</Eyebrow>
+        <Subheading>
+          Three years of Greek must not have a five-year half-life.
+        </Subheading>
+        <Text class="text-pretty">
+          Almost everybody who learns Greek for ministry watches it fade, not
+          from laziness, but because nothing in the week demands the text in its
+          own words. Lector makes real reading light enough to do, and makes
+          what you read stay learned. Here is what the pack gives you today.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          ships.map((item) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {item.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {item.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        Every number here comes from <a
+          href="/reference-data/koine-greek/"
+          class="underline underline-offset-2">the pack page</a
+        >, which also names each source and its licence.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Scope -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Read this if you work outside the New Testament</Eyebrow>
+        <Subheading>How far past the New Testament does it reach?</Subheading>
+        <Text class="text-pretty">
+          Some of the way, and the split is worth knowing before you start. The
+          honest answer is that the dictionary travels further than the practice
+          does.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {
+          scope.map((item) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {item.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {item.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        Do you teach Homer, Attic, or Byzantine Greek? Come to the <a
+          href={DISCORD}
+          target="_blank"
+          rel="noopener"
+          class="underline underline-offset-2">Discord</a
+        > and tell us which frequency list your students learn to. That decision needs
+        a teacher, not a guess.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Latin -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col gap-6 rounded-3xl bg-olive-950/2.5 p-8 sm:p-12 dark:bg-white/5"
+      >
+        <div class="flex max-w-2xl flex-col gap-4">
+          <Eyebrow>Also available</Eyebrow>
+          <Subheading>Latin ships too.</Subheading>
+          <Text class="text-pretty">
+            {stat("latin", "Dictionary")} entries and {
+              stat("latin", "Inflections")
+            } inflected forms. Keys strip editorial macrons, so amāre and amare are
+            one key. The u/v and i/j spellings that editions mix both resolve, so
+            uult finds vult. Frequency ranks come from the Dickinson College Commentaries
+            core vocabulary, and the speaker stays silent for the same reason it does
+            in Greek.
+          </Text>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <Button href="/languages/latin/">Read the Latin guide</Button>
+          <Button href="/reference-data/latin/" variant="soft">
+            See the pack data
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Hebrew cohort -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>In development</Eyebrow>
+        <Subheading>Biblical Hebrew needs readers, now.</Subheading>
+        <Text class="text-pretty">
+          Hebrew is genuinely unbuilt. Pointed Hebrew is harder than Greek,
+          though less so than it was: the Arabic pack shipped first, so the
+          reader handles right-to-left text today. What the Hebrew pack needs is
+          people who read the Hebrew Bible weekly and will say what helps.
+        </Text>
+        <div class="flex flex-wrap items-center gap-3">
+          <Button href={HEBREW_MAILTO} size="lg">Help shape Hebrew</Button>
           <Button
             href={DISCORD}
             variant="soft"
@@ -172,73 +345,52 @@ const cohort = {
             Follow along on Discord
           </Button>
         </div>
-        <p class="text-xs/6 text-olive-500">
-          Koine Greek first &middot; built in the open &middot; shaped by the
-          people who join now
-        </p>
+      </div>
+      <div
+        class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
+      >
+        <h3 class="font-display text-2xl/8">What we ask, and what you get</h3>
+        <ul class="flex flex-col gap-3">
+          {
+            [
+              "Tell us the text and the edition you read most.",
+              "Tell us which lexicon your students already own.",
+              "Read early builds, and say what got in the way.",
+              "You get a direct line to the builder, and the pack you helped shape.",
+            ].map((item) => (
+              <li class="flex gap-3 text-base/7 text-olive-200">
+                <span aria-hidden="true" class="mt-px text-olive-400">
+                  &#10003;
+                </span>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </Container>
   </section>
 
-  <!-- The problem -->
+  <!-- Limits -->
   <section class="py-16">
     <Container class="flex flex-col gap-10">
       <div class="flex max-w-2xl flex-col gap-4">
-        <Eyebrow>The problem</Eyebrow>
-        <Subheading>
-          Three years of Greek shouldn't have a five-year half-life.
-        </Subheading>
+        <Eyebrow>What it will not do</Eyebrow>
+        <Subheading>The boundaries, stated first.</Subheading>
         <Text class="text-pretty">
-          Almost everyone who learns Greek or Hebrew for ministry watches it
-          fade afterwards — not from laziness, but because nothing in the week
-          requires reading the text in its own words. The fix isn't another
-          course. It's making real reading light enough to do, and making what
-          you read stay learned.
+          A tool for Scripture reading attracts expectations it must not meet.
+          These three lines hold.
         </Text>
       </div>
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
         {
-          fades.map((p) => (
+          limits.map((item) => (
             <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
               <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
-                {p.title}
+                {item.title}
               </h3>
               <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-                {p.body}
-              </p>
-            </div>
-          ))
-        }
-      </div>
-    </Container>
-  </section>
-
-  <!-- What we're building -->
-  <section class="py-16">
-    <Container class="flex flex-col gap-10">
-      <div class="flex max-w-2xl flex-col gap-4">
-        <Eyebrow>What we&rsquo;re building</Eyebrow>
-        <Subheading
-          >The reading-to-retention loop, for the biblical text.</Subheading
-        >
-        <Text class="text-pretty">
-          Lector already does this for six modern languages: an open-source
-          reader with tap-to-look-up, spaced cloze review, and first-party Anki
-          export. The founding cohort exists to get the biblical version right —
-          <strong class="font-semibold text-olive-950 dark:text-white"
-            >the Koine Greek pack is in development, not on sale</strong
-          > — starting with what Scripture reading actually demands:
-        </Text>
-      </div>
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          building.map((p) => (
-            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
-              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
-                {p.title}
-              </h3>
-              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
-                {p.body}
+                {item.body}
               </p>
             </div>
           ))
@@ -250,7 +402,7 @@ const cohort = {
           target="_blank"
           rel="noopener"
           class="underline underline-offset-2">GitHub</a
-        > and discussed as it happens on <a
+        >, and discussed as it happens on <a
           href={DISCORD}
           target="_blank"
           rel="noopener"
@@ -260,71 +412,17 @@ const cohort = {
     </Container>
   </section>
 
-  <!-- The founding cohort -->
-  <section class="py-16">
-    <Container class="flex flex-col gap-10">
-      <div class="flex max-w-2xl flex-col gap-4">
-        <Eyebrow>The founding cohort</Eyebrow>
-        <Subheading>A six-week reading pilot, not a waiting list.</Subheading>
-        <Text class="text-pretty">
-          We're gathering a small first group — pastors, seminarians, students,
-          and people whose coursework Greek is slipping — to read one New
-          Testament book together over six weeks and shape the tool around how
-          Scripture reading really works.
-        </Text>
-      </div>
-      <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
-        <div
-          class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
-        >
-          <h3 class="font-display text-2xl/8">What you get</h3>
-          <ul class="flex flex-col gap-3">
-            {
-              cohort.give.map((item) => (
-                <li class="flex gap-3 text-base/7 text-olive-200">
-                  <span aria-hidden="true" class="mt-px text-olive-400">
-                    &#10003;
-                  </span>
-                  {item}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-        <div
-          class="flex flex-col gap-4 rounded-2xl bg-olive-950/2.5 p-8 dark:bg-white/5"
-        >
-          <h3 class="font-display text-2xl/8 text-olive-950 dark:text-white">
-            What we ask
-          </h3>
-          <ul class="flex flex-col gap-3">
-            {
-              cohort.ask.map((item) => (
-                <li class="flex gap-3 text-base/7 text-olive-700 dark:text-olive-400">
-                  <span aria-hidden="true" class="mt-px text-olive-500">
-                    &#8226;
-                  </span>
-                  {item}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
-    </Container>
-  </section>
-
   <!-- FAQ -->
   <section class="py-16">
     <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
       <div class="flex max-w-md flex-col gap-4">
         <Eyebrow>Straight answers</Eyebrow>
-        <Subheading>The questions we&rsquo;d ask too.</Subheading>
+        <Subheading>The questions that matter most.</Subheading>
         <Text class="text-pretty">
           Curious how Lector approaches learning in general? See the <a
             href="/methodology/"
             class="font-medium underline underline-offset-4">method</a
-          > it's built on.
+          > it is built on.
         </Text>
       </div>
       <Faqs items={faqs} />
@@ -341,32 +439,31 @@ const cohort = {
           color="light"
           class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
         >
-          Don&rsquo;t let it <span class="italic">fade</span>.
+          Do not let it <span class="italic">fade</span>.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
-          One email is enough — tell us who you are and what you're trying to
-          keep. We read every reply, and the first cohort is deliberately small.
+          The Greek pack is ready. Import a chapter tonight, tap what you have
+          lost, and let review give it back.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={JOIN_MAILTO} size="lg" color="light">
-            Join the founding cohort
+          <Button href={SIGNUP_URL} size="lg" color="light">
+            Start reading Greek
           </Button>
           <Button
-            href={DISCORD}
+            href="/docs/installation/"
             variant="plain"
             size="lg"
             color="light"
-            target="_blank"
-            rel="noopener"
           >
-            Join the Discord
+            Self-host, free
           </Button>
         </div>
         <p class="text-xs/6 text-olive-400">
-          Or write to us directly: <a
+          Reading the Hebrew Bible, or teaching outside the New Testament? Write
+          to us at <a
             href={`mailto:${SUPPORT}`}
             class="underline underline-offset-2">{SUPPORT}</a
-          >
+          >.
         </p>
       </div>
     </Container>

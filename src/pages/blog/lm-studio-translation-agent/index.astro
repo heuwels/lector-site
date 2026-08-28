@@ -21,7 +21,7 @@ import { articleSchema } from "../../../lib/schema";
         Afrikaans, plenty is an understatement. Each one sends a slice of what you're reading to someone else's server, and adds to
         a per-token bill.</p>
 
-      <p>Lector's click-to-translate, phrase translation, journal correction, and LLM tutor all run through one pluggable
+      <p>Lector's click-to-translate, phrase translation, journal correction, and LLM tutor all run through one pluggable{" "}
         <strong>translation agent</strong>, and <strong>LM Studio</strong> is one of the providers you can point it at: a desktop
         app that downloads open models and serves them over an OpenAI-compatible API. This guide wires that agent up to a model on
         your own hardware, so the lookups that would have gone to the cloud are answered locally instead &mdash; no API key, no
@@ -72,7 +72,7 @@ import { articleSchema } from "../../../lib/schema";
       <ol>
         <li>Download LM Studio from <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer">lmstudio.ai</a> and install it.</li>
         <li>Open the <strong>Discover</strong> (search) tab and download an instruction-tuned model. Good starting points are a
-          compact model like Google's <code>Gemma</code> (the efficient E4B variant runs comfortably on a laptop),
+          compact model like Google's <code>Gemma</code> (the efficient E4B variant runs comfortably on a laptop),{" "}
           <code>Llama 3.1 8B Instruct</code>, or <code>Qwen2.5 7B Instruct</code>. Pick a 4-bit (Q4) quant to keep memory use
           modest.</li>
         <li>Wait for the download to finish. You don't need to chat with it in the LM Studio UI; we only need the server.</li>
@@ -102,7 +102,7 @@ lms load &lt;model-name&gt;</code></pre>
       <div class="callout">
         <p><strong>Serving to another machine?</strong> By default LM Studio binds to <code>localhost</code> only, so nothing outside
           that machine can reach it, <em>including a Docker container.</em> If Lector runs anywhere other than the same OS as
-          LM Studio, enable <strong>"Serve on Local Network"</strong> in LM Studio's server settings (this binds it to
+          LM Studio, enable <strong>"Serve on Local Network"</strong> in LM Studio's server settings (this binds it to{" "}
           <code>0.0.0.0</code>). That's the most common reason the connection fails. See{" "}
           <a href="#docker">Running Lector in Docker</a> below.</p>
       </div>
@@ -110,7 +110,7 @@ lms load &lt;model-name&gt;</code></pre>
       <!-- Step 3 -->
       <h2 id="step-3-connect">Step 3 &middot; Point Lector at LM Studio</h2>
       <p>In Lector, open <strong>Settings &rarr; AI Provider</strong>, set the provider to <strong>Local / self-hosted
-        (OpenAI-compatible)</strong>, and choose the <strong>LM Studio</strong> preset (it autofills the endpoint to
+        (OpenAI-compatible)</strong>, and choose the <strong>LM Studio</strong> preset (it autofills the endpoint to{" "}
         <code>localhost:1234</code>). Then:</p>
 
       <figure>
@@ -133,18 +133,18 @@ lms load &lt;model-name&gt;</code></pre>
 
       <h3 id="field-model">Model</h3>
       <p>Click <strong>Fetch models</strong>. Lector queries <code>/v1/models</code> and populates the dropdown with what LM Studio
-        has available; pick the one you downloaded. If the fetch fails (e.g. the server isn't reachable yet), you can type the model
+        has available; pick the one you downloaded. If the fetch fails (e.g. the server isn't reachable yet), you can type the model{" "}
         <code>id</code> in manually.</p>
 
       <p>That's it. Open a book or article, click a word, and the lookup is answered by your local model. The first request after
-        the server starts can be slow while LM Studio loads the model into memory; enable just-in-time / auto-load, or run
+        the server starts can be slow while LM Studio loads the model into memory; enable just-in-time / auto-load, or run{" "}
         <code>lms load</code> (from step 2) to pre-load it. If LM Studio is ever unreachable, Lector quietly falls back to its
         built-in dictionary of the most common words, so reading never breaks.</p>
 
       <!-- Docker -->
       <h2 id="docker">Running Lector in Docker</h2>
-      <p>This is the part that trips people up, so it gets its own section. Lector's translation call happens
-        <strong>server-side</strong>, inside the container. So when you type <code>http://localhost:1234</code>, "localhost" means
+      <p>This is the part that trips people up, so it gets its own section. Lector's translation call happens{" "}
+        <strong>server-side</strong>, inside the container. So when you type <code>http://localhost:1234</code>, "localhost" means{" "}
         <em>the container itself</em>, not your host machine where LM Studio is running. The container has no LM Studio, so the
         connection is refused.</p>
 

@@ -5,8 +5,10 @@ import { articleSchema } from "../../../lib/schema";
 
 <!-- Whitespace note: Astro's HTML compressor trims the edges of every text
      node, so a line break next to an inline tag deletes the space there
-     ("mining:<strong>"). Keep <strong>, <em> and <a> on the same source line as
-     the words either side of them; only break lines mid-text. -->
+     ("mining:<strong>"). Two fixes work. Keep the inline tag on the same source
+     line as the words either side of it, or write an explicit {" "} at the
+     boundary. Check the built page, because the trim is easy to miss in review.
+     npm run lint:spaces after a build reports every occurrence. -->
 <Base
   title="Three new language packs: Ukrainian, Polish and Czech | Lector"
   description="Ukrainian, Polish and Czech language packs are live — on-device dictionaries, frequency-banded cloze banks and voices. Why Ukrainian is not a Russian preset, and what each pack measures."
@@ -56,7 +58,7 @@ import { articleSchema } from "../../../lib/schema";
 
         <p>
           The reader now supports Ukrainian words that use an apostrophe as a
-          letter -- e.g. <strong>п'ять</strong> (five),
+          letter -- e.g. <strong>п'ять</strong> (five),{" "}
           <strong>м'ясо</strong> (meat), <strong>з'їзд</strong> (congress). Russian
           has no such thing, so the Russian pack treats an apostrophe as a boundary
           and splits those words into two fragments, neither of which is in any dictionary.
@@ -78,7 +80,7 @@ import { articleSchema } from "../../../lib/schema";
           three genders, verb aspect pairs, and consonant alternations that
           change the stem rather than just the ending. <em>noga</em> becomes <em
             >nodze</em
-          >. <em>miasto</em> becomes
+          >. <em>miasto</em> becomes{" "}
           <em>mieście</em>. <em>pies</em> becomes <em>psowi</em>. No
           suffix-stripping rule reaches any of those, so the pack resolves them
           through a table of 1,137,470 inflected forms instead of guessing. All
@@ -97,7 +99,7 @@ import { articleSchema } from "../../../lib/schema";
         <h2 id="czech">Czech</h2>
 
         <p>
-          In Czech, vowel length carries meaning. <strong>byt</strong> is a flat.
+          In Czech, vowel length carries meaning. <strong>byt</strong> is a flat.{" "}
           <strong>být</strong> is the verb <em>to be</em>. They differ by one
           accent, and a lookup that folded that accent away would answer the
           wrong question every time. The pack keys them as two separate words.
