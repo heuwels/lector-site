@@ -144,6 +144,30 @@ export function buildLlmsTxt(): string {
       "A free 9,066-card frequency-banded Afrikaans Anki deck and a 443k-word frequency list (CC BY-SA 4.0).",
     ),
     "",
+    "## Use cases",
+    "",
+    bullet("/use-cases/", "All use cases"),
+    bullet(
+      "/use-cases/offline/",
+      "Offline and remote use",
+      "Read and translate with no connection. What works offline, what needs a connection, the local-model setup, and honest language coverage for remote work.",
+    ),
+    bullet(
+      "/use-cases/heritage/",
+      "For heritage speakers",
+      "For people who grew up hearing a language and never learned to read it. Script handling per pack, honest coverage gaps, and one install per family.",
+    ),
+    bullet(
+      "/use-cases/anki/",
+      "Keep Anki, add reading",
+      "Two-way sync with your own Anki collection (beta): Lector pushes mined words and cloze phrases, and your Anki grades come back as mastery. Existing decks are untouched.",
+    ),
+    bullet(
+      "/for/greek-hebrew/",
+      "Greek and Hebrew",
+      "A reading-first workspace for the biblical languages. The Koine Greek pack is in development, and a founding cohort shapes it.",
+    ),
+    "",
     "## Run it",
     "",
     bullet(

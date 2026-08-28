@@ -142,7 +142,7 @@ const faqs = [
   {
     question: "Do I need an API key or a GPU?",
     answer:
-      "No. The reader, the cloze practice, and the vocabulary tracking all work offline against a built-in dictionary. Only three features use the network: AI translation, the tutor, and writing correction. You can point those three at a local model or at any OpenAI-compatible API. Ollama, Llama, and Gemma all work.",
+      "No. The reader, the cloze practice, and the vocabulary tracking all work offline against a built-in dictionary. Only three features use the network: AI translation, the tutor, and writing correction. You can point those three at a local model or at any OpenAI-compatible API. Ollama, Llama, and Gemma all work. For a setup that needs no connection at all, read <a href='/use-cases/offline/'>offline and remote use</a>.",
   },
   {
     question: "Which languages does Lector support?",
@@ -488,11 +488,11 @@ const lcpImage = await getImage({
         <Eyebrow>Get started</Eyebrow>
         <Subheading>Ready in about a minute.</Subheading>
         <Text class="text-pretty">
-          Lector needs one Docker container and one volume. Copy this into a
+          Lector needs one Docker container and one volume. Copy this into a{" "}
           <code
             class="rounded bg-olive-950/10 px-1.5 py-0.5 font-mono text-[0.85em] dark:bg-white/10"
             >docker-compose.yml</code
-          >
+          >{" "}
           file. Then start the container.
         </Text>
         <div class="flex flex-wrap gap-3">

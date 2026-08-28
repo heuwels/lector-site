@@ -1,0 +1,387 @@
+---
+import Base from "../../../layouts/Base.astro";
+import Container from "../../../components/Container.astro";
+import Eyebrow from "../../../components/Eyebrow.astro";
+import Heading from "../../../components/Heading.astro";
+import Subheading from "../../../components/Subheading.astro";
+import Text from "../../../components/Text.astro";
+import Button from "../../../components/Button.astro";
+import Faqs from "../../../components/Faqs.astro";
+import LanguageNotify from "../../../components/LanguageNotify.astro";
+import { DISCORD, SIGNUP_URL } from "../../../data/links";
+import { faqPageSchema, breadcrumbSchema } from "../../../lib/schema";
+import { languages } from "../../../data/languages";
+
+// Use-case page for heritage speakers: people who grew up hearing a language
+// at home and never learned to read it.
+//
+// HONESTY RULES for this page (do not edit these away):
+//  * A pack is a written standard, not a home dialect. The Arabic pack is
+//    Modern Standard Arabic. The Chinese pack is Mandarin. Somebody who speaks
+//    Levantine Arabic or Cantonese must learn that here, not after signup.
+//  * Many of the largest diaspora languages have NO pack. Say which, by name.
+//  * Japanese and Korean ship a dictionary and no cloze bank. Never list them
+//    beside a complete pack without that qualifier.
+//  * No claim about who already uses Lector. Describe the fit, not a customer.
+//
+// Prose on this page follows ASD-STE100. See ~/personal/CLAUDE.md.
+
+const completePacks = languages.filter((language) => language.status === "complete");
+const partialPacks = languages.filter((language) => language.status === "partial");
+const roadmapPacks = languages.filter((language) => language.status === "coming-soon");
+const packCount = completePacks.length;
+
+const englishName = (name: string) => name.replace(" → English", "");
+
+// Packs that serve the largest diaspora populations. Slugs must stay in step
+// with src/data/languages.ts.
+const familyPacks = [
+  {
+    slug: "mandarin",
+    name: "Mandarin",
+    detail:
+      "The reader splits each sentence into words before you tap one. Pinyin sits above every word, and each reading retires when you mark that word known. Simplified and Traditional answer the same entry.",
+  },
+  {
+    slug: "arabic",
+    name: "Arabic",
+    detail:
+      "Modern Standard Arabic, keyed the way a newspaper prints it, without the vowel marks. The definition still shows the vocalized spelling. A tap on وبالقلم reaches the entry for قلم.",
+  },
+  {
+    slug: "spanish",
+    name: "Spanish",
+    detail:
+      "The largest pack, and the shortest road from spoken fluency to reading fluency. Frequency-ordered practice starts where your ear already is.",
+  },
+  {
+    slug: "ukrainian",
+    name: "Ukrainian",
+    detail:
+      "Cyrillic, with a full dictionary and a frequency-banded sentence bank. Russian and Polish packs sit beside it for a mixed family.",
+  },
+];
+
+const gaps = [
+  {
+    title: "A pack is a written standard",
+    body: "The Arabic pack is Modern Standard Arabic, the form newspapers and Wikipedia use. It is not Egyptian, Levantine, Gulf, or Moroccan Arabic. The Chinese pack is Mandarin, not Cantonese and not Hokkien. If your family speaks a dialect, the pack teaches you to read, not to write the way your family talks.",
+  },
+  {
+    title: "Some big diaspora languages have no pack",
+    body: "There is no pack for Punjabi, Urdu, Bengali, Gujarati, Tamil, Farsi, Somali, or Amharic. None of them is on the roadmap yet. Hindi, Vietnamese, Tagalog, Modern Greek, and Modern Hebrew are on the roadmap and not ready.",
+  },
+  {
+    title: "Japanese and Korean are half-built",
+    body: "Both ship the reader and the on-device dictionary today. Japanese puts furigana above kanji, and Korean peels postpositions off an eojeol. Neither has a cloze bank yet, so you can read and mine vocabulary, and you cannot practise it inside Lector.",
+  },
+];
+
+const fits = [
+  {
+    title: "Start above beginner, because you are",
+    body: "A course starts at hello. You can already argue with your aunt. Lector colours every word by what you know. A first import shows you the truth. You know more words than any placement test gives you.",
+  },
+  {
+    title: "The script is the wall, not the language",
+    body: "Tap any word to read it. The on-device dictionary answers most taps with no network and no key. Mandarin adds pinyin above every word, and each reading disappears as you learn that word.",
+  },
+  {
+    title: "Read what your family reads",
+    body: "Import a book, paste a message, or load a news article by URL. Nothing forces you through a graded reader about a family that is not yours.",
+  },
+  {
+    title: "Ask the questions you cannot ask at home",
+    body: "The tutor answers grammar questions in plain English. Ask why a form changes, or why your grandmother says it another way, without an explanation you must translate first.",
+  },
+  {
+    title: "Hear it, then check yourself",
+    body: "Lector can speak a word or a sentence, so you can match the text against the voice you remember. This feature uses Google Cloud and needs a connection.",
+  },
+  {
+    title: "Keep the vocabulary for life",
+    body: "Send every word you mine to your own Anki collection, both ways. Your vocabulary is yours, and it outlives any app.",
+  },
+];
+
+const family = [
+  "Give each person in the house a separate library and separate progress.",
+  "Host it yourself, and family letters or family history never leave your hardware.",
+  "Read the same book at different levels, because word states are per person.",
+  "Export any library at any time. You always own the data.",
+];
+
+const faqs = [
+  {
+    question: "I speak it but I cannot read it. Is Lector for me?",
+    answer:
+      "Yes. This is the case Lector fits best. You bring vocabulary and an ear, and you need the writing system and the words you never met in speech. The reader marks what you know, and practice starts from the most common words instead of from the alphabet.",
+  },
+  {
+    question: "I never studied it formally. Where do I start?",
+    answer:
+      "Import something short that you want to read. Tap every word you do not know, and mark the ones you do. After one chapter your vocabulary record is real, and frequency-ordered cloze practice has something honest to work from.",
+  },
+  {
+    question: "My family speaks a dialect. Does the pack match it?",
+    answer:
+      "Often it does not, and this matters. The Arabic pack is Modern Standard Arabic, not a spoken dialect. The Chinese pack is Mandarin, not Cantonese. A pack teaches you the written standard, which is the form books, news, and official letters use. Your home dialect stays your home dialect.",
+  },
+  {
+    question: "Which languages have a pack today?",
+    answer: `${packCount} languages have a full pack: ${completePacks
+      .map((language) => englishName(language.name))
+      .join(", ")}. ${partialPacks
+      .map((language) => englishName(language.name))
+      .join(
+        " and ",
+      )} ship a dictionary and a reader with no cloze bank. Punjabi, Urdu, Bengali, Gujarati, Tamil, Farsi, Somali, and Amharic have no pack and are not on the roadmap. Ask for yours with the form on this page.`,
+  },
+  {
+    question: "Can my children use it too?",
+    answer:
+      'Yes. <a href="/docs/multi-user-oidc/">Multi-user accounts</a> give each person their own library, their own vocabulary, and their own progress. Lector has no parental controls and no content filter, so you choose what goes into each library.',
+  },
+  {
+    question: "Is our family material private?",
+    answer:
+      'If you host Lector yourself, every book, letter, and note stays in a folder on your hardware. There is no telemetry and no analytics. See the <a href="/privacy/">privacy page</a> for what Lector Cloud stores instead.',
+  },
+  {
+    question: "What does it cost?",
+    answer:
+      'If you host it yourself, nothing. Lector is open source with no feature gates. <a href="/pricing/">Lector Cloud</a> starts at $5 a month if you prefer not to run a server.',
+  },
+];
+
+const title = "For heritage speakers | Lector";
+const description = `Read the language you grew up hearing. Lector starts from the vocabulary you already have, and teaches the writing system you never learned. ${packCount} language packs.`;
+
+const schema = [
+  faqPageSchema(faqs),
+  breadcrumbSchema([
+    { name: "Lector", url: "/" },
+    { name: "Use cases", url: "/use-cases/" },
+    { name: "Heritage speakers", url: "/use-cases/heritage/" },
+  ]),
+];
+
+const notifyOptions = roadmapPacks.map((language) => ({
+  slug: language.slug,
+  name: `${language.endonym} (${englishName(language.name)})`,
+}));
+---
+
+<Base title={title} description={description} schema={schema}>
+  <!-- Hero -->
+  <section class="pt-14 pb-14 sm:pt-20">
+    <Container class="flex flex-col items-center gap-6 text-center">
+      <Eyebrow>Use case &middot; heritage speakers</Eyebrow>
+      <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
+        Read the language you grew up <span class="italic">hearing</span>.
+      </Heading>
+      <Text size="lg" class="max-w-3xl text-pretty">
+        You understand it at the dinner table. You cannot read a page of it.
+        Lector starts from the vocabulary your ear already holds, and teaches
+        the writing system nobody sat you down for.
+      </Text>
+      <div class="mt-2 flex flex-col items-center gap-3">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg">Start on Lector Cloud</Button>
+          <Button href="/docs/installation/" variant="soft" size="lg">
+            Self-host, free
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-500">
+          {packCount} language packs &middot; read the coverage section before you
+          start
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Why it fits -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>The mismatch</Eyebrow>
+        <Subheading>You are not a beginner. You just cannot read it yet.</Subheading>
+        <Text class="text-pretty">
+          Those are two different problems, and almost every app solves the
+          first one. A heritage speaker has thousands of words and no way to see them
+          on a page. Lector treats reading as the gap, because for you it is.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          fits.map((fit) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {fit.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {fit.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- The packs -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Built for the hard scripts</Eyebrow>
+        <Subheading>The writing systems that stopped you.</Subheading>
+        <Text class="text-pretty">
+          A pack is more than a word list. Each one handles what makes its
+          script hard to read, so a tap answers the word under your finger.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          familyPacks.map((pack) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {pack.name}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {pack.detail}
+              </p>
+              <a
+                href={`/reference-data/${pack.slug}/`}
+                class="mt-auto text-sm/6 font-medium text-olive-950 underline underline-offset-4 dark:text-white"
+              >
+                Pack detail
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      <p class="text-xs/6 text-olive-500">
+        See <a href="/languages/" class="underline underline-offset-2"
+          >every pack</a
+        > for the rest, including Russian, Polish, Portuguese, Turkish, Italian, German,
+        Dutch, Afrikaans, Czech, Swedish, French, and Indonesian.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Honest coverage -->
+  <section class="py-16">
+    <Container class="flex flex-col gap-10">
+      <div class="flex max-w-2xl flex-col gap-4">
+        <Eyebrow>Read this first</Eyebrow>
+        <Subheading>Three things to check before you start.</Subheading>
+        <Text class="text-pretty">
+          Heritage speakers get let down by vague language coverage more than
+          anybody. Here is where Lector does not fit yet, in plain words.
+        </Text>
+      </div>
+      <div class="grid grid-cols-1 gap-2 lg:grid-cols-3">
+        {
+          gaps.map((gap) => (
+            <div class="flex flex-col gap-2 rounded-2xl bg-olive-950/2.5 p-6 dark:bg-white/5">
+              <h3 class="text-base/7 font-semibold text-olive-950 dark:text-white">
+                {gap.title}
+              </h3>
+              <p class="text-sm/7 text-olive-700 dark:text-olive-400">
+                {gap.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <LanguageNotify
+        options={notifyOptions}
+        heading="Which language did you grow up with?"
+        blurb="Name it, even when it is not on the list. We will email you once, on the day the pack is ready. No newsletter."
+      />
+    </Container>
+  </section>
+
+  <!-- One house, one copy -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>For the whole house</Eyebrow>
+        <Subheading>One copy, one library each.</Subheading>
+        <Text class="text-pretty">
+          A heritage language is a family project more often than a solo one.
+          One Lector install serves everybody, at whatever level each person
+          reads.
+        </Text>
+      </div>
+      <ul class="flex flex-col gap-3">
+        {
+          family.map((item) => (
+            <li class="flex gap-3 rounded-2xl bg-olive-950/2.5 p-5 text-base/7 text-olive-700 dark:bg-white/5 dark:text-olive-400">
+              <span aria-hidden="true" class="mt-px text-olive-500">
+                &#8226;
+              </span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16">
+    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div class="flex max-w-md flex-col gap-4">
+        <Eyebrow>Straight answers</Eyebrow>
+        <Subheading>The questions that matter most.</Subheading>
+        <Text class="text-pretty">
+          For the way Lector teaches a language, read the <a
+            href="/methodology/"
+            class="font-medium underline underline-offset-4">method</a
+          >.
+        </Text>
+      </div>
+      <Faqs items={faqs} />
+    </Container>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16">
+    <Container>
+      <div
+        class="flex flex-col items-center gap-8 rounded-3xl bg-olive-950 px-6 py-16 text-center dark:bg-white/5 dark:ring-1 dark:ring-white/10"
+      >
+        <Heading
+          color="light"
+          class="max-w-3xl text-4xl/[1.1] sm:text-6xl/[1.1]"
+        >
+          It is already <span class="italic">yours</span>.
+        </Heading>
+        <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
+          Import one chapter and mark what you know. Most heritage speakers are
+          surprised by the answer.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <Button href={SIGNUP_URL} size="lg" color="light">
+            Start on Lector Cloud
+          </Button>
+          <Button
+            href={DISCORD}
+            variant="plain"
+            size="lg"
+            color="light"
+            target="_blank"
+            rel="noopener"
+          >
+            Ask on Discord
+          </Button>
+        </div>
+        <p class="text-xs/6 text-olive-400">
+          Self-hosting is free forever, and your family material stays on your
+          hardware.
+        </p>
+      </div>
+    </Container>
+  </section>
+</Base>

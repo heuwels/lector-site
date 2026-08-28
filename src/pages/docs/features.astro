@@ -154,7 +154,7 @@ import DocsPage from "../../layouts/DocsPage.astro";
     <li>
       <strong>Endpoint</strong> &mdash; the base URL of your server (<code
         >http://localhost:1234</code
-      > for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends
+      > for LM Studio, <code>http://localhost:11434</code> for Ollama). Lector appends{" "}
       <code>/v1</code> itself. The call is made server-side, so <code
         >localhost</code
       > works even when Lector is hosted elsewhere, except from inside Docker, where
@@ -177,6 +177,11 @@ import DocsPage from "../../layouts/DocsPage.astro";
       href="/blog/lm-studio-translation-agent/"
       >Run translations locally with LM Studio</a
     >.
+  </p>
+  <p>
+    Work somewhere with no signal? <a href="/use-cases/offline/"
+      >Offline and remote use</a
+    > covers what runs with the network off, and what you must download first.
   </p>
 
   <h2 id="ankiconnect">AnkiConnect</h2>
@@ -238,7 +243,7 @@ import DocsPage from "../../layouts/DocsPage.astro";
     <li>
       <strong>It works remotely</strong> &mdash; the add-on talks to the server itself,
       not through your browser, so Anki doesn't have to be on the same machine. This
-      is how Anki works on Lector Cloud; self-hosters can pick either connection under
+      is how Anki works on Lector Cloud; self-hosters can pick either connection under{" "}
       <strong>Settings &rarr; Anki Integration</strong>.
     </li>
   </ul>
