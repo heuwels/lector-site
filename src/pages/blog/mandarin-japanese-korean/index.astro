@@ -5,8 +5,10 @@ import { articleSchema } from "../../../lib/schema";
 
 <!-- Whitespace note: Astro's HTML compressor trims the edges of every text
      node, so a line break next to an inline tag deletes the space there
-     ("mining:<strong>"). Keep <strong>, <em> and <a> on the same source line as
-     the words either side of them; only break lines mid-text. -->
+     ("mining:<strong>"). Two fixes work. Keep the inline tag on the same source
+     line as the words either side of it, or write an explicit {" "} at the
+     boundary. Check the built page, because the trim is easy to miss in review.
+     npm run lint:spaces after a build reports every occurrence. -->
 <Base
   title="Mandarin, Japanese and Korean: three scripts, three different problems | Lector"
   description="Lector now reads Mandarin, Japanese and Korean. Each script broke the reader in a different way, and each needed a different fix: segmentation, a morphological analyser, and a postposition peel."
@@ -38,7 +40,7 @@ import { articleSchema } from "../../../lib/schema";
     <div class="docs-layout">
       <main class="docs-body">
         <p>
-          Lector now reads <strong>Mandarin</strong>, <strong>Japanese</strong> and
+          Lector now reads <strong>Mandarin</strong>, <strong>Japanese</strong> and{" "}
           <strong>Korean</strong>. Between them, those three account for almost
           every learner who studies an East Asian language.
         </p>
@@ -159,7 +161,7 @@ import { articleSchema } from "../../../lib/schema";
         <p>
           I tried to avoid the analyser first. I built a ranking that picked a
           single character's most likely reading from how it behaves in
-          compounds. It was confidently wrong. It chose <em>すい</em> for 水 over
+          compounds. It was confidently wrong. It chose <em>すい</em> for 水 over{" "}
           <em>みず</em>, and <em>こく</em> for 国 over <em>くに</em>. Both of
           those are the Sino-Japanese reading, where a learner reading a
           sentence wants the native one.
