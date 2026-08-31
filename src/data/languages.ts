@@ -109,6 +109,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "hindi",
+    name: "Hindi → English",
+    endonym: "हिन्दी",
+    flag: "🇮🇳",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Hindi. Devanagari writes a space between words, so a tap on किताब reaches the entry with no extra engine, and combining marks stay inside the word. NFC folds the two nukta spellings (क़ and क + ◌़) onto one key, and the danda । ends a sentence. One honest caveat: the sentence bank is smaller than the European packs, because Tatoeba holds fewer Hindi–English pairs. It covers about 72% of the two thousand most useful practice words. This is the Devanagari register. Urdu writes the same spoken language in a different script and needs its own pack.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "35,645 entries" },
+      { label: "English senses", value: "63,275" },
+      { label: "Inflections", value: "81,915" },
+      { label: "Cloze bank", value: "5,639 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Hindi Wiktionary entries extracted through Kaikki.org. Keys are the printed spelling — Hindi has no letter case and needs no fold beyond NFC, which collapses the two nukta spellings onto one key.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Hindi/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Hindi–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "spanish",
     name: "Spanish → English",
     endonym: "Español",
@@ -744,18 +776,6 @@ export const languages: Language[] = [
         url: "https://tatoeba.org/",
       },
     ],
-  },
-  {
-    slug: "hindi",
-    name: "Hindi → English",
-    endonym: "हिन्दी",
-    flag: "🇮🇳",
-    status: "coming-soon",
-    roadmapIssue: 252,
-    blurb: "On the roadmap — pending reader support for its script.",
-    downloads: [],
-    stats: [],
-    sources: [],
   },
   {
     slug: "japanese",
