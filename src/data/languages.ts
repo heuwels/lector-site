@@ -187,6 +187,42 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "bengali",
+    name: "Bengali → English",
+    endonym: "বাংলা",
+    // No country flag. Bengali is written across a national border — most of
+    // its speakers are in Bangladesh and the rest are in West Bengal — so a
+    // single flag reads as a claim to whichever side it leaves out. Same
+    // reasoning as the 🌍 on Arabic, and it matches the app's language picker.
+    flag: "🌍",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Bengali: the first Brahmic-script pack. Bengali attaches its case endings, plurals and classifiers to the end of a word with no space, so lookups peel them to reach the entry (সালের → সাল, বইগুলোর → বই), and the danda । ends a sentence. One honest caveat: the dictionary is small, because English Wiktionary holds far fewer Bengali entries than it does for the European packs. It answers about 88% of the thousand most common words and thins out over formal and news vocabulary, where a tap falls through to AI translation instead. Spoken with an Indian Bengali voice, because that is the only Bengali voice Google publishes.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "9,929 entries" },
+      { label: "English senses", value: "15,650" },
+      { label: "Inflections", value: "38,857" },
+      { label: "Cloze bank", value: "3,213 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Bengali Wiktionary entries extracted through Kaikki.org. Keys are the printed spelling — Bengali has no letter case and needs no fold — and lookups peel the case, plural and classifier suffixes that Bengali writes solid.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Bengali/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Bengali–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "portuguese",
     name: "Portuguese → English",
     endonym: "Português",

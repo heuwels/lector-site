@@ -49,6 +49,12 @@ const familyPacks = [
       "Modern Standard Arabic, keyed the way a newspaper prints it, without the vowel marks. The definition still shows the vocalized spelling. A tap on وبالقلم reaches the entry for قلم.",
   },
   {
+    slug: "bengali",
+    name: "Bengali",
+    detail:
+      "The Bengali script, with the suffixes peeled off a word before the lookup. A tap on বইগুলোর reaches the entry for বই. The dictionary is small, so formal words fall through to AI translation.",
+  },
+  {
     slug: "spanish",
     name: "Spanish",
     detail:
@@ -69,7 +75,7 @@ const gaps = [
   },
   {
     title: "Some big diaspora languages have no pack",
-    body: "There is no pack for Punjabi, Urdu, Bengali, Gujarati, Tamil, Farsi, Somali, or Amharic. None of them is on the roadmap yet. Hindi, Vietnamese, Tagalog, Modern Greek, and Modern Hebrew are on the roadmap and not ready.",
+    body: "There is no pack for Punjabi, Urdu, Gujarati, Tamil, Farsi, Somali, or Amharic. None of them is on the roadmap yet. Hindi, Vietnamese, Tagalog, Modern Greek, and Modern Hebrew are on the roadmap and not ready.",
   },
   {
     title: "Japanese and Korean are half-built",
@@ -135,7 +141,7 @@ const faqs = [
       .map((language) => englishName(language.name))
       .join(
         " and ",
-      )} ship a dictionary and a reader with no cloze bank. Punjabi, Urdu, Bengali, Gujarati, Tamil, Farsi, Somali, and Amharic have no pack and are not on the roadmap. Ask for yours with the form on this page.`,
+      )} ship a dictionary and a reader with no cloze bank. Punjabi, Urdu, Gujarati, Tamil, Farsi, Somali, and Amharic have no pack and are not on the roadmap. Ask for yours with the form on this page.`,
   },
   {
     question: "Can my children use it too?",
