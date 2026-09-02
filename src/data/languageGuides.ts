@@ -796,6 +796,162 @@ export const languageGuides: Record<string, LanguageGuide> = {
     clozeAlt: "Czech cloze practice in Lector with multiple-choice options",
   },
 
+  hungarian: {
+    slug: "hungarian",
+    answer:
+      "The best way to learn Hungarian is to read real Hungarian with a tap for each word. Learn the most frequent words first. Spaced repetition holds them. Case and possession sit on the noun, and a lookup maps those forms to the lemma.",
+    nativeSpeakers: "~13 million",
+    totalSpeakers: "~14 million (incl. second-language)",
+    fsiCategory: "Category III",
+    approxHours: "~1,100 hours",
+    approxWeeks: 44,
+    whyLearn: [
+      "Around 13 million native speakers. Hungarian is official in Hungary and the European Union, and large communities live in Romania, Slovakia, and Serbia.",
+      "The grammar is regular once you see the pattern. Suffixes stack in a fixed order, so one noun carries case, number, and possession.",
+      "Tatoeba holds one of the largest Hungarian-English sentence banks, so frequency-ordered practice has real depth.",
+    ],
+    mutualIntelligibility:
+      "Hungarian is a Uralic language. It is not mutually intelligible with Finnish, even though the two share a distant family. Neighbours who speak German, Slovak, or Romanian do not unlock it for free.",
+    difficultyNote:
+      "FSI Category III (~1,100 hours), the same tier as Greek, Finnish, and Polish. The FSI marks Hungarian as harder than most languages in that tier. Vowel harmony picks the suffix. Verbs mark a definite object. The Latin script is the easy part.",
+    faqs: [
+      {
+        question: "Is Hungarian hard to learn?",
+        answer:
+          "Hungarian is a hard language for English speakers. It sits in the same FSI tier as Greek and Finnish, and the FSI marks it as harder than most of that group. The Latin alphabet is not the work. Case, vowel harmony, and the definite verb are the work.",
+      },
+      {
+        question: "How long does it take to learn Hungarian?",
+        answer:
+          "The FSI places Hungarian in Category III, at roughly 1,100 class hours (about 44 weeks of intensive study) to reach professional working proficiency. Reading simple texts with lookups comes a long way before that point.",
+      },
+      {
+        question: "What is the best way to learn Hungarian?",
+        answer:
+          "Read real Hungarian with a dictionary that maps case and possession back to the lemma. Learn the most frequent words first. Use spaced repetition to hold them. Meet the suffixes in sentences. Do not start with the tables alone.",
+      },
+      {
+        question: "Can I learn Hungarian for free?",
+        answer:
+          "Yes. Public-domain Hungarian literature, open courses, free news and podcasts, and free or self-hosted reading and flashcard tools make learning Hungarian at no cost realistic.",
+      },
+    ],
+    sample: {
+      text: "Este a nap a hegyek mögé süllyed, az emberek az ajtóban ülnek, és nézik a gyerekeket az utcán.",
+      translation:
+        "In the evening the sun sinks behind the mountains, people sit in the doorway, and they watch the children in the street.",
+    },
+    readerImg: "/images/languages/hungarian-reader.png",
+    readerAlt:
+      "Lector reading a Hungarian passage with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/hungarian-cloze.png",
+    clozeAlt: "Hungarian cloze practice in Lector with multiple-choice options",
+  },
+
+  "modern-greek": {
+    slug: "modern-greek",
+    answer:
+      "The best way to learn Modern Greek is to read real Greek with a tap for each word. Learn the most frequent words first. Spaced repetition holds them. This pack is monotonic Greek. The Koine Greek pack stays separate for the New Testament.",
+    nativeSpeakers: "~13.5 million",
+    totalSpeakers: "~13.5 million (incl. second-language)",
+    fsiCategory: "Category III",
+    approxHours: "~1,100 hours",
+    approxWeeks: 44,
+    whyLearn: [
+      "Around 13.5 million native speakers. Greek is official in Greece, Cyprus, and the European Union.",
+      "The alphabet is its own, and a learner can read it in a few days. After that, the grammar is the work: articles, cases, and a verb system with aspect.",
+      "A large Greek diaspora lives in the United States, Australia, Germany, and the United Kingdom. The language has a life far outside the two official states.",
+    ],
+    mutualIntelligibility:
+      "Modern Greek grew out of Koine. A reader of the New Testament gains a head start on the morphology. The packs stay separate: this one is monotonic, and Koine is polytonic with no audio.",
+    difficultyNote:
+      "FSI Category III (~1,100 hours), the same tier as Hungarian, Finnish, and Polish. The alphabet is new. The cases and the verb aspect take longer. A lookup folds the tonos, so τον finds τόν.",
+    faqs: [
+      {
+        question: "Is Modern Greek hard to learn?",
+        answer:
+          "Modern Greek is a hard language for English speakers, in the same FSI tier as Russian and Polish. The alphabet is a short first step. Articles, cases, and verb aspect are the real work.",
+      },
+      {
+        question: "How long does it take to learn Modern Greek?",
+        answer:
+          "The FSI places Modern Greek in Category III, at roughly 1,100 class hours (about 44 weeks of intensive study) to reach professional working proficiency. Reading simple texts with lookups comes a long way before that point.",
+      },
+      {
+        question: "What is the best way to learn Modern Greek?",
+        answer:
+          "Read real Greek with a dictionary that folds the tonos. Learn the most frequent words first. Use spaced repetition to hold them. Keep this pack and the Koine pack apart. Each one serves a different text.",
+      },
+      {
+        question: "Is this the same pack as Koine Greek?",
+        answer:
+          "No. This pack is monotonic Modern Greek, with audio and a Tatoeba sentence bank. The Koine Greek pack is polytonic, ranked on the New Testament, and silent on purpose. Use Koine for the New Testament. Use this pack for today's Greek.",
+      },
+    ],
+    sample: {
+      text: "Το βράδυ ο ήλιος πέφτει πίσω από τα βουνά, και οι άνθρωποι κάθονται στην πόρτα και βλέπουν τα παιδιά στον δρόμο.",
+      translation:
+        "In the evening the sun drops behind the mountains, and people sit in the doorway and watch the children in the street.",
+    },
+    readerImg: "/images/languages/modern-greek-reader.png",
+    readerAlt:
+      "Lector reading a Modern Greek passage with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/modern-greek-cloze.png",
+    clozeAlt: "Modern Greek cloze practice in Lector with multiple-choice options",
+  },
+
+  finnish: {
+    slug: "finnish",
+    answer:
+      "The best way to learn Finnish is to read real Finnish with a tap for each word. Learn the most frequent words first. Spaced repetition holds them. Meaning lives in the case ending, and a lookup maps kirjan back to kirja.",
+    nativeSpeakers: "~5 million",
+    totalSpeakers: "~6 million (incl. second-language)",
+    fsiCategory: "Category III",
+    approxHours: "~1,100 hours",
+    approxWeeks: 44,
+    whyLearn: [
+      "Around 5 million native speakers. Finnish is official in Finland and the European Union, and a minority language in Sweden.",
+      "Spelling is regular. Each letter has one main sound, so a new word is still readable on the first meeting.",
+      "Fifteen cases look heavy on paper. In running text you meet the same endings again and again, and a lookup maps each form to the lemma.",
+    ],
+    mutualIntelligibility:
+      "Finnish is a Uralic language. Estonian is the closest neighbour, and the two are not fully mutually intelligible. Hungarian shares the family at a great distance and does not unlock Finnish.",
+    difficultyNote:
+      "FSI Category III (~1,100 hours), the same tier as Hungarian, Greek, and Polish. The FSI marks Finnish as harder than most languages in that tier. Fifteen cases, vowel harmony, and consonant gradation are the work. katu becomes kadun. The Latin script is not.",
+    faqs: [
+      {
+        question: "Is Finnish hard to learn?",
+        answer:
+          "Finnish is a hard language for English speakers. It sits in the same FSI tier as Hungarian and Greek, and the FSI marks it as harder than most of that group. The cases and consonant gradation are the work. Spelling is regular.",
+      },
+      {
+        question: "How long does it take to learn Finnish?",
+        answer:
+          "The FSI places Finnish in Category III, at roughly 1,100 class hours (about 44 weeks of intensive study) to reach professional working proficiency. Reading simple texts with lookups comes a long way before that point.",
+      },
+      {
+        question: "What is the best way to learn Finnish?",
+        answer:
+          "Read real Finnish with a dictionary that maps case forms back to the lemma. Learn the most frequent words first. Use spaced repetition to hold them. Meet the endings in sentences. Do not start with the fifteen tables alone.",
+      },
+      {
+        question: "Can I learn Finnish for free?",
+        answer:
+          "Yes. Public-domain Finnish literature, open courses, free news and podcasts, and free or self-hosted reading and flashcard tools make learning Finnish at no cost realistic.",
+      },
+    ],
+    sample: {
+      text: "Illalla aurinko laskee vuorten taakse, ihmiset istuvat ovella ja katsovat lapsia kadulla.",
+      translation:
+        "In the evening the sun sets behind the mountains, people sit in the doorway, and they watch the children in the street.",
+    },
+    readerImg: "/images/languages/finnish-reader.png",
+    readerAlt:
+      "Lector reading a Finnish passage with colour-coded word states and click-to-translate",
+    clozeImg: "/images/languages/finnish-cloze.png",
+    clozeAlt: "Finnish cloze practice in Lector with multiple-choice options",
+  },
+
   esperanto: {
     slug: "esperanto",
     answer:

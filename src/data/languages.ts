@@ -655,6 +655,102 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "modern-greek",
+    name: "Modern Greek → English",
+    endonym: "Ελληνικά",
+    flag: "🇬🇷",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Modern Greek. This pack is monotonic Greek. The Koine Greek pack stays separate for the New Testament. A lookup folds the tonos. Typed practice accepts an answer with no marks. One honest caveat: Tatoeba holds fewer Greek–English pairs than the European packs. The bank covers about 81% of the two thousand most useful practice words.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "81,112 entries" },
+      { label: "English senses", value: "113,082" },
+      { label: "Inflections", value: "566,624" },
+      { label: "Cloze bank", value: "6,926 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Greek Wiktionary entries extracted through Kaikki.org. Keys keep the printed tonos. A mark-stripped alias still finds a form when the sigma or the accent differs.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Greek/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Greek–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "hungarian",
+    name: "Hungarian → English",
+    endonym: "Magyar",
+    flag: "🇭🇺",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Hungarian. Hungarian adds case and possession to the noun. A lookup maps those forms to the lemma. Verbs mark a definite object. The on-device dictionary carries those forms plus the ő and ű letters.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "72,416 entries" },
+      { label: "English senses", value: "90,596" },
+      { label: "Inflections", value: "1,971,086" },
+      { label: "Cloze bank", value: "10,965 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Hungarian Wiktionary entries extracted through Kaikki.org, including form-of records for case, possession, and the definite verb forms.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Hungarian/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Hungarian–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
+    slug: "finnish",
+    name: "Finnish → English",
+    endonym: "Suomi",
+    flag: "🇫🇮",
+    status: "complete",
+    blurb:
+      "Fully supported — read, tap-to-define, mine vocabulary, and practice frequency-banded cloze in Finnish. Finnish puts meaning in the case ending. A lookup maps kirjan back to kirja. The on-device dictionary covers the fifteen cases plus the ä and ö letters.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "249,916 entries" },
+      { label: "English senses", value: "314,832" },
+      { label: "Inflections", value: "4,436,921" },
+      { label: "Cloze bank", value: "10,600 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Finnish Wiktionary entries extracted through Kaikki.org, including form-of records for the fifteen cases.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Finnish/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Finnish–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "esperanto",
     name: "Esperanto → English",
     endonym: "Esperanto",
@@ -862,32 +958,6 @@ export const languages: Language[] = [
     sources: [],
   },
   {
-    slug: "modern-greek",
-    name: "Modern Greek → English",
-    endonym: "Ελληνικά",
-    flag: "🇬🇷",
-    status: "coming-soon",
-    roadmapIssue: 475,
-    blurb:
-      "On the roadmap. The Greek script already ships with the Koine Greek pack, so this pack needs its dictionary and its cloze bank.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "hungarian",
-    name: "Hungarian → English",
-    endonym: "Magyar",
-    flag: "🇭🇺",
-    status: "coming-soon",
-    roadmapIssue: 473,
-    blurb:
-      "On the roadmap. Hungarian has one of the largest sentence banks on Tatoeba, and the pack needs the build.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
     slug: "modern-hebrew",
     name: "Modern Hebrew → English",
     endonym: "עברית",
@@ -907,19 +977,6 @@ export const languages: Language[] = [
     status: "coming-soon",
     blurb:
       "On the roadmap. The Swedish pack proves the pattern, and Danish has more English sentence pairs than Swedish did.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "finnish",
-    name: "Finnish → English",
-    endonym: "Suomi",
-    flag: "🇫🇮",
-    status: "coming-soon",
-    roadmapIssue: 476,
-    blurb:
-      "On the roadmap. Finnish inflects deeply, so the dictionary build is the work: one noun carries fifteen cases before any possessive suffix.",
     downloads: [],
     stats: [],
     sources: [],
