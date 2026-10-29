@@ -104,22 +104,20 @@ const ldJson = (s: object) => JSON.stringify(s).replace(/</g, "\\u003c");
       )
     }
 
-    <!-- Plausible: queue events now, fetch the script after first input. -->
+    <!-- Queue events now. Load the same-origin tracker after first input. -->
     <script is:inline>
       window.plausible =
         window.plausible ||
         function () {
           (plausible.q = plausible.q || []).push(arguments);
         };
-      plausible.init = plausible.init || function (i) { plausible.o = i || {}; };
-      plausible.init();
       (function () {
         var loaded = false;
         function load() {
           if (loaded) return;
           loaded = true;
           var s = document.createElement("script");
-          s.src = "https://plausible.io/js/pa-NBQHiTrDyS5mweKtdqu6v.js";
+          s.src = "/a/boot.js";
           s.async = true;
           document.head.appendChild(s);
         }

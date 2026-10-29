@@ -16,6 +16,15 @@ interface Revision {
 
 const revisions: Revision[] = [
   {
+    version: 5,
+    date: "30 October 2026",
+    isoDate: "2026-10-30",
+    changes: [
+      "Umami on our server now stores the visit count.",
+      "Plausible does not receive them.",
+    ],
+  },
+  {
     version: 4,
     date: "22 August 2026",
     isoDate: "2026-08-22",
@@ -163,11 +172,10 @@ const current = revisions[0];
 
       <h2>This website</h2>
       <p>
-        We use <a href="https://plausible.io/" target="_blank" rel="noopener noreferrer">Plausible</a>,
-        a privacy-friendly analytics tool, to understand aggregate traffic (page
-        views, referrers, rough country). It sets <strong>no cookies</strong>,
-        collects <strong>no personal data</strong>, and doesn't track you across
-        sites. We don't run advertising or third-party trackers.
+        This site counts visits with Umami on a server that we run. The count
+        shows pages, the sites that send visitors, and country. The tool sets
+        no cookies. It stores no name and no email. It does not follow you to
+        other sites. This site shows no ads.
       </p>
 
       <h2>The language interest list</h2>

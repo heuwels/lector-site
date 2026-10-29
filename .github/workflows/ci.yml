@@ -26,5 +26,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Test analytics proxy
+        run: node --experimental-strip-types --test tests/analytics-forward.test.ts
+
       - name: Build site
         run: pnpm build

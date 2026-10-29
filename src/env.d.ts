@@ -2,8 +2,8 @@
 
 // Globals added by third-party scripts the site loads.
 interface Window {
-  // Plausible analytics. Absent until analytics.js loads, and absent entirely
-  // for readers who block it, so always call it with `?.`.
+  // Queues until /a/boot.js loads Umami, then forwards to umami.track.
+  // Absent for readers who block the script, so always call it with `?.`.
   plausible?: (
     event: string,
     options?: { props?: Record<string, string | number | boolean> },
