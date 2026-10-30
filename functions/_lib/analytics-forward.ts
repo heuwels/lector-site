@@ -5,6 +5,9 @@
  * The hostname selects which Lector site this request belongs to. Umami still
  * requires a website UUID, so ANALYTICS_WEBSITE_ID is set per deployment.
  * The tracker records the real hostname on the event.
+ *
+ * Keep this file under functions/_lib. The deploy artifact does not include src.
+ * This file has no onRequest export. Pages does not route it.
  */
 
 const MAX_BODY = 10_000;
