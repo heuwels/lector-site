@@ -181,6 +181,25 @@ Optional bindings:
 A production `TURNSTILE_HOSTNAMES` value must not include `localhost` or
 `127.0.0.1`.
 
+## Site analytics
+
+The site loads a tracker from this host. The server forwards the tracker to Umami.
+
+Set these secrets on `lector-site` and on `lector-site-staging`:
+
+```bash
+npx wrangler pages secret put ANALYTICS_FORWARDING_URL --project-name=lector-site
+npx wrangler pages secret put ANALYTICS_WEBSITE_ID --project-name=lector-site
+npx wrangler pages secret put ANALYTICS_FORWARDING_URL --project-name=lector-site-staging
+npx wrangler pages secret put ANALYTICS_WEBSITE_ID --project-name=lector-site-staging
+```
+
+`ANALYTICS_FORWARDING_URL` is the Umami origin. It has no path. Leave it empty to keep analytics off.
+
+`ANALYTICS_WEBSITE_ID` is the Umami website UUID for that project. The hostname selects the site. Umami does not accept a hostname as the website id. Give staging its own UUID.
+
+The tracker stays off for a host that this site does not know.
+
 `pnpm dev:api` starts without a Resend key, so the endpoint returns 503. To
 skip the send in local work, pass a dry-run flag:
 
