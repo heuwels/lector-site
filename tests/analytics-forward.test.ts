@@ -87,10 +87,18 @@ test('collect forwards the visitor and hides cookies', async () => {
   assert.equal(sent.headers.get('set-cookie'), null);
   assert.equal(sent.headers.get('x-umami-cache'), 'jwt');
   assert.equal(called?.url, 'https://umami.example/api/send');
+  assert.equal(called?.init.redirect, 'manual');
   const headers = called?.init.headers as Headers;
   assert.equal(headers.get('cookie'), null);
   assert.equal(headers.get('user-agent'), 'TestBrowser/1');
   assert.equal(headers.get('x-real-ip'), '203.0.113.8');
   assert.equal(headers.get('x-forwarded-host'), 'www.lector.dev');
   assert.equal(JSON.parse(String(called?.init.body)).payload.website, WEBSITE);
+});
+
+test('a redirect from the tracker host is refused', async () => {
+  globalThis.fetch = (async () =>
+    new Response(null, { status: 302, headers: { location: 'https://evil.example/script.js' } })) as typeof fetch;
+  const script = await handleAnalytics(new Request('https://lector.dev/a/script.js'), ENV);
+  assert.equal(script.status, 502);
 });
