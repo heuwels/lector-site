@@ -22,7 +22,8 @@ CI owns the deployment. Do not deploy from a workstation.
 
 The artifact holds `dist/` and `functions/`. Cloudflare Pages compiles the
 functions from `functions/` at the repository root. An artifact without that
-directory deploys the site with no `/api/*` routes.
+directory deploys the site with no `/api/*` routes. Put a shared function
+file in `functions/`. The deploy step does not upload `src/`.
 
 ## API documentation
 

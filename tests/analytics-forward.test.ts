@@ -7,7 +7,7 @@ import {
   handleAnalytics,
   stampCollectBody,
   websiteId,
-} from '../src/lib/analytics-forward.ts';
+} from '../functions/_lib/analytics-forward.ts';
 
 const WEBSITE = 'b59e9c65-ae32-47f1-8400-119fcf4861c4';
 const OTHER = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';

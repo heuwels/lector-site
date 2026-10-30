@@ -1,4 +1,4 @@
-import { handleAnalytics } from '../../src/lib/analytics-forward';
+import { handleAnalytics } from '../_lib/analytics-forward';
 
 interface Env {
   ANALYTICS_FORWARDING_URL?: string;
