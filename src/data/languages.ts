@@ -719,6 +719,38 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "modern-hebrew",
+    name: "Modern Hebrew → English",
+    endonym: "עברית",
+    flag: "🇮🇱",
+    status: "complete",
+    blurb:
+      "Fully supported. Read, tap to define, mine vocabulary, and practice frequency-banded cloze in Modern Hebrew, right to left. The dictionary keys each word without vowel points, the way a newspaper prints it. A lookup shows each pointed form with a transliteration, so כלב shows כֶּלֶב kélev and כָּלֵב kalév. A lookup also peels the prefixes that Hebrew writes solid, so a tap on והכלבים reaches the entry for כלב. Typed practice accepts an answer with no vowel points.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "14,043 entries" },
+      { label: "English senses", value: "23,473" },
+      { label: "Inflections", value: "167,038" },
+      { label: "Cloze bank", value: "10,945 sentences" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Hebrew Wiktionary entries from Kaikki.org. The keys drop the vowel points and keep the final letter forms. Each entry keeps up to four pointed forms, each with its Wiktionary transliteration. A short form such as שלחן resolves to the full form שולחן. An ASCII quote matches the geresh and the gershayim, so צה\"ל finds צה״ל.",
+        license: "CC BY-SA 4.0",
+        url: "https://kaikki.org/dictionary/Hebrew/",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Hebrew–English sentence pairs from Tatoeba, frequency-ranked with wordfreq and filtered against the on-device dictionary.",
+        license: "CC BY 2.0 FR",
+        url: "https://tatoeba.org/",
+      },
+    ],
+  },
+  {
     slug: "finnish",
     name: "Finnish → English",
     endonym: "Suomi",
@@ -994,18 +1026,6 @@ export const languages: Language[] = [
     status: "coming-soon",
     blurb:
       "On the roadmap. The reader handles the script today, so this pack needs its dictionary and its cloze bank.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "modern-hebrew",
-    name: "Modern Hebrew → English",
-    endonym: "עברית",
-    flag: "🇮🇱",
-    status: "coming-soon",
-    blurb:
-      "On the roadmap. Right-to-left reading shipped with Arabic, so what is left is the pack itself: an unpointed key for pointed dictionary entries, which is the same fold Arabic uses for its vowel marks.",
     downloads: [],
     stats: [],
     sources: [],
