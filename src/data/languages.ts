@@ -833,6 +833,47 @@ export const languages: Language[] = [
     ],
   },
   {
+    slug: "biblical-hebrew",
+    name: "Biblical Hebrew → English",
+    endonym: "עברית מקראית",
+    // A scroll, not the Israeli flag. This pack is the Hebrew of the Tanakh,
+    // and Modern Hebrew is a separate entry. The scroll matches the app.
+    flag: "📜",
+    status: "complete",
+    blurb:
+      "Fully supported. Read, tap to define, mine vocabulary, and practice frequency-banded cloze in pointed Hebrew. The pack serves the Tanakh. Frequency ranks come from the Hebrew Bible itself, and every cloze sentence is a verse that keeps its reference. The reader shows the niqqud. A lookup ignores the vowel points and the cantillation, so בְּרֵאשִׁית finds בראשית. A tap on a maqaf pair looks up the host word. Biblical Hebrew pronunciation is a reconstruction. The Tiberian, Sephardi and Israeli readings differ, so the speaker stays silent.",
+    downloads: [],
+    stats: [
+      { label: "Dictionary", value: "17,591 entries" },
+      { label: "English senses", value: "27,140" },
+      { label: "Inflections", value: "219,716" },
+      { label: "Cloze bank", value: "11,444 verse segments" },
+    ],
+    sources: [
+      {
+        label: "Dictionary and inflections",
+        detail:
+          "Per-word lemma and morphology data from the Open Scriptures Hebrew Bible (OSHB), over the Westminster Leningrad Codex. Hebrew Wiktionary entries through Kaikki.org fill the gaps. Kaikki mixes Modern and Biblical Hebrew, so it is a supplement only.",
+        license: "CC BY 4.0 / CC BY-SA 4.0",
+        url: "https://github.com/openscriptures/morphhb",
+      },
+      {
+        label: "Glosses and frequency",
+        detail:
+          "Strong's Hebrew lexicon glosses, keyed to the OSHB lemmas. Ranks come from lemma frequency over the whole Tanakh.",
+        license: "Public domain",
+        url: "https://github.com/openscriptures/HebrewLexicon",
+      },
+      {
+        label: "Cloze sentences",
+        detail:
+          "Tanakh verses from OSHB, aligned to the World English Bible by verse reference. Every practice sentence keeps its verse reference.",
+        license: "CC BY 4.0 / public domain",
+        url: "https://ebible.org/web/",
+      },
+    ],
+  },
+  {
     slug: "latin",
     name: "Latin → English",
     endonym: "Latina",
@@ -1025,18 +1066,6 @@ export const languages: Language[] = [
     status: "coming-soon",
     blurb:
       "On the roadmap. Scottish Gaelic shares its frequency work with Welsh and Irish. The sentence bank stays smaller than most, because little Gaelic and English parallel text carries an open licence.",
-    downloads: [],
-    stats: [],
-    sources: [],
-  },
-  {
-    slug: "biblical-hebrew",
-    name: "Biblical Hebrew → English",
-    endonym: "עברית מקראית",
-    flag: "🇮🇱",
-    status: "coming-soon",
-    roadmapIssue: 255,
-    blurb: "On the roadmap — pending reader support for its script.",
     downloads: [],
     stats: [],
     sources: [],

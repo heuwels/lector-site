@@ -165,7 +165,7 @@ export function buildLlmsTxt(): string {
     bullet(
       "/for/greek-hebrew/",
       "Greek and Hebrew",
-      "A reading-first workspace for the biblical languages. The Koine Greek pack is in development, and a founding cohort shapes it.",
+      "A reading-first workspace for the biblical languages. The Koine Greek and Biblical Hebrew packs ship, with verse-aligned practice from the Greek New Testament and the Tanakh.",
     ),
     "",
     "## Run it",

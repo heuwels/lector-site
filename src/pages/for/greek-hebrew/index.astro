@@ -18,8 +18,10 @@ import { languages } from "../../../data/languages";
 //    pack's entry in src/data/languages.ts. An earlier version of this page
 //    said the pack was unbuilt, months after it shipped. Do not reintroduce
 //    that.
-//  * Biblical Hebrew does NOT ship. It is `coming-soon` with roadmap issue 255.
-//    The cohort ask belongs to Hebrew alone.
+//  * The Biblical Hebrew pack SHIPS too (lector#255). Its numbers come from
+//    its own entry in src/data/languages.ts. It is the Hebrew of the Tanakh,
+//    not Modern Hebrew. Its frequency ranks and its cloze bank come from the
+//    Tanakh alone.
 //  * The scope limit is the important part: the dictionary and the morphology
 //    are Ancient Greek, but the frequency ranks and the cloze bank are built
 //    from the Greek New Testament. Somebody who teaches Homer must read that
@@ -35,27 +37,10 @@ const SUPPORT = "support@lector.dev";
 
 const pack = (slug: string) => languages.find((language) => language.slug === slug);
 const greek = pack("koine-greek");
+const hebrew = pack("biblical-hebrew");
 const latin = pack("latin");
 const stat = (slug: string, label: string) =>
   pack(slug)?.stats.find((entry) => entry.label === label)?.value ?? "";
-
-const mailtoSubject = encodeURIComponent("Biblical Hebrew cohort");
-const mailtoBody = encodeURIComponent(
-  [
-    "Hi Luke,",
-    "",
-    "I want to help shape the Biblical Hebrew pack.",
-    "",
-    "A little about me:",
-    "- Name:",
-    "- I am a (pastor / seminary student / teacher / student / other):",
-    "- My Hebrew background:",
-    "- The text and edition I read most:",
-    "",
-    "Thanks!",
-  ].join("\n"),
-);
-const HEBREW_MAILTO = `mailto:${SUPPORT}?subject=${mailtoSubject}&body=${mailtoBody}`;
 
 const ships = [
   {
@@ -64,7 +49,7 @@ const ships = [
   },
   {
     title: "A real dictionary, on your device",
-    body: `${stat("koine-greek", "Dictionary")} entries and ${stat("koine-greek", "English senses")} English senses, from Ancient Greek Wiktionary through Kaikki, with per-word lemma data from MorphGNT for the Koine forms that Classical-leaning tables miss.`,
+    body: `${stat("koine-greek", "Dictionary")} and ${stat("koine-greek", "English senses")} English senses, from Ancient Greek Wiktionary through Kaikki, with per-word lemma data from MorphGNT for the Koine forms that Classical-leaning tables miss.`,
   },
   {
     title: "Corpus-frequency vocabulary",
@@ -125,8 +110,8 @@ const faqs = [
       "No. Lector is a language tool, and it stays denominationally neutral. It helps with grammar, vocabulary, morphology, and how a phrase works in context. It does not answer theological questions, and it never will.",
   },
   {
-    question: "What ships today, and what does not?",
-    answer: `The <strong>Koine Greek pack ships now</strong>: ${stat("koine-greek", "Dictionary")} dictionary entries, ${stat("koine-greek", "Inflections")} inflected forms, New Testament frequency ranks, and ${stat("koine-greek", "Cloze bank")} of verse-aligned cloze practice. <strong>Biblical Hebrew does not ship yet.</strong> It is on the roadmap, and the cohort on this page is for Hebrew. <a href="/reference-data/koine-greek/">The pack page</a> lists every source and licence.`,
+    question: "What ships today?",
+    answer: `Both packs ship now. The <strong>Koine Greek pack</strong> has a dictionary of ${stat("koine-greek", "Dictionary")} and ${stat("koine-greek", "Inflections")} inflected forms. Its frequency ranks and its ${stat("koine-greek", "Cloze bank")} of cloze practice come from the New Testament. The <strong>Biblical Hebrew pack</strong> has a dictionary of ${stat("biblical-hebrew", "Dictionary")} and ${stat("biblical-hebrew", "Inflections")} inflected forms. Its frequency ranks and its ${stat("biblical-hebrew", "Cloze bank")} of cloze practice come from the Tanakh. Each pack page lists every source and licence: <a href="/reference-data/koine-greek/">Greek</a> and <a href="/reference-data/biblical-hebrew/">Hebrew</a>.`,
   },
   {
     question: "Does it cover Homer, Attic, and Byzantine Greek?",
@@ -136,21 +121,20 @@ const faqs = [
   {
     question: "Which texts and lexica does it use?",
     answer:
-      'Ancient Greek Wiktionary entries through <a href="https://kaikki.org/dictionary/Ancient%20Greek/">Kaikki</a>, with lemma data from MorphGNT. Glosses come from the <a href="https://github.com/biblicalhumanities/Dodson-Greek-Lexicon">Dodson Greek-English lexicon</a>. Cloze sentences come from SBLGNT, aligned to the World English Bible. All of it is public domain or permissively licensed. There is no bundled BDAG and no HALOT, so keep the reference shelf you already own.',
+      'For Greek: Ancient Greek Wiktionary entries through <a href="https://kaikki.org/dictionary/Ancient%20Greek/">Kaikki</a>, with lemma data from MorphGNT. Glosses come from the <a href="https://github.com/biblicalhumanities/Dodson-Greek-Lexicon">Dodson Greek-English lexicon</a>. Cloze sentences come from SBLGNT, aligned to the World English Bible. For Hebrew: lemma and morphology data from the <a href="https://github.com/openscriptures/morphhb">Open Scriptures Hebrew Bible</a>, over the Westminster Leningrad Codex. Glosses come from Strong\'s Hebrew lexicon. Cloze sentences are Tanakh verses, aligned to the World English Bible. All of it is public domain or permissively licensed. There is no bundled BDAG and no HALOT, so keep the reference shelf you already own.',
   },
   {
     question: "Why does the speaker button stay silent?",
     answer:
-      "Because Koine pronunciation is reconstructed and disputed. Erasmian, Reuchlinian and period reconstructions each have a case, and synthesized audio can only teach one of them as settled fact. The same rule applies to Latin, where classical and ecclesiastical pronunciation disagree.",
+      "Because Koine pronunciation is reconstructed and disputed. Erasmian, Reuchlinian and period reconstructions each have a case, and synthesized audio can only teach one of them as settled fact. The same rule applies to Biblical Hebrew, where the Tiberian, Sephardi and Israeli readings differ. It also applies to Latin, where classical and ecclesiastical pronunciation disagree.",
   },
   {
-    question: "What about Hebrew?",
-    answer:
-      'Second, and deliberately. Pointed Hebrew is harder engineering than Greek, though less so now. The <a href="/reference-data/arabic/">Arabic pack</a> shipped as the first right-to-left pack, so the reader handles right-to-left text today. Biblical Hebrew is on the roadmap, and the people who write in now shape its priority.',
+    question: "Is Biblical Hebrew ready?",
+    answer: `Yes. The pack reads pointed text from right to left and shows the niqqud. A lookup ignores the vowel points and the cantillation. Thus בְּרֵאשִׁית finds בראשית. A tap on a maqaf pair looks up the host word. ${stat("biblical-hebrew", "Inflections")} inflected forms resolve to their lemma. Typed practice accepts an answer with no vowel points. This is Biblical Hebrew, not Modern Hebrew, so the frequency ranks and the practice sentences come from the Tanakh.`,
   },
   {
     question: "Is Latin ready too?",
-    answer: `Yes. The Latin pack ships with ${stat("latin", "Dictionary")} entries and ${stat("latin", "Inflections")} inflected forms. Keys strip editorial macrons, so amāre and amare are one key, and the u/v and i/j spellings that editions mix both resolve. Frequency ranks come from the Dickinson College Commentaries core vocabulary. See <a href="/languages/latin/">the Latin guide</a>.`,
+    answer: `Yes. The Latin pack ships with ${stat("latin", "Dictionary")} and ${stat("latin", "Inflections")} inflected forms. Keys strip editorial macrons, so amāre and amare are one key, and the u/v and i/j spellings that editions mix both resolve. Frequency ranks come from the Dickinson College Commentaries core vocabulary. See <a href="/languages/latin/">the Latin guide</a>.`,
   },
   {
     question: "Do I need to be a scholar?",
@@ -175,7 +159,7 @@ const faqs = [
 ];
 
 const title = "Greek and Hebrew | Lector for biblical languages";
-const description = `Read the Greek New Testament in a reading-first workspace. The Koine Greek pack ships now: ${stat("koine-greek", "Inflections")} inflected forms, New Testament frequency ranks, verse-aligned cloze practice, and Anki export. Biblical Hebrew is on the roadmap.`;
+const description = `Read the Greek New Testament and the Hebrew Bible in a reading-first workspace. Both packs ship now, with corpus frequency ranks, verse-aligned cloze practice, and Anki export.`;
 
 const schema = [
   faqPageSchema(faqs),
@@ -190,13 +174,13 @@ const schema = [
   <!-- Hero -->
   <section class="pt-14 pb-14 sm:pt-20">
     <Container class="flex flex-col items-center gap-6 text-center">
-      <Eyebrow>Koine Greek ships &middot; Hebrew on the roadmap</Eyebrow>
+      <Eyebrow>Koine Greek and Biblical Hebrew ship</Eyebrow>
       <Heading class="max-w-4xl text-5xl/[1.05] sm:text-7xl/[1.05]">
         Keep your Greek by <span class="italic">reading</span> the text.
       </Heading>
       <Text size="lg" class="max-w-3xl text-pretty">
-        A reading-first workspace for the Greek New Testament, and it is
-        available today. Morphology-aware lookup, corpus-frequency vocabulary,
+        A reading-first workspace for the Greek New Testament and the Hebrew
+        Bible, available today. Morphology-aware lookup, corpus-frequency vocabulary,
         verse-aligned review, and Anki export. Help with grammar and phrasing,
         never theological answers.
       </Text>
@@ -208,7 +192,7 @@ const schema = [
           </Button>
         </div>
         <p class="text-xs/6 text-olive-500">
-          {greek?.stats[0]?.value} dictionary entries &middot; {
+          {greek?.stats[0]?.value} &middot; {
             stat("koine-greek", "Inflections")
           } inflected forms &middot; self-host free, or Lector Cloud from $5 a month
         </p>
@@ -302,7 +286,7 @@ const schema = [
           <Eyebrow>Also available</Eyebrow>
           <Subheading>Latin ships too.</Subheading>
           <Text class="text-pretty">
-            {stat("latin", "Dictionary")} entries and {
+            {stat("latin", "Dictionary")} and {
               stat("latin", "Inflections")
             } inflected forms. Keys strip editorial macrons, so amāre and amare are
             one key. The u/v and i/j spellings that editions mix both resolve, so
@@ -321,52 +305,40 @@ const schema = [
     </Container>
   </section>
 
-  <!-- Hebrew cohort -->
+  <!-- Hebrew -->
   <section class="py-16">
-    <Container class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
-      <div class="flex max-w-md flex-col gap-4">
-        <Eyebrow>In development</Eyebrow>
-        <Subheading>Biblical Hebrew needs readers, now.</Subheading>
-        <Text class="text-pretty">
-          Hebrew is genuinely unbuilt. Pointed Hebrew is harder than Greek,
-          though less so than it was: the Arabic pack shipped first, so the
-          reader handles right-to-left text today. What the Hebrew pack needs is
-          people who read the Hebrew Bible weekly and will say what helps.
-        </Text>
+    <Container>
+      <div
+        class="flex flex-col gap-6 rounded-3xl bg-olive-950/2.5 p-8 sm:p-12 dark:bg-white/5"
+      >
+        <div class="flex max-w-2xl flex-col gap-4">
+          <Eyebrow>Also available</Eyebrow>
+          <Subheading>Biblical Hebrew ships too.</Subheading>
+          <Text class="text-pretty">
+            {hebrew?.stats[0]?.value} and {
+              stat("biblical-hebrew", "Inflections")
+            } inflected forms, from the Open Scriptures Hebrew Bible and Strong's
+            lexicon. The reader shows pointed text from right to left. A lookup ignores
+            the vowel points and the cantillation. A tap on a maqaf pair looks up the
+            host word. Frequency ranks come from the Tanakh, and {
+              stat("biblical-hebrew", "Cloze bank")
+            } of cloze practice keep their verse references.
+          </Text>
+        </div>
         <div class="flex flex-wrap items-center gap-3">
-          <Button href={HEBREW_MAILTO} size="lg">Help shape Hebrew</Button>
-          <Button
-            href={DISCORD}
-            variant="soft"
-            size="lg"
-            target="_blank"
-            rel="noopener"
-          >
-            Follow along on Discord
+          <Button href={SIGNUP_URL}>Start reading Hebrew</Button>
+          <Button href="/reference-data/biblical-hebrew/" variant="soft">
+            See the pack data
           </Button>
         </div>
-      </div>
-      <div
-        class="flex flex-col gap-4 rounded-2xl bg-olive-950 p-8 text-white dark:bg-white/10 dark:ring-1 dark:ring-white/10"
-      >
-        <h3 class="font-display text-2xl/8">What we ask, and what you get</h3>
-        <ul class="flex flex-col gap-3">
-          {
-            [
-              "Tell us the text and the edition you read most.",
-              "Tell us which lexicon your students already own.",
-              "Read early builds, and say what got in the way.",
-              "You get a direct line to the builder, and the pack you helped shape.",
-            ].map((item) => (
-              <li class="flex gap-3 text-base/7 text-olive-200">
-                <span aria-hidden="true" class="mt-px text-olive-400">
-                  &#10003;
-                </span>
-                {item}
-              </li>
-            ))
-          }
-        </ul>
+        <p class="text-xs/6 text-olive-500">
+          Do you read the Hebrew Bible every week? Come to the <a
+            href={DISCORD}
+            target="_blank"
+            rel="noopener"
+            class="underline underline-offset-2">Discord</a
+          > and tell us what gets in the way.
+        </p>
       </div>
     </Container>
   </section>
@@ -442,8 +414,8 @@ const schema = [
           Do not let it <span class="italic">fade</span>.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
-          The Greek pack is ready. Import a chapter tonight, tap what you have
-          lost, and let review give it back.
+          The Greek and Hebrew packs are ready. Import a chapter tonight, tap
+          what you do not know, and let review give it back.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
           <Button href={SIGNUP_URL} size="lg" color="light">
@@ -459,8 +431,7 @@ const schema = [
           </Button>
         </div>
         <p class="text-xs/6 text-olive-400">
-          Reading the Hebrew Bible, or teaching outside the New Testament? Write
-          to us at <a
+          Do you teach outside the New Testament or the Tanakh? Write to us at <a
             href={`mailto:${SUPPORT}`}
             class="underline underline-offset-2">{SUPPORT}</a
           >.
