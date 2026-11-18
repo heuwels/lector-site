@@ -13,7 +13,7 @@ import Screenshot from "../components/Screenshot.astro";
 import { languages } from "../data/languages";
 import LanguageNotify from "../components/LanguageNotify.astro";
 import { languageGuides } from "../data/languageGuides";
-import { GITHUB, SIGNUP_URL, DISCORD } from "../data/links";
+import { GITHUB, CLOUD_CHECKOUT_URL, DISCORD } from "../data/links";
 import { softwareApplicationSchema, faqPageSchema } from "../lib/schema";
 import readerImg from "../../public/images/reader.png";
 import youtubeImg from "../../public/images/youtube-transcript-reader.png";
@@ -127,7 +127,7 @@ const faqs = [
   {
     question: "Is it really free?",
     answer:
-      "If you host it yourself, Lector is free and open-source. Deploy it on your own machine, with optional authentication. There is no subscription and there are no feature gates. If you do not run a local model, your only cost is your own use of an LLM API. If you prefer not to run a server, Lector Cloud starts at $5/mo and we host it for you. For comparison, LingQ costs about $15/mo and Clozemaster Pro about $13/mo.",
+      "If you host it yourself, Lector is free and open-source. Deploy it on your own machine, with optional authentication. There is no subscription and there are no feature gates. If you do not run a local model, your only cost is your own use of an LLM API. If you prefer not to run a server, we host it for you on Lector Cloud. The first month costs $1, and then plans start at $5/mo. For comparison, LingQ costs about $15/mo and Clozemaster Pro about $13/mo.",
   },
   {
     question: "Self-host or Lector Cloud. Which is right for me?",
@@ -194,7 +194,7 @@ const lcpImage = await getImage({
       </Text>
       <div class="mt-2 flex flex-col items-center gap-3">
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={SIGNUP_URL} size="lg">Start on Lector Cloud</Button>
+          <Button href={CLOUD_CHECKOUT_URL} size="lg">Try Lector Cloud for $1</Button>
           <Button href="/docs/installation/" variant="soft" size="lg">
             Self-host, free
           </Button>
@@ -414,14 +414,14 @@ const lcpImage = await getImage({
           </div>
           <p class="flex-1 text-pretty text-base/7 text-olive-200">
             We host it, back it up, and keep it updated. You need no Docker and
-            no setup. Just sign in and start to read. If you prefer not to run a
+            no setup. Your first month costs $1. If you prefer not to run a
             server, choose Lector Cloud.
           </p>
           <a
-            href={SIGNUP_URL}
+            href={CLOUD_CHECKOUT_URL}
             class="group inline-flex items-center gap-2 text-sm/7 font-medium text-white"
           >
-            Start on Lector Cloud
+            Try Lector Cloud for $1
             <svg
               viewBox="0 0 16 16"
               fill="none"
@@ -581,12 +581,12 @@ docker compose up -d</code></pre>
           Start to read in your <span class="italic">target language</span> today.
         </Heading>
         <p class="max-w-xl text-pretty text-lg/8 text-olive-300">
-          Host the open-source app yourself for free, or sign in to Lector Cloud
-          and start.
+          Host the open-source app yourself for free, or try Lector Cloud for $1
+          for your first month.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
-          <Button href={SIGNUP_URL} size="lg" color="light"
-            >Start on Lector Cloud</Button
+          <Button href={CLOUD_CHECKOUT_URL} size="lg" color="light"
+            >Try Lector Cloud for $1</Button
           >
           <Button
             href="/docs/installation/"

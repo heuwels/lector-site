@@ -9,41 +9,26 @@ import {
   CLOUD_CHECKOUT_URL,
   CLOUD_PLUS_CHECKOUT_URL,
   GITHUB,
-  SIGNUP_URL,
 } from "../../data/links";
 
-// Cloud Free is a complete, bounded reading loop. Paid links carry the selected
-// plan through account creation into the app's server-created Paddle checkout.
-// Self-hosted remains free, open source, and unlimited. The per-plan numbers
+// Lector Cloud has no Free plan for a new account. The first month of a
+// monthly plan costs $1, and the app applies that price at checkout. Paid
+// links carry the selected plan through account creation into the app's
+// server-created Paddle checkout. Self-hosted remains free, open source, and
+// unlimited. The per-plan numbers
 // below mirror the API's DEFAULT_PLAN_LIMITS (api/src/lib/entitlements.ts) —
 // keep them in sync when the entitlements engine changes.
 const tiers = [
   {
-    name: "Free",
-    price: "$0",
-    period: "/month",
-    badge: "No card required",
-    tagline:
-      "A complete reading loop on our cloud — generous monthly limits, no card required.",
-    features: [
-      "Read starter lessons or import your own texts (up to 10 collections, 200 texts)",
-      "Save vocabulary, practise cloze, and sync with Anki",
-      "On-device dictionary, tap-to-translate (10 words + 10 phrases a day) and 1,000 AI glosses a month",
-      "Free browser voices for reading & dictation",
-      "Optionally add your own AI key for chat tutor, journal correction & rich translation",
-      "Export your learner data at any time",
-    ],
-    cta: { label: "Get started free", href: SIGNUP_URL },
-    featured: true,
-  },
-  {
     name: "Cloud",
     price: "$5",
     period: "/month",
+    badge: "$1 first month",
     tagline:
       "We host it for you — no Docker, no setup. For when you'd rather just read.",
     features: [
-      "Everything in Free, fully managed — nothing to install",
+      "The full reader, cloze practice, vocabulary mining, and Anki sync",
+      "Fully managed — nothing to install",
       "5,000 managed AI requests a month — tap-to-translate, chat tutor & journal correction",
       "10,000 AI dictionary glosses a month",
       "300,000 characters a month of high-quality managed voices",
@@ -51,14 +36,15 @@ const tiers = [
       "Room for 1,000 texts and 5,000 journal words a month",
       "Automatic backups & updates, and email support",
     ],
-    note: "or $50/year — two months free",
-    cta: { label: "Choose Cloud", href: CLOUD_CHECKOUT_URL },
-    featured: false,
+    note: "Your first month costs $1. Or pay $50/year — two months free",
+    cta: { label: "Start Cloud for $1", href: CLOUD_CHECKOUT_URL },
+    featured: true,
   },
   {
     name: "Cloud Plus",
     price: "$12",
     period: "/month",
+    badge: "$1 first month",
     tagline: "For heavy readers who want the whole thing handled.",
     features: [
       "Everything in Cloud",
@@ -69,8 +55,8 @@ const tiers = [
       "Priority support",
       "Early access to new language packs",
     ],
-    note: "or ~$120/year — two months free",
-    cta: { label: "Choose Cloud Plus", href: CLOUD_PLUS_CHECKOUT_URL },
+    note: "Your first month costs $1. Or pay $120/year — two months free",
+    cta: { label: "Start Cloud Plus for $1", href: CLOUD_PLUS_CHECKOUT_URL },
     featured: false,
   },
   {
@@ -92,11 +78,10 @@ const tiers = [
 ];
 
 // Full per-plan entitlements. A cell is `true` (included), `false` (not
-// included), or a string. Columns are Free · Cloud · Cloud Plus · Self-hosted.
+// included), or a string. Columns are Cloud · Cloud Plus · Self-hosted.
 type Cell = boolean | string;
 interface CompareRow {
   label: string;
-  free: Cell;
   cloud: Cell;
   plus: Cell;
   self: Cell;
@@ -105,66 +90,66 @@ interface CompareGroup {
   title: string;
   rows: CompareRow[];
 }
-const planCols = ["Free", "Cloud", "Cloud Plus", "Self-hosted"];
+const planCols = ["Cloud", "Cloud Plus", "Self-hosted"];
 const comparison: CompareGroup[] = [
   {
     title: "Reading & library",
     rows: [
-      { label: "Texts you can import", free: "200", cloud: "1,000", plus: "Unlimited", self: "Unlimited" },
-      { label: "Collections", free: "10", cloud: "50", plus: "Unlimited", self: "Unlimited" },
-      { label: "Words per phrase lookup", free: "6", cloud: "9", plus: "Unlimited", self: "Unlimited" },
+      { label: "Texts you can import", cloud: "1,000", plus: "Unlimited", self: "Unlimited" },
+      { label: "Collections", cloud: "50", plus: "Unlimited", self: "Unlimited" },
+      { label: "Words per phrase lookup", cloud: "9", plus: "Unlimited", self: "Unlimited" },
     ],
   },
   {
     title: "Translation & dictionary",
     rows: [
-      { label: "On-device dictionary", free: true, cloud: true, plus: true, self: true },
-      { label: "Tap-to-translate", free: "10 + 10 / day", cloud: "Included", plus: "Included", self: "Unlimited" },
-      { label: "AI dictionary glosses", free: "1,000 / mo", cloud: "10,000 / mo", plus: "50,000 / mo", self: "Unlimited" },
+      { label: "On-device dictionary", cloud: true, plus: true, self: true },
+      { label: "Tap-to-translate", cloud: "Included", plus: "Included", self: "Unlimited" },
+      { label: "AI dictionary glosses", cloud: "10,000 / mo", plus: "50,000 / mo", self: "Unlimited" },
     ],
   },
   {
     title: "AI features — chat tutor, journal correction, rich translation",
     rows: [
-      { label: "Managed AI requests", free: false, cloud: "5,000 / mo", plus: "20,000 / mo", self: "Unlimited" },
-      { label: "Bring your own AI key (optional)", free: true, cloud: true, plus: true, self: true },
+      { label: "Managed AI requests", cloud: "5,000 / mo", plus: "20,000 / mo", self: "Unlimited" },
+      { label: "Bring your own AI key (optional)", cloud: true, plus: true, self: true },
     ],
   },
   {
     title: "Speech",
     rows: [
-      { label: "Free browser voices", free: true, cloud: true, plus: true, self: true },
-      { label: "Managed premium voices", free: false, cloud: "300,000 chars / mo", plus: "1,500,000 chars / mo", self: "Your own key" },
+      { label: "Free browser voices", cloud: true, plus: true, self: true },
+      { label: "Managed premium voices", cloud: "300,000 chars / mo", plus: "1,500,000 chars / mo", self: "Your own key" },
     ],
   },
   {
     title: "Podcasts & listening",
     rows: [
-      { label: "YouTube transcript import", free: true, cloud: true, plus: true, self: true },
-      { label: "Podcast import with listen-along & shadowing player", free: false, cloud: true, plus: true, self: true },
-      { label: "Audio transcription", free: false, cloud: "5 hours / mo", plus: "15 hours / mo", self: "Your own Whisper" },
-      { label: "Audio storage", free: false, cloud: "2 GB", plus: "10 GB", self: "Unlimited" },
+      { label: "YouTube transcript import", cloud: true, plus: true, self: true },
+      { label: "Podcast import with listen-along & shadowing player", cloud: true, plus: true, self: true },
+      { label: "Audio transcription", cloud: "5 hours / mo", plus: "15 hours / mo", self: "Your own Whisper" },
+      { label: "Audio storage", cloud: "2 GB", plus: "10 GB", self: "Unlimited" },
     ],
   },
   {
     title: "Writing",
     rows: [
-      { label: "Journal writing", free: "1,000 words / mo", cloud: "5,000 words / mo", plus: "Unlimited", self: "Unlimited" },
+      { label: "Journal writing", cloud: "5,000 words / mo", plus: "Unlimited", self: "Unlimited" },
     ],
   },
   {
     title: "Vocabulary & data",
     rows: [
-      { label: "Saved vocabulary & progress", free: "Fair-use caps", cloud: "Unlimited", plus: "Unlimited", self: "Unlimited" },
-      { label: "Anki sync", free: true, cloud: true, plus: true, self: true },
-      { label: "Export your data anytime", free: true, cloud: true, plus: true, self: true },
+      { label: "Saved vocabulary & progress", cloud: "Unlimited", plus: "Unlimited", self: "Unlimited" },
+      { label: "Anki sync", cloud: true, plus: true, self: true },
+      { label: "Export your data anytime", cloud: true, plus: true, self: true },
     ],
   },
   {
     title: "Cloud operations",
     rows: [
-      { label: "Automatic backups & updates", free: true, cloud: true, plus: true, self: "You manage" },
-      { label: "Support", free: "Community", cloud: "Email", plus: "Priority", self: "Community" },
+      { label: "Automatic backups & updates", cloud: true, plus: true, self: "You manage" },
+      { label: "Support", cloud: "Email", plus: "Priority", self: "Community" },
     ],
   },
 ];
@@ -172,11 +157,11 @@ const comparison: CompareGroup[] = [
 
 <Base
   title="Pricing | Lector"
-  description="Start free on Lector Cloud, upgrade for larger managed allowances, or self-host the open-source app for free."
+  description="Try Lector Cloud for $1 for the first month, or self-host the open-source app for free."
 >
   <PageHeader
     title="Pricing"
-    description="Start on our cloud for free, upgrade when you want larger managed allowances, or self-host the open-source app forever."
+    description="Try Lector Cloud for $1 for your first month, or self-host the open-source app for free, forever."
   >
     <Fragment slot="breadcrumb">
       <a href="/" class="hover:text-olive-950 dark:hover:text-white">lector</a> /
@@ -186,7 +171,7 @@ const comparison: CompareGroup[] = [
 
   <section class="py-16">
     <Container class="flex flex-col gap-10">
-      <div class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-4">
+      <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
         {
           tiers.map((tier) => (
             <div
@@ -359,7 +344,7 @@ const comparison: CompareGroup[] = [
                     <tr>
                       <th
                         scope="colgroup"
-                        colspan={5}
+                        colspan={4}
                         class="pt-8 pb-2 text-xs font-semibold tracking-wide text-olive-500 uppercase dark:text-olive-400"
                       >
                         {group.title}
@@ -373,7 +358,7 @@ const comparison: CompareGroup[] = [
                         >
                           {row.label}
                         </th>
-                        {[row.free, row.cloud, row.plus, row.self].map((cell) => (
+                        {[row.cloud, row.plus, row.self].map((cell) => (
                           <td class="px-4 py-3 text-center text-sm/6 text-olive-700 tabular-nums dark:text-olive-400">
                             {cell === true ? (
                               <Fragment>
@@ -419,10 +404,7 @@ const comparison: CompareGroup[] = [
         <p class="max-w-3xl text-sm/6 text-olive-600 dark:text-olive-500">
           On the paid plans, tap-to-translate, the chat tutor, and journal
           correction all draw from one monthly managed AI-requests allowance;
-          dictionary glosses have their own. Free includes managed tap-to-translate
-          and dictionary glosses with no key required; richer AI like the chat
-          tutor and journal correction isn't included, but you can optionally add
-          your own API key to unlock it. Limits are generous fair-use ceilings —
+          dictionary glosses have their own. Limits are generous fair-use ceilings —
           an ordinary learner won't hit them.
         </p>
       </div>
@@ -433,9 +415,9 @@ const comparison: CompareGroup[] = [
         <p>
           <span class="font-semibold text-olive-950 dark:text-white"
             >Self-hosting is free and always will be.</span
-          > Cloud Free gives you the complete reading loop with bounded managed
-          usage. The paid cloud plans add larger allowances and managed voices for
-          people who'd rather not run Docker, while helping fund future development.
+          > The cloud plans are for people who'd rather not run Docker, and they
+          fund future development. Your first month of a monthly plan costs $1.
+          Then the plan renews at its usual price, and you can cancel at any time.
           If you're running self-hosted but you'd like to support, you can send a
           one-time tip or sign up as a supporter on an ongoing basis. Support <a
             href="/support">here</a
