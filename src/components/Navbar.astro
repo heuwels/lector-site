@@ -74,6 +74,11 @@ const linkActive = "text-olive-950 dark:text-white";
           </svg>
         </a>
         <a
+          href="/docs/installation/"
+          class="rounded-full px-3 py-1 text-sm/7 font-medium text-olive-700 transition-colors hover:bg-olive-950/5 hover:text-olive-950 max-lg:hidden dark:text-olive-400 dark:hover:bg-white/10 dark:hover:text-white"
+          >Self-host free</a
+        >
+        <a
           href={LOGIN_URL}
           class="rounded-full px-3 py-1 text-sm/7 font-medium text-olive-700 transition-colors hover:bg-olive-950/5 hover:text-olive-950 max-sm:hidden dark:text-olive-400 dark:hover:bg-white/10 dark:hover:text-white"
           >Log in</a
@@ -156,6 +161,9 @@ const linkActive = "text-olive-950 dark:text-white";
           </div>
           <div class="mt-auto flex flex-col gap-2">
             <Button href={CLOUD_CHECKOUT_URL} size="lg" class="w-full">Try Cloud for $1</Button>
+            <Button href="/docs/installation/" variant="soft" size="lg" class="w-full">
+              Self-host free
+            </Button>
             <Button href={LOGIN_URL} variant="soft" size="lg" class="w-full">
               Log in
             </Button>
